@@ -1,0 +1,2 @@
+# ECore
+Excreles Core plugin 

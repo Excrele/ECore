@@ -1,0 +1,47 @@
+name: Ecore
+version: 1.0
+main: com.excrele.ecore.Ecore
+api-version: 1.21
+description: Excrele's Core plugin for staff moderation, home system, player reports, Discord integration, and basic gameplay features.
+softdepend: [PlaceholderAPI]
+commands:
+  ecore:
+    description: Main command for Ecore plugin
+    usage: /<command> [reload|staff|home]
+  sethome:
+    description: Set a home location
+    usage: /<command> [name]
+  home:
+    description: Teleport to a home location
+    usage: /<command> [name]
+  report:
+    description: Report a player
+    usage: /<command> <player> <reason>
+permissions:
+  ecore.staff:
+    description: Allows access to staff commands and GUI
+    default: op
+  ecore.home:
+    description: Allows access to home commands and GUI
+    default: true
+  ecore.nickname:
+    description: Allows setting nicknames
+    default: true
+  ecore.colorchat:
+    description: Allows using color codes in chat
+    default: true
+  ecore.colorsign:
+    description: Allows using color codes on signs
+    default: true
+  ecore.sit:
+    description: Allows sitting on stairs
+    default: true
+  ecore.report:
+    description: Allows submitting player reports
+    default: true
+  ecore.vanish:
+    description: Allows toggling vanish mode
+    default: op
+  ecore.teleport:
+    description: Allows teleporting to players
+    default: op

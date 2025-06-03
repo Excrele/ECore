@@ -1,0 +1,6 @@
+# Configuration for Ecore plugin
+home:
+  max-homes: 3 # Maximum number of homes a player can set
+report:
+  max-reports: 5 # Maximum number of reports a player can submit
+  report-cooldown: 300 # Cooldown in seconds between reports
