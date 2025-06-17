@@ -2,7 +2,7 @@ name: Ecore
 version: 1.0
 main: com.excrele.ecore.Ecore
 api-version: 1.21
-description: Excrele's Core plugin for staff moderation, home system, player reports, Discord integration, and basic gameplay features.
+description: Excrele's Core plugin for staff moderation, home system, player reports, Discord integration, economy, shops, gamemode GUI, and basic gameplay features.
 softdepend: [PlaceholderAPI]
 commands:
   ecore:
@@ -17,6 +17,9 @@ commands:
   report:
     description: Report a player
     usage: /<command> <player> <reason>
+  gm:
+    description: Open GameMode GUI
+    usage: /<command>
 permissions:
   ecore.staff:
     description: Allows access to staff commands and GUI
@@ -44,4 +47,25 @@ permissions:
     default: op
   ecore.teleport:
     description: Allows teleporting to players
+    default: op
+  ecore.adminshop:
+    description: Allows creating and managing Admin Shops
+    default: op
+  ecore.pshop:
+    description: Allows creating and managing Player Shops
+    default: true
+  ecore.gamemode:
+    description: Allows access to GameMode GUI
+    default: op
+  ecore.gamemode.survival:
+    description: Allows switching to Survival mode
+    default: op
+  ecore.gamemode.creative:
+    description: Allows switching to Creative mode
+    default: op
+  ecore.gamemode.adventure:
+    description: Allows switching to Adventure mode
+    default: op
+  ecore.gamemode.spectator:
+    description: Allows switching to Spectator mode
     default: op

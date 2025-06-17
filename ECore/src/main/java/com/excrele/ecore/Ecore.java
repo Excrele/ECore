@@ -1,6 +1,7 @@
 package com.excrele.ecore;
 
 import com.excrele.ecore.commands.EcoreCommand;
+import com.excrele.ecore.commands.GameModeCommand;
 import com.excrele.ecore.commands.HomeCommand;
 import com.excrele.ecore.commands.ReportCommand;
 import com.excrele.ecore.commands.SetHomeCommand;
@@ -10,6 +11,7 @@ import com.excrele.ecore.listeners.SitListener;
 import com.excrele.ecore.managers.ConfigManager;
 import com.excrele.ecore.managers.DiscordManager;
 import com.excrele.ecore.managers.EconomyManager;
+import com.excrele.ecore.managers.GameModeManager;
 import com.excrele.ecore.managers.HomeManager;
 import com.excrele.ecore.managers.ReportManager;
 import com.excrele.ecore.managers.ShopManager;
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Ecore extends JavaPlugin implements Listener {
+    private static Ecore instance;
     private ConfigManager configManager;
     private HomeManager homeManager;
     private StaffManager staffManager;
@@ -35,10 +38,12 @@ public class Ecore extends JavaPlugin implements Listener {
     private DiscordManager discordManager;
     private EconomyManager economyManager;
     private ShopManager shopManager;
+    private GameModeManager gameModeManager;
     private final Map<UUID, String> pendingActions;
 
     public Ecore() {
         this.pendingActions = new HashMap<>();
+        instance = this;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class Ecore extends JavaPlugin implements Listener {
         discordManager = new DiscordManager(this);
         economyManager = new EconomyManager(this);
         shopManager = new ShopManager(this);
+        gameModeManager = new GameModeManager(this);
 
         // Save default config and discord config
         saveDefaultConfig();
@@ -61,6 +67,7 @@ public class Ecore extends JavaPlugin implements Listener {
         getCommand("sethome").setExecutor(new SetHomeCommand(this));
         getCommand("home").setExecutor(new HomeCommand(this));
         getCommand("report").setExecutor(new ReportCommand(this));
+        getCommand("gm").setExecutor(new GameModeCommand(this));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -148,6 +155,10 @@ public class Ecore extends JavaPlugin implements Listener {
     }
 
     // Getter methods for managers
+    public static Ecore getInstance() {
+        return instance;
+    }
+
     public ConfigManager getConfigManager() {
         return configManager;
     }
@@ -174,5 +185,9 @@ public class Ecore extends JavaPlugin implements Listener {
 
     public ShopManager getShopManager() {
         return shopManager;
+    }
+
+    public GameModeManager getGameModeManager() {
+        return gameModeManager;
     }
 }

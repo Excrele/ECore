@@ -1,4 +1,5 @@
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\commands\EcoreCommand.java
+C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\commands\GameModeCommand.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\commands\HomeCommand.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\commands\ReportCommand.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\commands\SetHomeCommand.java
@@ -9,6 +10,7 @@ C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excre
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\ConfigManager.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\DiscordManager.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\EconomyManager.java
+C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\GameModeManager.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\HomeManager.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\ReportManager.java
 C:\Users\crypt\Developement\Java\Ecore\ECore\Ecore\ECore\src\main\java\com\excrele\ecore\managers\ShopManager.java
