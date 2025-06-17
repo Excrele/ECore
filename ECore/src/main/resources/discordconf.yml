@@ -10,3 +10,5 @@ discord:
     punishment-log: "[Punishment] %staff% %action% %target%: %reason%"  # Format for punishment notifications
     vanish-log: "[Vanish] %staff% %action%: %reason%"  # Format for vanish/unvanish notifications
     teleport-log: "[Teleport] %staff% teleported to %target%"  # Format for teleport notifications
+    adminshop-log: "[AdminShop] %staff% created admin shop for %target%: %reason%"  # Format for admin shop creation
+    playershop-log: "[PlayerShop] %staff% created player shop for %target%: %reason%"  # Format for player shop creation

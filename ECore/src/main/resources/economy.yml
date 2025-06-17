@@ -1,0 +1,4 @@
+# Economy data for Ecore plugin
+economy:
+  starting-balance: 100.0  # Default starting balance for new players
+players: {}

@@ -2,13 +2,17 @@ com\excrele\ecore\commands\SetHomeCommand.class
 com\excrele\ecore\commands\HomeCommand.class
 com\excrele\ecore\managers\ReportManager.class
 com\excrele\ecore\listeners\SignListener.class
+com\excrele\ecore\managers\EconomyManager.class
 com\excrele\ecore\managers\HomeManager.class
 com\excrele\ecore\managers\DiscordManager.class
+com\excrele\ecore\managers\ShopManager$ShopCreationState.class
 com\excrele\ecore\managers\ReportManager$Report.class
 com\excrele\ecore\commands\ReportCommand.class
 com\excrele\ecore\listeners\ChatListener.class
 com\excrele\ecore\listeners\SitListener.class
+com\excrele\ecore\managers\ShopManager.class
 com\excrele\ecore\Ecore.class
 com\excrele\ecore\managers\StaffManager.class
 com\excrele\ecore\commands\EcoreCommand.class
+com\excrele\ecore\managers\EconomyManager$EcoreEconomy.class
 com\excrele\ecore\managers\ConfigManager.class

@@ -9,8 +9,10 @@ import com.excrele.ecore.listeners.SignListener;
 import com.excrele.ecore.listeners.SitListener;
 import com.excrele.ecore.managers.ConfigManager;
 import com.excrele.ecore.managers.DiscordManager;
+import com.excrele.ecore.managers.EconomyManager;
 import com.excrele.ecore.managers.HomeManager;
 import com.excrele.ecore.managers.ReportManager;
+import com.excrele.ecore.managers.ShopManager;
 import com.excrele.ecore.managers.StaffManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -30,6 +33,8 @@ public class Ecore extends JavaPlugin implements Listener {
     private StaffManager staffManager;
     private ReportManager reportManager;
     private DiscordManager discordManager;
+    private EconomyManager economyManager;
+    private ShopManager shopManager;
     private final Map<UUID, String> pendingActions;
 
     public Ecore() {
@@ -44,6 +49,8 @@ public class Ecore extends JavaPlugin implements Listener {
         staffManager = new StaffManager(this);
         reportManager = new ReportManager(this);
         discordManager = new DiscordManager(this);
+        economyManager = new EconomyManager(this);
+        shopManager = new ShopManager(this);
 
         // Save default config and discord config
         saveDefaultConfig();
@@ -57,7 +64,7 @@ public class Ecore extends JavaPlugin implements Listener {
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
-        getServer().getPluginManager().registerEvents(new SignListener(), this);
+        getServer().getPluginManager().registerEvents(new SignListener(this), this);
         getServer().getPluginManager().registerEvents(new SitListener(), this);
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -76,7 +83,7 @@ public class Ecore extends JavaPlugin implements Listener {
         getLogger().info("Ecore plugin disabled!");
     }
 
-    // Handle chat inputs for home naming, punishment targets, and teleport
+    // Handle chat inputs for home naming, punishment targets, teleport, and shop creation
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -123,7 +130,15 @@ public class Ecore extends JavaPlugin implements Listener {
             }
         } else if (action.equals("teleport")) {
             staffManager.teleportToPlayer(player, message);
+        } else if (action.startsWith("shop")) {
+            shopManager.handleChatInput(player, message, action);
         }
+    }
+
+    // Initialize player economy data on join
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        economyManager.initializePlayer(event.getPlayer());
     }
 
     // Register a pending action for chat input
@@ -151,5 +166,13 @@ public class Ecore extends JavaPlugin implements Listener {
 
     public DiscordManager getDiscordManager() {
         return discordManager;
+    }
+
+    public EconomyManager getEconomyManager() {
+        return economyManager;
+    }
+
+    public ShopManager getShopManager() {
+        return shopManager;
     }
 }
