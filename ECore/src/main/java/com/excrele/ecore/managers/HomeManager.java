@@ -2,79 +2,103 @@ package com.excrele.ecore.managers;
 
 import com.excrele.ecore.Ecore;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 public class HomeManager {
     private final Ecore plugin;
-    private final Map<UUID, Map<String, Location>> homes;
-    private final File homeFile;
+    private File homeFile;
     private FileConfiguration homeConfig;
 
     public HomeManager(Ecore plugin) {
         this.plugin = plugin;
-        this.homes = new HashMap<>();
-        this.homeFile = new File(plugin.getDataFolder(), "homes.yml");
-        this.homeConfig = YamlConfiguration.loadConfiguration(homeFile);
+        initializeHomeConfig();
     }
 
-    // Set a home for a player
-    public boolean setHome(Player player, String name) {
-        UUID uuid = player.getUniqueId();
-        Map<String, Location> playerHomes = homes.computeIfAbsent(uuid, k -> new HashMap<>());
+    private void initializeHomeConfig() {
+        homeFile = new File(plugin.getDataFolder(), "homes.yml");
+        if (!homeFile.exists()) {
+            plugin.saveResource("homes.yml", false);
+        }
+        homeConfig = YamlConfiguration.loadConfiguration(homeFile);
+    }
 
-        if (playerHomes.size() >= plugin.getConfigManager().getMaxHomes() && !playerHomes.containsKey(name)) {
+    public boolean setHome(Player player, String homeName, Location location) {
+        String uuid = player.getUniqueId().toString();
+        List<String> homes = homeConfig.getStringList("homes." + uuid + ".list");
+        if (homes.size() >= plugin.getConfigManager().getMaxHomes()) {
             return false;
         }
 
-        playerHomes.put(name, player.getLocation());
-        saveHomes();
-        return true;
-    }
-
-    // Get a player's home
-    public Location getHome(Player player, String name) {
-        return homes.getOrDefault(player.getUniqueId(), new HashMap<>()).get(name);
-    }
-
-    // Get all homes for a player
-    public Map<String, Location> getPlayerHomes(Player player) {
-        return homes.getOrDefault(player.getUniqueId(), new HashMap<>());
-    }
-
-    // Load homes from file
-    public void loadHomes() {
-        if (!homeFile.exists()) return;
-
-        homeConfig = YamlConfiguration.loadConfiguration(homeFile);
-        for (String uuid : homeConfig.getKeys(false)) {
-            Map<String, Location> playerHomes = new HashMap<>();
-            for (String homeName : homeConfig.getConfigurationSection(uuid).getKeys(false)) {
-                playerHomes.put(homeName, (Location) homeConfig.get(uuid + "." + homeName));
-            }
-            homes.put(UUID.fromString(uuid), playerHomes);
+        if (!homes.contains(homeName)) {
+            homes.add(homeName);
+            homeConfig.set("homes." + uuid + ".list", homes);
         }
-    }
 
-    // Save homes to file
-    public void saveHomes() {
-        for (UUID uuid : homes.keySet()) {
-            Map<String, Location> playerHomes = homes.get(uuid);
-            for (Map.Entry<String, Location> entry : playerHomes.entrySet()) {
-                homeConfig.set(uuid.toString() + "." + entry.getKey(), entry.getValue());
-            }
-        }
+        String path = "homes." + uuid + "." + homeName;
+        homeConfig.set(path + ".world", location.getWorld().getName());
+        homeConfig.set(path + ".x", location.getX());
+        homeConfig.set(path + ".y", location.getY());
+        homeConfig.set(path + ".z", location.getZ());
+        homeConfig.set(path + ".yaw", location.getYaw());
+        homeConfig.set(path + ".pitch", location.getPitch());
+
         try {
             homeConfig.save(homeFile);
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to save homes: " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Failed to save home to homes.yml: " + e.getMessage());
+            return false;
         }
+
+        plugin.getDiscordManager().sendStaffLogNotification(
+                "home-log",
+                player.getName(),
+                "set home",
+                homeName,
+                location.toString()
+        );
+        return true;
+    }
+
+    public List<String> getHomes(Player player) {
+        String uuid = player.getUniqueId().toString();
+        return homeConfig.getStringList("homes." + uuid + ".list");
+    }
+
+    public Location getHome(Player player, String homeName) {
+        String uuid = player.getUniqueId().toString();
+        String path = "homes." + uuid + "." + homeName;
+
+        if (!homeConfig.contains(path)) {
+            return null;
+        }
+
+        String worldName = homeConfig.getString(path + ".world");
+        World world = plugin.getServer().getWorld(worldName);
+        if (world == null) {
+            plugin.getLogger().warning("World " + worldName + " not found for home " + homeName);
+            return null;
+        }
+
+        double x = homeConfig.getDouble(path + ".x");
+        double y = homeConfig.getDouble(path + ".y");
+        double z = homeConfig.getDouble(path + ".z");
+        float yaw = (float) homeConfig.getDouble(path + ".yaw");
+        float pitch = (float) homeConfig.getDouble(path + ".pitch");
+
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    // Alias for getHomes to resolve compilation error
+    public List<String> getPlayerHomes(Player player) {
+        return getHomes(player);
     }
 }

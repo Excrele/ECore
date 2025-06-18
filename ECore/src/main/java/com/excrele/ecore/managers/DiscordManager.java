@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import javax.security.auth.login.LoginException;
 import java.util.logging.Level;
 
 public class DiscordManager {
@@ -30,14 +29,14 @@ public class DiscordManager {
         }
 
         String token = config.getString("discord.bot-token", "");
-        if (token.isEmpty()) {
-            plugin.getLogger().warning("Discord bot token is not set in discordconf.yml!");
+        if (token == null || token.trim().isEmpty()) {
+            plugin.getLogger().warning("Discord bot token is not set or invalid in discordconf.yml!");
             return;
         }
 
         try {
             jda = JDABuilder.createDefault(token)
-                    .enableIntents(GatewayIntent.GUILD_MESSAGES)
+                    .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
                     .build();
             jda.awaitReady();
 
@@ -62,10 +61,11 @@ public class DiscordManager {
             if (chatChannel != null) {
                 sendServerStartNotification();
             }
-        } catch (LoginException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to login to Discord bot: Invalid token!", e);
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to initialize Discord bot: Invalid token or configuration!", e);
         } catch (InterruptedException e) {
             plugin.getLogger().log(Level.SEVERE, "Interrupted while waiting for Discord bot to be ready!", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Unexpected error initializing Discord bot!", e);
         }

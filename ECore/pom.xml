@@ -5,7 +5,7 @@
 
     <groupId>com.excrele</groupId>
     <artifactId>Ecore</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Ecore</name>
@@ -14,16 +14,14 @@
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.14.3</jackson.version>
+        <jackson.version>2.18.0</jackson.version>
     </properties>
 
     <repositories>
-        <!-- Spigot Repository -->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <!-- Maven Central -->
         <repository>
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
@@ -42,7 +40,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.1</version>
+            <version>5.0.2</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>

@@ -9,11 +9,11 @@ commands:
     description: Main command for Ecore plugin
     usage: /<command> [reload|staff|home]
   sethome:
-    description: Set a home location
-    usage: /<command> [name]
+    description: Set a home
+    usage: /<command> <name>
   home:
-    description: Teleport to a home location
-    usage: /<command> [name]
+    description: Teleport to a home
+    usage: /<command> <name>
   report:
     description: Report a player
     usage: /<command> <player> <reason>
@@ -78,3 +78,6 @@ permissions:
   ecore.gamemode.spectator:
     description: Allows switching to Spectator mode
     default: op
+  listhomes:
+    description: List all your homes
+    usage: /<command>
