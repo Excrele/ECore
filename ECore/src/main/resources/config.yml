@@ -1,6 +1,18 @@
-# Configuration for Ecore plugin
 home:
-  max-homes: 3 # Maximum number of homes a player can set
+  max-homes: 5  # Maximum number of homes per player
 report:
-  max-reports: 5 # Maximum number of reports a player can submit
-  report-cooldown: 300 # Cooldown in seconds between reports
+  max-reports: 5  # Maximum number of reports a player can submit
+  report-cooldown: 300  # Cooldown in seconds between reports
+economy:
+  starting-balance: 100.0  # Starting balance for new players
+shops:
+  admin-sign-format:
+    - "&2[Admin Shop]"
+    - "&6b %buy_price% s %sell_price%"
+    - "%item%"
+    - "Qty: %quantity%"
+  player-sign-format:
+    - "&1[PShop]"
+    - "&6b %buy_price% s %sell_price%"
+    - "%item%"
+    - "Qty: %quantity%"

@@ -3,13 +3,15 @@ discord:
   enabled: false  # Enable/disable Discord bot integration
   bot-token: "INSERT_TOKEN_HERE"  # Discord bot token from Developer Portal
   channel-id: "INSERT_CHANNEL_ID"  # ID of the Discord text channel for chat bridging
-  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"  # ID of the Discord text channel for punishment logs
+  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"  # ID of the Discord text channel for punishment and transaction logs
+  staff-logs-channel-id: "INSERT_STAFF_LOGS_CHANNEL_ID"  # ID of the Discord text channel for staff action logs
   message-formats:
     minecraft-to-discord: "[Minecraft] %player%: %message%"  # Format for messages sent from Minecraft to Discord
     discord-to-minecraft: "&7[Discord] &f%user%: %message%"  # Format for messages sent from Discord to Minecraft
     punishment-log: "[Punishment] %staff% %action% %target%: %reason%"  # Format for punishment notifications
     vanish-log: "[Vanish] %staff% %action%: %reason%"  # Format for vanish/unvanish notifications
     teleport-log: "[Teleport] %staff% teleported to %target%"  # Format for teleport notifications
-    adminshop-log: "[AdminShop] %staff% created admin shop for %target%: %reason%"  # Format for admin shop creation
-    playershop-log: "[PlayerShop] %staff% created player shop for %target%: %reason%"  # Format for player shop creation
+    adminshop-log: "[AdminShop] %staff% %action% %target%: %reason%"  # Format for admin shop actions
+    playershop-log: "[PlayerShop] %staff% %action% %target%: %reason%"  # Format for player shop actions
     gamemode-log: "[GameMode] %staff% changed gamemode to %target%: %reason%"  # Format for gamemode changes
+    shop-transaction-log: "[ShopTransaction] %player% %action% %quantity% %item% for %price% at %shop_type%"  # Format for shop transactions
