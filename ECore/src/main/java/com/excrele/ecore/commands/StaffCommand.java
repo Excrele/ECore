@@ -37,6 +37,8 @@ public class StaffCommand implements CommandExecutor {
             return handleEnchant(sender, args);
         } else if (cmd.equals("repair")) {
             return handleRepair(sender, args);
+        } else if (cmd.equals("chatslow")) {
+            return handleChatSlow(sender, args);
         }
 
         return false;
@@ -263,6 +265,43 @@ public class StaffCommand implements CommandExecutor {
 
         plugin.getStaffManager().repairItem(player, all);
         player.sendMessage(ChatColor.GREEN + "Repaired " + (all ? "all items" : "item in hand") + "!");
+        return true;
+    }
+
+    private boolean handleChatSlow(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("ecore.staff")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission!");
+            return true;
+        }
+
+        if (args.length == 0) {
+            int currentSlowMode = plugin.getChatManager().getSlowMode();
+            if (currentSlowMode > 0) {
+                sender.sendMessage(ChatColor.YELLOW + "Chat slow mode is currently set to " + currentSlowMode + " second(s).");
+            } else {
+                sender.sendMessage(ChatColor.YELLOW + "Chat slow mode is currently disabled.");
+            }
+            sender.sendMessage(ChatColor.GRAY + "Usage: /chatslow <seconds> (0 to disable)");
+            return true;
+        }
+
+        try {
+            int seconds = Integer.parseInt(args[0]);
+            if (seconds < 0) {
+                sender.sendMessage(ChatColor.RED + "Invalid value! Must be 0 or greater.");
+                return true;
+            }
+
+            plugin.getChatManager().setSlowMode(seconds);
+            if (seconds > 0) {
+                sender.sendMessage(ChatColor.GREEN + "Chat slow mode set to " + seconds + " second(s)!");
+            } else {
+                sender.sendMessage(ChatColor.GREEN + "Chat slow mode disabled!");
+            }
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ChatColor.RED + "Invalid number! Usage: /chatslow <seconds>");
+            return true;
+        }
         return true;
     }
 }

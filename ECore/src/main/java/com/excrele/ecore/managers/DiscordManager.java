@@ -6,13 +6,16 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
-import java.util.logging.Level;
+import java.awt.Color;
+import java.time.Instant;
 
 public class DiscordManager {
     private final Ecore plugin;
@@ -38,7 +41,11 @@ public class DiscordManager {
 
         try {
             jda = JDABuilder.createDefault(token)
-                    .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+                    .enableIntents(
+                        GatewayIntent.GUILD_MESSAGES, 
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MEMBERS
+                    )
                     .addEventListeners(new DiscordMessageListener())
                     .build();
             jda.awaitReady();
@@ -136,6 +143,91 @@ public class DiscordManager {
             return;
         }
 
+        // Use rich embeds if enabled
+        if (config.getBoolean("discord.use-rich-embeds", true)) {
+            try {
+                MessageEmbed embed = createStaffLogEmbed(logType, playerName, action, target, details);
+                channel.sendMessageEmbeds(embed).queue();
+                plugin.getLogger().info("Sent staff log embed to Discord: " + logType);
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send staff log embed: " + e.getMessage());
+                // Fallback to plain message
+                sendPlainStaffLog(channel, logType, playerName, action, target, details);
+            }
+        } else {
+            sendPlainStaffLog(channel, logType, playerName, action, target, details);
+        }
+    }
+
+    private MessageEmbed createStaffLogEmbed(String logType, String playerName, String action, String target, String details) {
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTimestamp(Instant.now());
+        
+        Color color;
+        String title;
+        
+        switch (logType.toLowerCase()) {
+            case "punishment-log":
+                color = Color.RED;
+                title = "⚖️ Punishment Log";
+                embed.addField("Staff", playerName, true);
+                embed.addField("Action", action, true);
+                embed.addField("Target", target, false);
+                if (!details.isEmpty()) {
+                    embed.addField("Reason", details, false);
+                }
+                break;
+            case "report-log":
+                color = Color.ORANGE;
+                title = "📋 Report Log";
+                embed.addField("Reporter", playerName, true);
+                embed.addField("Action", action, true);
+                embed.addField("Target", target, false);
+                if (!details.isEmpty()) {
+                    embed.addField("Reason", details, false);
+                }
+                break;
+            case "home-log":
+                color = Color.BLUE;
+                title = "🏠 Home Log";
+                embed.addField("Player", playerName, true);
+                embed.addField("Action", action, true);
+                embed.addField("Home", target, false);
+                if (!details.isEmpty()) {
+                    embed.addField("Location", details, false);
+                }
+                break;
+            case "shop-log":
+            case "adminshop-log":
+            case "playershop-log":
+                color = Color.GREEN;
+                title = "🛒 Shop Log";
+                embed.addField("Player", playerName, true);
+                embed.addField("Action", action, true);
+                embed.addField("Item", target, false);
+                if (!details.isEmpty()) {
+                    embed.addField("Details", details, false);
+                }
+                break;
+            default:
+                color = Color.GRAY;
+                title = "📝 Staff Log";
+                embed.addField("Player", playerName, true);
+                embed.addField("Action", action, true);
+                embed.addField("Target", target, false);
+                if (!details.isEmpty()) {
+                    embed.addField("Details", details, false);
+                }
+        }
+        
+        embed.setTitle(title);
+        embed.setColor(color);
+        embed.setFooter("Ecore Plugin", null);
+        
+        return embed.build();
+    }
+
+    private void sendPlainStaffLog(TextChannel channel, String logType, String playerName, String action, String target, String details) {
         String message;
         switch (logType.toLowerCase()) {
             case "shop-log":
@@ -164,6 +256,84 @@ public class DiscordManager {
             plugin.getLogger().info("Sent staff log to Discord: " + message);
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to send staff log: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sends a player join notification to Discord with rich embed.
+     */
+    public void sendPlayerJoinNotification(Player player) {
+        if (!config.getBoolean("discord.notify-player-join", false)) {
+            return;
+        }
+        
+        if (jda == null) return;
+
+        String channelId = config.getString("discord.channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel == null) return;
+
+        if (config.getBoolean("discord.use-rich-embeds", true)) {
+            try {
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setTitle("✅ Player Joined");
+                embed.setColor(Color.GREEN);
+                embed.setDescription(player.getName() + " joined the server");
+                embed.addField("Player", player.getName(), true);
+                embed.addField("Online Players", String.valueOf(Bukkit.getOnlinePlayers().size()), true);
+                embed.setTimestamp(Instant.now());
+                embed.setFooter("Ecore Plugin", null);
+                
+                channel.sendMessageEmbeds(embed.build()).queue();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send player join notification: " + e.getMessage());
+            }
+        } else {
+            try {
+                channel.sendMessage("✅ **" + player.getName() + "** joined the server! (" + 
+                    Bukkit.getOnlinePlayers().size() + " online)").queue();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send player join notification: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Sends a player leave notification to Discord with rich embed.
+     */
+    public void sendPlayerLeaveNotification(Player player) {
+        if (!config.getBoolean("discord.notify-player-leave", false)) {
+            return;
+        }
+        
+        if (jda == null) return;
+
+        String channelId = config.getString("discord.channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel == null) return;
+
+        if (config.getBoolean("discord.use-rich-embeds", true)) {
+            try {
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setTitle("❌ Player Left");
+                embed.setColor(Color.RED);
+                embed.setDescription(player.getName() + " left the server");
+                embed.addField("Player", player.getName(), true);
+                embed.addField("Online Players", String.valueOf(Bukkit.getOnlinePlayers().size()), true);
+                embed.setTimestamp(Instant.now());
+                embed.setFooter("Ecore Plugin", null);
+                
+                channel.sendMessageEmbeds(embed.build()).queue();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send player leave notification: " + e.getMessage());
+            }
+        } else {
+            try {
+                channel.sendMessage("❌ **" + player.getName() + "** left the server. (" + 
+                    Bukkit.getOnlinePlayers().size() + " online)").queue();
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send player leave notification: " + e.getMessage());
+            }
         }
     }
 

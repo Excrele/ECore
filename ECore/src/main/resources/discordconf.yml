@@ -1,10 +1,36 @@
-# Discord configuration for Ecore plugin
+# ============================================
+# Discord Integration Configuration
+# ============================================
+# Configure Discord bot integration for chat bridging, staff logs, and notifications
+# ============================================
+
 discord:
-  enabled: false  # Enable/disable Discord bot integration
-  bot-token: "INSERT_TOKEN_HERE"  # Discord bot token from Developer Portal
-  channel-id: "INSERT_CHANNEL_ID"  # ID of the Discord text channel for chat bridging
-  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"  # ID of the Discord text channel for punishment and transaction logs
-  staff-logs-channel-id: "INSERT_STAFF_LOGS_CHANNEL_ID"  # ID of the Discord text channel for staff action logs
+  # Enable/disable Discord bot integration
+  enabled: false
+  
+  # Discord bot token from Developer Portal
+  # Get this from: https://discord.com/developers/applications
+  bot-token: "INSERT_TOKEN_HERE"
+  
+  # ID of the Discord text channel for chat bridging
+  # Right-click channel > Copy ID (Developer Mode must be enabled)
+  channel-id: "INSERT_CHANNEL_ID"
+  
+  # ID of the Discord text channel for punishment and transaction logs
+  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"
+  
+  # ID of the Discord text channel for staff action logs (optional)
+  staff-logs-channel-id: "INSERT_STAFF_LOGS_CHANNEL_ID"
+  
+  # Advanced Discord Features
+  # Use rich embeds for messages (colorful, formatted messages)
+  use-rich-embeds: true
+  
+  # Send notifications when players join the server
+  notify-player-join: false
+  
+  # Send notifications when players leave the server
+  notify-player-leave: false
   message-formats:
     minecraft-to-discord: "[Minecraft] %player%: %message%"  # Format for messages sent from Minecraft to Discord
     discord-to-minecraft: "&7[Discord] &f%user%: %message%"  # Format for messages sent from Discord to Minecraft

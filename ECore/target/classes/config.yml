@@ -1,26 +1,277 @@
+# ============================================
+# ECore Configuration File
+# Version: 1.0
+# ============================================
+# This file contains all configuration options for the Ecore plugin.
+# For detailed documentation, visit: https://github.com/excrele/ecore
+# ============================================
+
+# Chat System Configuration
+# Controls chat moderation features including slow mode and cooldowns
+chat:
+  # Chat Slow Mode - Limits how often players can send messages
+  # Set to 0 to disable, or a positive number (in seconds) to enable
+  # Example: slow-mode: 3 means players can only chat once every 3 seconds
+  # Staff with ecore.chat.bypass permission can bypass this restriction
+  slow-mode: 0
+  
+  # General Chat Cooldown - Additional cooldown between messages (in seconds)
+  # Set to 0 to disable
+  # This is separate from slow mode and applies to all players
+  cooldown: 0
+
+# Home System Configuration
+# Manages player homes, teleportation, and bed spawn integration
 home:
-  max-homes: 5  # Maximum number of homes per player
-  teleport-cost: 0.0  # Cost to teleport to a home (0 = free)
-  cooldown: 0  # Cooldown in seconds between home teleports (0 = no cooldown)
-  warmup: 0  # Warmup delay in seconds before teleport (0 = instant)
+  # Maximum number of homes each player can have
+  # Players with permission ecore.home.more can have additional homes
+  max-homes: 5
+  
+  # Cost to teleport to a home (in economy currency)
+  # Set to 0.0 for free teleportation
+  # Example: teleport-cost: 10.0 charges 10 currency per teleport
+  teleport-cost: 0.0
+  
+  # Cooldown between home teleports (in seconds)
+  # Set to 0 for no cooldown
+  # Example: cooldown: 60 means players must wait 60 seconds between teleports
+  cooldown: 0
+  
+  # Warmup delay before teleportation (in seconds)
+  # During warmup, players must not move or the teleport is cancelled
+  # Set to 0 for instant teleportation
+  # Example: warmup: 5 gives players 5 seconds before teleporting
+  warmup: 0
+  
+  # Enable bed spawn integration with home system
+  # When enabled, beds can be used as home locations
+  bed-spawn-enabled: true
+  
+  # Automatically set home when player sleeps in bed
+  # If true, sleeping in a bed will automatically create/update a "bed" home
+  auto-set-home-on-bed: true
+
+# Report System Configuration
+# Controls player reporting functionality
 report:
-  max-reports: 5  # Maximum number of reports a player can submit
-  report-cooldown: 300  # Cooldown in seconds between reports
+  # Maximum number of reports a player can submit
+  # Prevents spam reporting
+  max-reports: 5
+  
+  # Cooldown between reports (in seconds)
+  # Example: report-cooldown: 300 means players can report once every 5 minutes
+  report-cooldown: 300
+
+# Economy System Configuration
+# Controls the built-in economy system
 economy:
-  starting-balance: 100.0  # Starting balance for new players
+  # Starting balance for new players (in economy currency)
+  # Players receive this amount when they first join
+  starting-balance: 100.0
+
+# Bank System Configuration
+# Controls bank accounts and interest rates
 bank:
-  max-accounts: 3  # Maximum number of bank accounts per player
-  default-interest-rate: 0.01  # Default interest rate (1% = 0.01)
-  interest-interval: 86400000  # Time between interest calculations in milliseconds (24 hours)
-  interest-check-interval: 3600000  # How often to check for interest in milliseconds (1 hour)
+  # Maximum number of bank accounts each player can create
+  max-accounts: 3
+  
+  # Default interest rate (as decimal)
+  # Example: 0.01 = 1% interest, 0.05 = 5% interest
+  default-interest-rate: 0.01
+  
+  # Time between interest calculations (in milliseconds)
+  # Example: 86400000 = 24 hours (1 day)
+  interest-interval: 86400000
+  
+  # How often to check for interest payments (in milliseconds)
+  # Example: 3600000 = 1 hour
+  interest-check-interval: 3600000
+
+# Shop System Configuration
+# Controls Admin Shops and Player Shops
 shops:
+  # Admin Shop sign format (4 lines maximum)
+  # Available placeholders: %buy_price%, %sell_price%, %item%, %quantity%
+  # Color codes: Use & followed by color code (e.g., &2 for green, &6 for gold)
   admin-sign-format:
     - "&2[Admin Shop]"
     - "&6b %buy_price% s %sell_price%"
     - "%item%"
     - "Qty: %quantity%"
+  
+  # Player Shop sign format (4 lines maximum)
+  # Same placeholders and color codes as admin shops
   player-sign-format:
     - "&1[PShop]"
     - "&6b %buy_price% s %sell_price%"
     - "%item%"
     - "Qty: %quantity%"
+  
+  # Maximum number of player shops each player can create
+  # Set to -1 for unlimited (not recommended)
+  max-shops-per-player: 10
+  
+  # Remove inactive shops after X days (in days)
+  # Shops are considered inactive if not accessed for this duration
+  # Set to 0 to disable automatic removal
+  expiration-days: 30
+  
+  # Enable shop categories feature
+  # Allows shops to be organized into categories
+  enable-categories: true
+  
+  # Enable shop favorites/bookmarks feature
+  # Allows players to bookmark their favorite shops
+  enable-favorites: true
+  
+  # Enable shop statistics tracking
+  # Tracks views, sales, and revenue for each shop
+  enable-statistics: true
+
+# Server Information Configuration
+# Controls server monitoring and information display
+server-info:
+  # Enable /serverinfo command
+  # Shows server metrics, TPS, memory usage, etc.
+  enabled: true
+  
+  # Enable TPS (Ticks Per Second) monitoring
+  # Tracks server performance in real-time
+  tps-monitoring: true
+  
+  # Update interval for server metrics (in ticks)
+  # 20 ticks = 1 second
+  # Lower values = more frequent updates (more server load)
+  update-interval: 20
+
+# WorldEdit Configuration
+# Controls WorldEdit-like building tools and operations
+worldedit:
+  # Maximum number of blocks that can be changed in a single operation
+  # Prevents server crashes from extremely large builds
+  # Recommended: 100000 for small servers, 500000 for large servers
+  max-block-changes: 100000
+  
+  # Number of blocks to change per tick during async operations
+  # Higher values = faster operations but more server load
+  # Recommended: 1000-5000 depending on server performance
+  blocks-per-tick: 1000
+  
+  # Maximum number of operations stored in history for undo/redo
+  # Each player has their own history
+  # Recommended: 20-50 depending on server memory
+  max-history-size: 20
+
+# Region System Configuration
+# Controls region protection system (similar to WorldGuard)
+regions:
+  # Enable or disable the region protection system
+  # When disabled, regions will not be enforced
+  # Set to false to allow other claiming plugins to work without interference
+  enabled: true
+  
+  # Auto-save regions to file after changes
+  # Set to false to manually save with /region reload
+  auto-save: true
+  
+  # Maximum number of regions a player can create
+  # Set to -1 for unlimited (not recommended)
+  # Players with ecore.region.unlimited permission can bypass this limit
+  max-regions-per-player: 10
+  
+  # Maximum volume (blocks) for a single region
+  # Prevents extremely large regions that could cause lag
+  # Set to -1 for unlimited
+  max-region-volume: 1000000
+  
+  # Default region type when creating regions without specifying a type
+  # Available types: spawn, shop, pvp, protected, custom
+  default-type: custom
+
+# Staff Mode Configuration
+# Controls staff mode functionality (similar to Staff++ plugin)
+staffmode:
+  # Automatically vanish when entering staff mode
+  # When enabled, staff will be invisible to regular players
+  auto-vanish: true
+  
+  # Automatically enable flight when entering staff mode
+  # Allows staff to fly for easier navigation
+  auto-fly: true
+  
+  # Make staff invincible while in staff mode
+  # Prevents damage from all sources
+  invincible: true
+  
+  # Give night vision effect while in staff mode
+  # Helps staff see in dark areas
+  night-vision: true
+  
+  # Game mode to set when entering staff mode
+  # Options: SURVIVAL, CREATIVE, ADVENTURE, SPECTATOR
+  # SPECTATOR is recommended for monitoring
+  game-mode: SPECTATOR
+  
+  # Restore player location when exiting staff mode
+  # If false, player stays at current location
+  restore-location: false
+  
+  # Allow breaking blocks while in staff mode
+  # Set to true to allow block breaking
+  allow-block-break: false
+  
+  # Allow placing blocks while in staff mode
+  # Set to true to allow block placing
+  allow-block-place: false
+  
+  # Allow picking up items while in staff mode
+  # Set to true to allow item pickup
+  allow-item-pickup: false
+  
+  # Allow dropping items while in staff mode
+  # Set to true to allow item dropping
+  allow-item-drop: false
+  
+  # Allow editing inventory while in staff mode
+  # Set to true to allow moving items in inventory
+  allow-inventory-edit: false
+  
+  # Allow interacting with entities while in staff mode
+  # Set to true to allow entity interaction
+  allow-entity-interact: false
+  
+  # Allow interacting with blocks while in staff mode
+  # Set to true to allow block interaction (chests, doors, etc.)
+  allow-block-interact: false
+  
+  # Commands to execute when entering staff mode
+  # Use %player% placeholder for player name
+  # Example: "say %player% entered staff mode"
+  enter-commands: []
+  
+  # Commands to execute when exiting staff mode
+  # Use %player% placeholder for player name
+  # Example: "say %player% exited staff mode"
+  exit-commands: []
+  
+  # Staff mode items (optional, uses defaults if not specified)
+  # Each item can have: material, amount, slot, display-name
+  items:
+    # Example item configuration:
+    # teleport-tool:
+    #   material: COMPASS
+    #   amount: 1
+    #   slot: 0
+    #   display-name: "&aTeleport Tool"
+    # report-tool:
+    #   material: BOOK
+    #   amount: 1
+    #   slot: 1
+    #   display-name: "&bView Reports"
+
+# ============================================
+# Configuration Version (DO NOT MODIFY)
+# ============================================
+# This is automatically managed by the plugin
+# Used for configuration migration between versions
+config-version: 1

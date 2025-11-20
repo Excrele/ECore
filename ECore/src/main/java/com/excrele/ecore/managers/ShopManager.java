@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,17 @@ public class ShopManager {
             return;
         }
 
+        // Check shop limit for player shops
+        if (isPlayerShop) {
+            int maxShops = plugin.getConfig().getInt("shops.max-shops-per-player", 10);
+            int currentShops = getPlayerShopCount(uuid);
+            if (currentShops >= maxShops) {
+                player.sendMessage(ChatColor.RED + "You have reached the maximum number of shops (" + maxShops + ")!");
+                pendingCreations.remove(uuid);
+                return;
+            }
+        }
+
         Location signLoc = data.getSignLocation();
         Block block = signLoc.getBlock();
         if (!(block.getState() instanceof Sign)) {
@@ -96,6 +108,13 @@ public class ShopManager {
         config.set(path + ".quantity", quantity);
         config.set(path + ".buyPrice", buyPrice);
         config.set(path + ".sellPrice", sellPrice);
+        config.set(path + ".category", "default"); // Default category
+        config.set(path + ".created", System.currentTimeMillis()); // Creation timestamp
+        // Initialize statistics
+        config.set(path + ".stats.views", 0);
+        config.set(path + ".stats.sales", 0);
+        config.set(path + ".stats.revenue", 0.0);
+        config.set(path + ".stats.last-accessed", System.currentTimeMillis());
         if (isPlayerShop) {
             config.set(path + ".chestLocation", serializeLocation(data.getChestLocation()));
             config.set(path + ".owner", player.getUniqueId().toString());
@@ -220,6 +239,325 @@ public class ShopManager {
     // Remove pending creation
     public void removePendingCreation(UUID uuid) {
         pendingCreations.remove(uuid);
+    }
+
+    // Advanced Shop Features
+
+    /**
+     * Set shop category
+     */
+    public boolean setShopCategory(Location signLoc, boolean isPlayerShop, String category) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        if (!config.contains(path)) {
+            return false;
+        }
+        config.set(path + ".category", category);
+        plugin.getConfigManager().saveConfig(isPlayerShop ? "playershops.yml" : "adminshops.yml");
+        return true;
+    }
+
+    /**
+     * Get shop category
+     */
+    public String getShopCategory(Location signLoc, boolean isPlayerShop) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        return config.getString(path + ".category", "default");
+    }
+
+    /**
+     * Get all shops by category
+     */
+    public List<Location> getShopsByCategory(boolean isPlayerShop, String category) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        List<Location> shops = new ArrayList<>();
+        
+        for (String worldName : config.getKeys(false)) {
+            if (config.isConfigurationSection(worldName)) {
+                for (String x : config.getConfigurationSection(worldName).getKeys(false)) {
+                    if (config.isConfigurationSection(worldName + "." + x)) {
+                        for (String y : config.getConfigurationSection(worldName + "." + x).getKeys(false)) {
+                            if (config.isConfigurationSection(worldName + "." + x + "." + y)) {
+                                for (String z : config.getConfigurationSection(worldName + "." + x + "." + y).getKeys(false)) {
+                                    String path = worldName + "." + x + "." + y + "." + z;
+                                    String shopCategory = config.getString(path + ".category", "default");
+                                    if (shopCategory.equalsIgnoreCase(category)) {
+                                        try {
+                                            Location loc = new Location(
+                                                plugin.getServer().getWorld(worldName),
+                                                Integer.parseInt(x),
+                                                Integer.parseInt(y),
+                                                Integer.parseInt(z)
+                                            );
+                                            shops.add(loc);
+                                        } catch (Exception e) {
+                                            // Invalid location, skip
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return shops;
+    }
+
+    /**
+     * Search shops by item name
+     */
+    public List<Location> searchShops(boolean isPlayerShop, String searchTerm) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        List<Location> shops = new ArrayList<>();
+        String searchLower = searchTerm.toLowerCase();
+        
+        for (String worldName : config.getKeys(false)) {
+            if (config.isConfigurationSection(worldName)) {
+                for (String x : config.getConfigurationSection(worldName).getKeys(false)) {
+                    if (config.isConfigurationSection(worldName + "." + x)) {
+                        for (String y : config.getConfigurationSection(worldName + "." + x).getKeys(false)) {
+                            if (config.isConfigurationSection(worldName + "." + x + "." + y)) {
+                                for (String z : config.getConfigurationSection(worldName + "." + x + "." + y).getKeys(false)) {
+                                    String path = worldName + "." + x + "." + y + "." + z;
+                                    String item = config.getString(path + ".item", "");
+                                    String customName = config.getString(path + ".customName", "");
+                                    
+                                    if (item.toLowerCase().contains(searchLower) || 
+                                        customName.toLowerCase().contains(searchLower)) {
+                                        try {
+                                            Location loc = new Location(
+                                                plugin.getServer().getWorld(worldName),
+                                                Integer.parseInt(x),
+                                                Integer.parseInt(y),
+                                                Integer.parseInt(z)
+                                            );
+                                            shops.add(loc);
+                                        } catch (Exception e) {
+                                            // Invalid location, skip
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return shops;
+    }
+
+    /**
+     * Add shop to favorites
+     */
+    public boolean addShopToFavorites(Player player, Location signLoc, boolean isPlayerShop) {
+        String uuid = player.getUniqueId().toString();
+        String shopPath = serializeLocation(signLoc);
+        String configPath = "favorites." + uuid;
+        
+        FileConfiguration config = plugin.getConfigManager().getConfig();
+        List<String> favorites = config.getStringList(configPath);
+        if (!favorites.contains(shopPath + ":" + (isPlayerShop ? "player" : "admin"))) {
+            favorites.add(shopPath + ":" + (isPlayerShop ? "player" : "admin"));
+            config.set(configPath, favorites);
+            plugin.saveConfig();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Remove shop from favorites
+     */
+    public boolean removeShopFromFavorites(Player player, Location signLoc, boolean isPlayerShop) {
+        String uuid = player.getUniqueId().toString();
+        String shopPath = serializeLocation(signLoc);
+        String configPath = "favorites." + uuid;
+        
+        FileConfiguration config = plugin.getConfigManager().getConfig();
+        List<String> favorites = config.getStringList(configPath);
+        String toRemove = shopPath + ":" + (isPlayerShop ? "player" : "admin");
+        if (favorites.remove(toRemove)) {
+            config.set(configPath, favorites);
+            plugin.saveConfig();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get player's favorite shops
+     */
+    public List<Location> getFavoriteShops(Player player) {
+        String uuid = player.getUniqueId().toString();
+        String configPath = "favorites." + uuid;
+        FileConfiguration config = plugin.getConfigManager().getConfig();
+        List<String> favorites = config.getStringList(configPath);
+        List<Location> locations = new ArrayList<>();
+        
+        for (String fav : favorites) {
+            String[] parts = fav.split(":");
+            if (parts.length >= 4) {
+                try {
+                    String worldName = parts[0];
+                    int x = Integer.parseInt(parts[1]);
+                    int y = Integer.parseInt(parts[2]);
+                    int z = Integer.parseInt(parts[3]);
+                    Location loc = new Location(plugin.getServer().getWorld(worldName), x, y, z);
+                    locations.add(loc);
+                } catch (Exception e) {
+                    // Invalid location, skip
+                }
+            }
+        }
+        return locations;
+    }
+
+    /**
+     * Track shop view
+     */
+    public void trackShopView(Location signLoc, boolean isPlayerShop) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        if (config.contains(path)) {
+            int views = config.getInt(path + ".stats.views", 0);
+            config.set(path + ".stats.views", views + 1);
+            config.set(path + ".stats.last-accessed", System.currentTimeMillis());
+            plugin.getConfigManager().saveConfig(isPlayerShop ? "playershops.yml" : "adminshops.yml");
+        }
+    }
+
+    /**
+     * Track shop sale
+     */
+    public void trackShopSale(Location signLoc, boolean isPlayerShop, double revenue) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        if (config.contains(path)) {
+            int sales = config.getInt(path + ".stats.sales", 0);
+            double totalRevenue = config.getDouble(path + ".stats.revenue", 0.0);
+            config.set(path + ".stats.sales", sales + 1);
+            config.set(path + ".stats.revenue", totalRevenue + revenue);
+            config.set(path + ".stats.last-accessed", System.currentTimeMillis());
+            plugin.getConfigManager().saveConfig(isPlayerShop ? "playershops.yml" : "adminshops.yml");
+        }
+    }
+
+    /**
+     * Get shop statistics
+     */
+    public ShopStatistics getShopStatistics(Location signLoc, boolean isPlayerShop) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        if (!config.contains(path)) {
+            return null;
+        }
+        
+        int views = config.getInt(path + ".stats.views", 0);
+        int sales = config.getInt(path + ".stats.sales", 0);
+        double revenue = config.getDouble(path + ".stats.revenue", 0.0);
+        long lastAccessed = config.getLong(path + ".stats.last-accessed", 0);
+        
+        return new ShopStatistics(views, sales, revenue, lastAccessed);
+    }
+
+    /**
+     * Get number of shops owned by player
+     */
+    public int getPlayerShopCount(UUID playerUuid) {
+        int count = 0;
+        for (String worldName : playerConfig.getKeys(false)) {
+            if (playerConfig.isConfigurationSection(worldName)) {
+                for (String x : playerConfig.getConfigurationSection(worldName).getKeys(false)) {
+                    if (playerConfig.isConfigurationSection(worldName + "." + x)) {
+                        for (String y : playerConfig.getConfigurationSection(worldName + "." + x).getKeys(false)) {
+                            if (playerConfig.isConfigurationSection(worldName + "." + x + "." + y)) {
+                                for (String z : playerConfig.getConfigurationSection(worldName + "." + x + "." + y).getKeys(false)) {
+                                    String path = worldName + "." + x + "." + y + "." + z;
+                                    String owner = playerConfig.getString(path + ".owner");
+                                    if (playerUuid.toString().equals(owner)) {
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Check and remove expired shops
+     */
+    public void checkExpiredShops() {
+        long expirationTime = plugin.getConfig().getLong("shops.expiration-days", 0) * 24 * 60 * 60 * 1000L;
+        if (expirationTime <= 0) {
+            return; // Expiration disabled
+        }
+        
+        long currentTime = System.currentTimeMillis();
+        List<String> toRemove = new ArrayList<>();
+        
+        for (String worldName : playerConfig.getKeys(false)) {
+            if (playerConfig.isConfigurationSection(worldName)) {
+                for (String x : playerConfig.getConfigurationSection(worldName).getKeys(false)) {
+                    if (playerConfig.isConfigurationSection(worldName + "." + x)) {
+                        for (String y : playerConfig.getConfigurationSection(worldName + "." + x).getKeys(false)) {
+                            if (playerConfig.isConfigurationSection(worldName + "." + x + "." + y)) {
+                                for (String z : playerConfig.getConfigurationSection(worldName + "." + x + "." + y).getKeys(false)) {
+                                    String path = worldName + "." + x + "." + y + "." + z;
+                                    long lastAccessed = playerConfig.getLong(path + ".stats.last-accessed", 0);
+                                    if (lastAccessed > 0 && (currentTime - lastAccessed) > expirationTime) {
+                                        toRemove.add(path);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (String path : toRemove) {
+            playerConfig.set(path, null);
+        }
+        
+        if (!toRemove.isEmpty()) {
+            plugin.getConfigManager().saveConfig("playershops.yml");
+            plugin.getLogger().info("Removed " + toRemove.size() + " expired player shops.");
+        }
+    }
+
+    /**
+     * Get shop path from location
+     */
+    private String getShopPath(Location loc) {
+        return loc.getWorld().getName() + "." + loc.getBlockX() + "." + loc.getBlockY() + "." + loc.getBlockZ();
+    }
+
+    /**
+     * Shop statistics class
+     */
+    public static class ShopStatistics {
+        private final int views;
+        private final int sales;
+        private final double revenue;
+        private final long lastAccessed;
+
+        public ShopStatistics(int views, int sales, double revenue, long lastAccessed) {
+            this.views = views;
+            this.sales = sales;
+            this.revenue = revenue;
+            this.lastAccessed = lastAccessed;
+        }
+
+        public int getViews() { return views; }
+        public int getSales() { return sales; }
+        public double getRevenue() { return revenue; }
+        public long getLastAccessed() { return lastAccessed; }
     }
 
     // Shop creation data class

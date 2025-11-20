@@ -3,6 +3,7 @@ package com.excrele.ecore;
 import com.excrele.ecore.commands.*;
 import com.excrele.ecore.listeners.ChatListener;
 import com.excrele.ecore.listeners.PlayerJoinListener;
+import com.excrele.ecore.listeners.PlayerBedEnterListener;
 import com.excrele.ecore.listeners.SignListener;
 import com.excrele.ecore.listeners.SitListener;
 import com.excrele.ecore.managers.*;
@@ -15,6 +16,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Main plugin class for Ecore - Excrele's Core plugin.
+ * 
+ * <p>Ecore is a comprehensive Spigot plugin for Minecraft 1.21+ that provides:
+ * <ul>
+ *   <li>Staff moderation tools and GUI</li>
+ *   <li>Home management system with bed spawn integration</li>
+ *   <li>Player reporting system</li>
+ *   <li>Self-contained economy system</li>
+ *   <li>Admin and Player shop systems</li>
+ *   <li>Discord integration for server status and staff logs</li>
+ *   <li>Teleportation and warp systems</li>
+ *   <li>Kit management</li>
+ *   <li>Mail system</li>
+ *   <li>Statistics tracking</li>
+ *   <li>Achievement system</li>
+ *   <li>Auction house</li>
+ *   <li>Bank system</li>
+ *   <li>And much more...</li>
+ * </ul>
+ * 
+ * @author Excrele
+ * @version 1.0
+ */
 public class Ecore extends JavaPlugin {
     private ConfigManager configManager;
     private DiscordManager discordManager;
@@ -45,12 +70,27 @@ public class Ecore extends JavaPlugin {
     private AchievementManager achievementManager;
     private AuctionHouseManager auctionHouseManager;
     private AuctionHouseGUIManager auctionHouseGUIManager;
+    private ServerInfoManager serverInfoManager;
+    private WorldEditManager worldEditManager;
+    private com.excrele.ecore.managers.RegionManager regionManager;
+    private ChunkManager chunkManager;
+    private com.excrele.ecore.managers.StaffModeManager staffModeManager;
+    private com.excrele.ecore.integrations.VaultIntegration vaultIntegration;
+    private com.excrele.ecore.integrations.WorldGuardIntegration worldGuardIntegration;
+    private com.excrele.ecore.integrations.LuckPermsIntegration luckPermsIntegration;
     private final Map<UUID, String> pendingActions;
 
+    /**
+     * Creates a new Ecore plugin instance.
+     */
     public Ecore() {
         this.pendingActions = new HashMap<>();
     }
 
+    /**
+     * Called when the plugin is enabled.
+     * Initializes all managers, registers commands and listeners.
+     */
     @Override
     public void onEnable() {
         // Initialize managers
@@ -83,6 +123,16 @@ public class Ecore extends JavaPlugin {
         achievementManager = new AchievementManager(this);
         auctionHouseManager = new AuctionHouseManager(this);
         auctionHouseGUIManager = new AuctionHouseGUIManager(this);
+        serverInfoManager = new ServerInfoManager(this);
+        worldEditManager = new WorldEditManager(this);
+        regionManager = new com.excrele.ecore.managers.RegionManager(this);
+        chunkManager = new ChunkManager(this);
+        staffModeManager = new com.excrele.ecore.managers.StaffModeManager(this);
+        
+        // Initialize integrations
+        vaultIntegration = new com.excrele.ecore.integrations.VaultIntegration(this);
+        worldGuardIntegration = new com.excrele.ecore.integrations.WorldGuardIntegration(this);
+        luckPermsIntegration = new com.excrele.ecore.integrations.LuckPermsIntegration(this);
 
         // Register commands
         registerCommand("ecore", new EcoreCommand(this));
@@ -165,6 +215,7 @@ public class Ecore extends JavaPlugin {
         registerCommand("give", new StaffCommand(this));
         registerCommand("enchant", new StaffCommand(this));
         registerCommand("repair", new StaffCommand(this));
+        registerCommand("chatslow", new StaffCommand(this));
         registerCommand("top", new TeleportCommand(this));
         registerCommand("jump", new TeleportCommand(this));
         registerCommand("rtp", new TeleportCommand(this));
@@ -185,14 +236,56 @@ public class Ecore extends JavaPlugin {
         registerCommand("auctionhouse", new AuctionHouseCommand(this));
         registerCommand("auction", new AuctionHouseCommand(this));
         registerCommand("near", new PlayerInfoCommand(this));
+        registerCommand("serverinfo", new ServerInfoCommand(this));
+        registerCommand("wand", new WorldEditCommand(this));
+        registerCommand("pos1", new WorldEditCommand(this));
+        registerCommand("pos2", new WorldEditCommand(this));
+        registerCommand("set", new WorldEditCommand(this));
+        registerCommand("replace", new WorldEditCommand(this));
+        registerCommand("clear", new WorldEditCommand(this));
+        registerCommand("walls", new WorldEditCommand(this));
+        registerCommand("hollow", new WorldEditCommand(this));
+        registerCommand("copy", new WorldEditCommand(this));
+        registerCommand("paste", new WorldEditCommand(this));
+        registerCommand("cut", new WorldEditCommand(this));
+        registerCommand("undo", new WorldEditCommand(this));
+        registerCommand("redo", new WorldEditCommand(this));
+        registerCommand("schematic", new WorldEditCommand(this));
+        registerCommand("sphere", new WorldEditCommand(this));
+        registerCommand("cylinder", new WorldEditCommand(this));
+        registerCommand("sel", new WorldEditCommand(this));
+        registerCommand("selection", new WorldEditCommand(this));
+        registerCommand("region", new com.excrele.ecore.commands.RegionCommand(this));
+        registerCommand("chunks", new ChunksCommand(this));
+        registerCommand("staffmode", new com.excrele.ecore.commands.StaffModeCommand(this));
+        registerCommand("sm", new com.excrele.ecore.commands.StaffModeCommand(this));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new SitListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerBedEnterListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.PlayerMoveListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CommandSpyListener(this), this);
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.WorldEditListener(this), this);
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.StaffModeListener(this), this);
+        
+        // Register region listener if regions are enabled
+        if (configManager.getConfig().getBoolean("regions.enabled", true)) {
+            getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.RegionListener(this), this);
+        }
+
+        // Register PlaceholderAPI expansion if available
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new com.excrele.ecore.placeholders.EcorePlaceholders(this).register();
+            getLogger().info("PlaceholderAPI expansion registered!");
+        }
+
+        // Schedule expired shop cleanup (every 6 hours)
+        getServer().getScheduler().runTaskTimer(this, () -> {
+            shopManager.checkExpiredShops();
+        }, 0L, 432000L); // 6 hours = 432000 ticks
 
         // Send server start notification
         discordManager.sendServerStartNotification();
@@ -200,6 +293,10 @@ public class Ecore extends JavaPlugin {
         getLogger().info(ChatColor.GREEN + "Ecore plugin has been enabled!");
     }
 
+    /**
+     * Called when the plugin is disabled.
+     * Performs cleanup operations like shutting down Discord bot and saving data.
+     */
     @Override
     public void onDisable() {
         if (bankManager != null) {
@@ -211,6 +308,12 @@ public class Ecore extends JavaPlugin {
         getLogger().info(ChatColor.RED + "Ecore plugin has been disabled!");
     }
 
+    /**
+     * Registers a command with its executor.
+     * 
+     * @param name The command name as defined in plugin.yml
+     * @param executor The CommandExecutor to handle the command
+     */
     private void registerCommand(String name, CommandExecutor executor) {
         if (getCommand(name) != null) {
             getCommand(name).setExecutor(executor);
@@ -319,6 +422,38 @@ public class Ecore extends JavaPlugin {
         return auctionHouseGUIManager;
     }
 
+    public ServerInfoManager getServerInfoManager() {
+        return serverInfoManager;
+    }
+
+    public WorldEditManager getWorldEditManager() {
+        return worldEditManager;
+    }
+
+    public com.excrele.ecore.managers.RegionManager getRegionManager() {
+        return regionManager;
+    }
+
+    public ChunkManager getChunkManager() {
+        return chunkManager;
+    }
+
+    public com.excrele.ecore.managers.StaffModeManager getStaffModeManager() {
+        return staffModeManager;
+    }
+
+    public com.excrele.ecore.integrations.VaultIntegration getVaultIntegration() {
+        return vaultIntegration;
+    }
+
+    public com.excrele.ecore.integrations.WorldGuardIntegration getWorldGuardIntegration() {
+        return worldGuardIntegration;
+    }
+
+    public com.excrele.ecore.integrations.LuckPermsIntegration getLuckPermsIntegration() {
+        return luckPermsIntegration;
+    }
+
     public StatisticsGUIManager getStatisticsGUIManager() {
         return statisticsGUIManager;
     }
@@ -335,16 +470,33 @@ public class Ecore extends JavaPlugin {
         return warpGUIManager;
     }
 
+    /**
+     * Registers a pending action for a player (used for chat-based input).
+     * 
+     * @param player The player to register the action for
+     * @param action The action identifier (e.g., "shopgui:admin:quantity")
+     */
     public void registerPendingAction(Player player, String action) {
         if (player != null) {
             pendingActions.put(player.getUniqueId(), action);
         }
     }
 
+    /**
+     * Gets a pending action for a player.
+     * 
+     * @param uuid The player's UUID
+     * @return The pending action string, or null if none exists
+     */
     public String getPendingAction(UUID uuid) {
         return pendingActions.get(uuid);
     }
 
+    /**
+     * Removes a pending action for a player.
+     * 
+     * @param uuid The player's UUID
+     */
     public void removePendingAction(UUID uuid) {
         pendingActions.remove(uuid);
     }

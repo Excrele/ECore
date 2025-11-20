@@ -18,12 +18,26 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.excrele.ecore.Ecore;
 
+/**
+ * Manages all chat-related functionality including:
+ * - Chat slow mode
+ * - Chat cooldowns
+ * - Mute system
+ * - Private messaging
+ * - Staff/Admin chat
+ * - Social spy logging
+ * 
+ * @author Excrele
+ * @version 1.0
+ */
 public class ChatManager implements Listener {
     private final Ecore plugin;
     private final Map<UUID, UUID> lastMessaged;
     private final Map<UUID, Long> chatCooldowns;
     private final Map<UUID, Long> mutedPlayers; // UUID -> expiration timestamp
+    private final Map<UUID, Long> slowModeLastMessage; // UUID -> last message timestamp
     private boolean chatEnabled = true;
+    private int slowModeSeconds = 0; // 0 = disabled
     private File mutesFile;
     private FileConfiguration mutesConfig;
 
@@ -32,8 +46,11 @@ public class ChatManager implements Listener {
         this.lastMessaged = new HashMap<>();
         this.chatCooldowns = new HashMap<>();
         this.mutedPlayers = new HashMap<>();
+        this.slowModeLastMessage = new HashMap<>();
         initializeMutesConfig();
         loadMutes();
+        // Load slow mode from config
+        this.slowModeSeconds = plugin.getConfig().getInt("chat.slow-mode", 0);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -51,15 +68,18 @@ public class ChatManager implements Listener {
 
     private void loadMutes() {
         if (mutesConfig.contains("mutes")) {
-            for (String uuidStr : mutesConfig.getConfigurationSection("mutes").getKeys(false)) {
-                try {
-                    UUID uuid = UUID.fromString(uuidStr);
-                    long expires = mutesConfig.getLong("mutes." + uuidStr + ".expires", 0);
-                    if (expires == 0 || expires > System.currentTimeMillis()) {
-                        mutedPlayers.put(uuid, expires);
+            org.bukkit.configuration.ConfigurationSection mutesSection = mutesConfig.getConfigurationSection("mutes");
+            if (mutesSection != null) {
+                for (String uuidStr : mutesSection.getKeys(false)) {
+                    try {
+                        UUID uuid = UUID.fromString(uuidStr);
+                        long expires = mutesConfig.getLong("mutes." + uuidStr + ".expires", 0);
+                        if (expires == 0 || expires > System.currentTimeMillis()) {
+                            mutedPlayers.put(uuid, expires);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        plugin.getLogger().warning("Invalid UUID in mutes.yml: " + uuidStr);
                     }
-                } catch (IllegalArgumentException e) {
-                    plugin.getLogger().warning("Invalid UUID in mutes.yml: " + uuidStr);
                 }
             }
         }
@@ -96,6 +116,22 @@ public class ChatManager implements Listener {
                 player.sendMessage("§cChat is currently disabled!");
                 return;
             }
+        }
+
+        // Check slow mode (staff can bypass)
+        if (slowModeSeconds > 0 && !player.hasPermission("ecore.chat.bypass")) {
+            UUID uuid = player.getUniqueId();
+            Long lastMessageTime = slowModeLastMessage.get(uuid);
+            if (lastMessageTime != null) {
+                long timeSince = (System.currentTimeMillis() - lastMessageTime) / 1000;
+                if (timeSince < slowModeSeconds) {
+                    long remaining = slowModeSeconds - timeSince;
+                    event.setCancelled(true);
+                    player.sendMessage("§cChat slow mode is active! Please wait " + remaining + " more second(s) before chatting again!");
+                    return;
+                }
+            }
+            slowModeLastMessage.put(uuid, System.currentTimeMillis());
         }
 
         // Check cooldown
@@ -338,6 +374,27 @@ public class ChatManager implements Listener {
                     ChatColor.WHITE + message);
             }
         }
+    }
+
+    // Slow mode methods
+    public void setSlowMode(int seconds) {
+        this.slowModeSeconds = seconds;
+        plugin.getConfig().set("chat.slow-mode", seconds);
+        plugin.saveConfig();
+        
+        if (seconds > 0) {
+            Bukkit.broadcastMessage("§cChat slow mode has been enabled! You can only chat once every " + seconds + " second(s).");
+        } else {
+            Bukkit.broadcastMessage("§aChat slow mode has been disabled!");
+        }
+    }
+
+    public int getSlowMode() {
+        return slowModeSeconds;
+    }
+
+    public boolean isSlowModeEnabled() {
+        return slowModeSeconds > 0;
     }
 }
 

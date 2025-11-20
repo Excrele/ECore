@@ -30,6 +30,9 @@ public class PlayerJoinListener implements Listener {
         if (plugin.getAchievementManager() != null) {
             plugin.getAchievementManager().checkAchievements(event.getPlayer());
         }
+        
+        // Send Discord join notification
+        plugin.getDiscordManager().sendPlayerJoinNotification(event.getPlayer());
     }
 }
 

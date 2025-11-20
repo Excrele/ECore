@@ -76,6 +76,8 @@ public class StatisticsManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        // Send Discord leave notification
+        plugin.getDiscordManager().sendPlayerLeaveNotification(event.getPlayer());
         // Save distance on quit
         UUID uuid = event.getPlayer().getUniqueId();
         lastLocations.remove(uuid);

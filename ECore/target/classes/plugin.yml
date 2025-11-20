@@ -150,6 +150,96 @@ permissions:
   ecore.chat.bypass:
     description: Bypasses chat restrictions
     default: op
+  ecore.serverinfo:
+    description: Allows viewing server information
+    default: op
+  ecore.worldedit.use:
+    description: Allows using WorldEdit commands
+    default: op
+  ecore.worldedit.wand:
+    description: Allows getting the selection wand
+    default: op
+  ecore.worldedit.set:
+    description: Allows using /set command
+    default: op
+  ecore.worldedit.replace:
+    description: Allows using /replace command
+    default: op
+  ecore.worldedit.clear:
+    description: Allows using /clear command
+    default: op
+  ecore.worldedit.walls:
+    description: Allows using /walls command
+    default: op
+  ecore.worldedit.hollow:
+    description: Allows using /hollow command
+    default: op
+  ecore.worldedit.copy:
+    description: Allows using /copy command
+    default: op
+  ecore.worldedit.paste:
+    description: Allows using /paste command
+    default: op
+  ecore.worldedit.cut:
+    description: Allows using /cut command
+    default: op
+  ecore.worldedit.undo:
+    description: Allows using /undo command
+    default: op
+  ecore.worldedit.redo:
+    description: Allows using /redo command
+    default: op
+  ecore.worldedit.schematic:
+    description: Allows using schematic commands
+    default: op
+  ecore.worldedit.schematic.delete:
+    description: Allows deleting schematics
+    default: op
+  ecore.worldedit.sphere:
+    description: Allows using /sphere command
+    default: op
+  ecore.worldedit.cylinder:
+    description: Allows using /cylinder command
+    default: op
+  ecore.region:
+    description: Allows using region commands
+    default: op
+  ecore.region.create:
+    description: Allows creating regions
+    default: op
+  ecore.region.delete:
+    description: Allows deleting regions
+    default: op
+  ecore.region.list:
+    description: Allows listing regions
+    default: op
+  ecore.region.info:
+    description: Allows viewing region information
+    default: op
+  ecore.region.flag:
+    description: Allows setting region flags
+    default: op
+  ecore.region.owner:
+    description: Allows managing region owners
+    default: op
+  ecore.region.member:
+    description: Allows managing region members
+    default: op
+  ecore.region.reload:
+    description: Allows reloading regions
+    default: op
+  ecore.region.bypass:
+    description: Bypasses all region restrictions
+    default: op
+  ecore.region.unlimited:
+    description: Allows creating unlimited regions
+    default: op
+  ecore.chunks.generate:
+    description: Allows generating chunks
+    default: op
+  ecore.staffmode:
+    description: Allows entering/exiting staff mode
+    default: op
   listhomes:
     description: List all your homes
     usage: /<command>
@@ -378,6 +468,9 @@ permissions:
   repair:
     description: Repair items
     usage: /<command> [all]
+  chatslow:
+    description: Set chat slow mode (staff only)
+    usage: /<command> <seconds> (0 to disable)
   homeshare:
     description: Share a home with a player
     usage: /<command> <home> <player>
@@ -432,3 +525,72 @@ permissions:
   auction:
     description: Auction house
     usage: /<command> [create|bid|buyout|cancel|list|my]
+  serverinfo:
+    description: Display server information
+    usage: /<command>
+  wand:
+    description: Get WorldEdit selection wand
+    usage: /<command>
+  pos1:
+    description: Set selection position 1
+    usage: /<command>
+  pos2:
+    description: Set selection position 2
+    usage: /<command>
+  set:
+    description: Fill selection with blocks
+    usage: /<command> <block>
+  replace:
+    description: Replace blocks in selection
+    usage: /<command> <from> <to>
+  clear:
+    description: Clear selection (set to air)
+    usage: /<command>
+  walls:
+    description: Create walls in selection
+    usage: /<command> <block>
+  hollow:
+    description: Create hollow box in selection
+    usage: /<command> <block>
+  copy:
+    description: Copy selection to clipboard
+    usage: /<command>
+  paste:
+    description: Paste clipboard at your location
+    usage: /<command>
+  cut:
+    description: Cut selection to clipboard
+    usage: /<command>
+  undo:
+    description: Undo last WorldEdit operation
+    usage: /<command>
+  redo:
+    description: Redo last undone operation
+    usage: /<command>
+  schematic:
+    description: Save/load schematics
+    usage: /<command> <save|load|list|delete> [name]
+  sphere:
+    description: Create a sphere
+    usage: /<command> <radius> <block> [hollow]
+  cylinder:
+    description: Create a cylinder
+    usage: /<command> <radius> <height> <block> [hollow]
+  sel:
+    description: Show selection information
+    usage: /<command>
+  selection:
+    description: Show selection information
+    usage: /<command>
+  region:
+    description: Region management commands
+    usage: /<command> <create|delete|list|info|flag|flags|addowner|removeowner|addmember|removemember|types|reload>
+  chunks:
+    description: Chunk pregeneration commands
+    usage: /<command> <generate|cancel|status> [radius]
+  staffmode:
+    description: Toggle staff mode
+    usage: /<command>
+  sm:
+    description: Toggle staff mode (alias)
+    usage: /<command>

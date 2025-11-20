@@ -18,6 +18,17 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
+/**
+ * Manages the home system including:
+ * - Home creation and deletion
+ * - Home teleportation with cooldowns and costs
+ * - Home sharing between players
+ * - Home categories and icons
+ * - Bed spawn integration
+ * 
+ * @author Excrele
+ * @version 1.0
+ */
 public class HomeManager {
     private final Ecore plugin;
     private File homeFile;
@@ -407,5 +418,59 @@ public class HomeManager {
         } catch (IOException e) {
             plugin.getLogger().log(Level.WARNING, "Failed to save homes.yml: " + e.getMessage());
         }
+    }
+
+    // Bed spawn integration methods
+    public boolean setBedSpawn(Player player, Location bedLocation) {
+        return setHome(player, "bed", bedLocation);
+    }
+
+    public Location getBedSpawn(Player player) {
+        return getHome(player, "bed");
+    }
+
+    public boolean hasBedSpawn(Player player) {
+        return getBedSpawn(player) != null;
+    }
+
+    public boolean useBedAsHome(Player player) {
+        if (!plugin.getConfig().getBoolean("home.bed-spawn-enabled", true)) {
+            return false;
+        }
+        
+        Location bedSpawn = getBedSpawn(player);
+        if (bedSpawn == null) {
+            return false;
+        }
+        
+        // Check if bed location is still valid (bed still exists)
+        Material bedMaterial = bedSpawn.getBlock().getType();
+        String materialName = bedMaterial.name();
+        if (!materialName.endsWith("_BED") && !materialName.equals("BED")) {
+            // Bed no longer exists, remove bed home
+            deleteHome(player, "bed");
+            return false;
+        }
+        
+        return true;
+    }
+
+    public boolean deleteHome(Player player, String homeName) {
+        String uuid = player.getUniqueId().toString();
+        String path = "homes." + uuid + "." + homeName;
+        
+        if (!homeConfig.contains(path)) {
+            return false;
+        }
+        
+        // Remove from list
+        List<String> homes = homeConfig.getStringList("homes." + uuid + ".list");
+        homes.remove(homeName);
+        homeConfig.set("homes." + uuid + ".list", homes);
+        
+        // Remove home data
+        homeConfig.set(path, null);
+        saveHomeConfig();
+        return true;
     }
 }
