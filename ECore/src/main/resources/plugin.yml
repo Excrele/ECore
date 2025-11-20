@@ -153,6 +153,18 @@ permissions:
   ecore.serverinfo:
     description: Allows viewing server information
     default: op
+  ecore.serverinfo.cleanup:
+    description: Allows performing server cleanup
+    default: op
+  ecore.serverinfo.stats:
+    description: Allows viewing performance statistics
+    default: op
+  ecore.serverinfo.merge:
+    description: Allows merging items
+    default: op
+  ecore.serverinfo.chunks:
+    description: Allows optimizing chunks
+    default: op
   ecore.worldedit.use:
     description: Allows using WorldEdit commands
     default: op
@@ -239,6 +251,84 @@ permissions:
     default: op
   ecore.staffmode:
     description: Allows entering/exiting staff mode
+    default: op
+  ecore.world.create:
+    description: Allows creating new worlds
+    default: op
+  ecore.world.load:
+    description: Allows loading worlds
+    default: op
+  ecore.world.unload:
+    description: Allows unloading worlds
+    default: op
+  ecore.world.delete:
+    description: Allows deleting worlds
+    default: op
+  ecore.world.list:
+    description: Allows listing worlds
+    default: op
+  ecore.world.teleport:
+    description: Allows teleporting to worlds
+    default: op
+  ecore.world.teleport.others:
+    description: Allows teleporting other players to worlds
+    default: op
+  ecore.world.spawn:
+    description: Allows teleporting to world spawns
+    default: op
+  ecore.world.setspawn:
+    description: Allows setting world spawns
+    default: op
+  ecore.world.info:
+    description: Allows viewing world information
+    default: op
+  ecore.world.reload:
+    description: Allows reloading world configuration
+    default: op
+  ecore.portal.create:
+    description: Allows creating portals
+    default: op
+  ecore.portal.delete:
+    description: Allows deleting portals
+    default: op
+  ecore.portal.list:
+    description: Allows listing portals
+    default: op
+  ecore.portal.info:
+    description: Allows viewing portal information
+    default: op
+  ecore.portal.setdest:
+    description: Allows setting portal destinations
+    default: op
+  ecore.portal.wand:
+    description: Allows using portal creation wand
+    default: op
+  ecore.portal.use:
+    description: Allows using portals (default: true for all players)
+    default: true
+  ecore.blocklog.use:
+    description: Allows using block logging commands
+    default: op
+  ecore.blocklog.lookup:
+    description: Allows looking up block logs
+    default: op
+  ecore.blocklog.rollback:
+    description: Allows rolling back blocks
+    default: op
+  ecore.blocklog.restore:
+    description: Allows restoring blocks
+    default: op
+  ecore.blocklog.inspect:
+    description: Allows using inspector tool
+    default: op
+  ecore.blocklog.inventory:
+    description: Allows rolling back inventories
+    default: op
+  ecore.blocklog.purge:
+    description: Allows purging old logs
+    default: op
+  ecore.blocklog.reload:
+    description: Allows reloading block logging config
     default: op
   listhomes:
     description: List all your homes
@@ -594,3 +684,21 @@ permissions:
   sm:
     description: Toggle staff mode (alias)
     usage: /<command>
+  mv:
+    description: World management commands
+    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
+  multiverse:
+    description: World management commands (alias)
+    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
+  portal:
+    description: Portal management commands
+    usage: /<command> <create|delete|list|info|setdest|wand> [args]
+  blocklog:
+    description: Block logging and rollback commands
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  bl:
+    description: Block logging alias
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  co:
+    description: Block logging alias (CoreProtect-like)
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]

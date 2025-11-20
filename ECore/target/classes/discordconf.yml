@@ -20,17 +20,35 @@ discord:
   punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"
   
   # ID of the Discord text channel for staff action logs (optional)
+  # If not set, uses punishment-channel-id
   staff-logs-channel-id: "INSERT_STAFF_LOGS_CHANNEL_ID"
   
   # Advanced Discord Features
   # Use rich embeds for messages (colorful, formatted messages)
   use-rich-embeds: true
   
+  # Use webhooks instead of bot messages (better rate limit handling)
+  use-webhooks: false
+  
   # Send notifications when players join the server
   notify-player-join: false
   
   # Send notifications when players leave the server
   notify-player-leave: false
+  
+  # Show player statistics in join/leave notifications
+  join-leave-show-stats: true
+  
+  # Send notifications when players unlock achievements
+  notify-achievements: false
+  
+  # Log economy transactions to Discord
+  log-economy-transactions: false
+  
+  # Minimum transaction amount to log (only logs transactions above this threshold)
+  economy-transaction-threshold: 1000.0
+  
+  # Message formats for different types of messages
   message-formats:
     minecraft-to-discord: "[Minecraft] %player%: %message%"  # Format for messages sent from Minecraft to Discord
     discord-to-minecraft: "&7[Discord] &f%user%: %message%"  # Format for messages sent from Discord to Minecraft
@@ -41,3 +59,66 @@ discord:
     playershop-log: "[PlayerShop] %staff% %action% %target%: %reason%"  # Format for player shop actions
     gamemode-log: "[GameMode] %staff% changed gamemode to %target%: %reason%"  # Format for gamemode changes
     shop-transaction-log: "[ShopTransaction] %player% %action% %quantity% %item% for %price% at %shop_type%"  # Format for shop transactions
+  
+  # Chat Filtering and Moderation
+  chat-filter:
+    # Enable word filtering
+    enabled: false
+    
+    # List of filtered words (case-insensitive)
+    filtered-words:
+      - "example1"
+      - "example2"
+    
+    # Delete filtered messages
+    delete-filtered: true
+    
+    # Notify staff when filtered messages are sent
+    notify-staff: true
+    
+    # Rate limiting (in milliseconds)
+    rate-limit-cooldown: 1000
+  
+  # Advanced Chat Features
+  chat-features:
+    # Enable @player mention support
+    mention-support: true
+  
+  # Role-based Permissions for Discord Commands
+  permissions:
+    # Staff commands (ban, kick, mute, etc.)
+    staff:
+      - "STAFF_ROLE_ID_OR_NAME"
+      - "MODERATOR_ROLE_ID_OR_NAME"
+    
+    # Admin commands (execute console commands)
+    admin:
+      - "ADMIN_ROLE_ID_OR_NAME"
+      - "OWNER_ROLE_ID_OR_NAME"
+  
+  # Server Status Channel
+  # Updates a channel's topic with live server information
+  status-channel:
+    # Enable status channel updates
+    enabled: false
+    
+    # Channel ID to update
+    channel-id: "INSERT_STATUS_CHANNEL_ID"
+    
+    # Update interval in seconds
+    update-interval: 60
+    
+    # Topic format (use %online%, %max%, %tps% as placeholders)
+    topic-format: "🟢 Online: %online%/%max% | TPS: %tps%"
+  
+  # Scheduled Reports
+  # Automatically sends server statistics reports
+  scheduled-reports:
+    # Enable scheduled reports
+    enabled: false
+    
+    # Schedule: "daily" or "weekly"
+    schedule: "daily"
+    
+    # Channel ID to send reports to (defaults to chat channel if not set)
+    channel-id: "INSERT_REPORTS_CHANNEL_ID"

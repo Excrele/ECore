@@ -144,6 +144,30 @@ server-info:
   # Lower values = more frequent updates (more server load)
   update-interval: 20
 
+# Performance Optimization Configuration
+# Controls automatic lag reduction and performance optimization
+performance:
+  # Automatic cleanup system
+  auto-cleanup:
+    enabled: true  # Enable automatic cleanup
+    interval: 300  # Cleanup interval in seconds (default: 5 minutes)
+    tps-threshold: 15.0  # TPS threshold for emergency cleanup (default: 15.0)
+    max-items-per-chunk: 100  # Maximum items per chunk before cleanup
+    max-entities-per-chunk: 50  # Maximum entities per chunk before cleanup
+    clean-items: true  # Clean up excessive items
+    clean-mobs: true  # Clean up excessive mobs
+    clean-projectiles: true  # Clean up old projectiles
+  
+  # Item stacking system
+  item-stacking:
+    enabled: true  # Enable automatic item stacking
+    radius: 5.0  # Radius to search for items to merge (in blocks)
+  
+  # Chunk optimization
+  chunk-optimization:
+    enabled: true  # Enable chunk optimization
+    unload-empty-chunks: true  # Unload chunks with no players/entities
+
 # WorldEdit Configuration
 # Controls WorldEdit-like building tools and operations
 worldedit:
@@ -268,6 +292,34 @@ staffmode:
     #   amount: 1
     #   slot: 1
     #   display-name: "&bView Reports"
+
+# Block Logging System Configuration
+# Comprehensive logging and rollback system for blocks and inventories
+block-logging:
+  # Enable or disable the block logging system
+  enabled: true
+  
+  # What to log
+  log-block-break: true
+  log-block-place: true
+  log-container-access: true
+  log-inventory-changes: true
+  
+  # Inventory snapshot settings
+  inventory-snapshots: true
+  inventory-snapshot-interval: 300  # Seconds between snapshots (default: 5 minutes)
+  
+  # Database settings
+  database-type: sqlite  # sqlite or mysql
+  retention-days: 30  # Keep logs for X days (0 = keep forever)
+  
+  # MySQL settings (only used if database-type is mysql)
+  mysql:
+    host: localhost
+    port: 3306
+    database: ecore
+    username: root
+    password: ""
 
 # ============================================
 # Configuration Version (DO NOT MODIFY)

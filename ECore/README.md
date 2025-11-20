@@ -1,6 +1,6 @@
 # Excrele's Core (Ecore)
 
-A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation tools, a home management system, a player reporting system, a self-contained economy, shop systems, Discord integration, and extensive gameplay enhancements.
+A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation tools, a home management system, a player reporting system, a self-contained economy, shop systems, multi-world management, portal system, Discord integration, and extensive gameplay enhancements.
 
 ---
 
@@ -102,6 +102,26 @@ A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation to
 - **Warp GUI**: Browse warps in a GUI
 - **Warp Management**: Create, delete, and list warps
 
+### 🌍 Multi-World System
+- **World Creation**: Create new worlds with custom types, environments, and seeds
+- **World Management**: Load, unload, and delete worlds dynamically
+- **World Properties**: Configure spawn locations, difficulty, PVP, and more
+- **World Teleportation**: Seamlessly teleport players between worlds
+- **Safe Spawn**: Automatic safe location finding when teleporting
+- **World Information**: View detailed information about any world
+- **Auto-Load Configuration**: Configure which worlds load automatically
+- **World Persistence**: All world data saved to `worlds.yml`
+
+### 🌀 Portal System
+- **Custom Portals**: Create portals from any block selection
+- **Seamless Teleportation**: Players automatically teleport when entering portal blocks
+- **Multi-World Support**: Portals can bridge players between different worlds
+- **Custom Materials**: Use any block material for portals (NETHER_PORTAL, END_PORTAL, etc.)
+- **Permission-Based Access**: Control who can use specific portals
+- **Custom Messages & Sounds**: Configure portal teleportation messages and sounds
+- **Portal Management**: Create, delete, list, and modify portals easily
+- **Portal Persistence**: All portal data saved to `portals.yml`
+
 ### 🎮 Server Management
 - **Server Info**: `/serverinfo` command with detailed metrics
 - **TPS Monitoring**: Real-time TPS tracking
@@ -111,11 +131,54 @@ A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation to
 - **Chunk Pregeneration**: Pregenerate chunks in a radius from spawn to improve server performance
 
 ### 🔗 Discord Integration
-- **Chat Bridging**: Two-way chat between Minecraft and Discord
-- **Rich Embeds**: Beautiful formatted messages in Discord
-- **Staff Logs**: Automatic logging of staff actions
-- **Player Notifications**: Join/leave notifications (optional)
-- **Server Status**: Server start/stop notifications
+- **Chat Bridging**: Two-way chat between Minecraft and Discord with advanced features
+  - Message filtering and word filtering
+  - Rate limiting to prevent spam
+  - @player mention support
+  - Rich formatting support
+- **Discord Slash Commands**: Full server management from Discord
+  - `/serverinfo` - View server status, TPS, memory, uptime
+  - `/online` - List all online players
+  - `/playerinfo <player>` - Get detailed player information
+  - `/report <player> <reason>` - Report players from Discord
+  - `/link <code>` - Link Discord account to Minecraft
+  - `/unlink` - Unlink Discord account
+  - `/staff <action> <player> [reason]` - Execute staff actions (ban, kick, mute, etc.)
+  - `/execute <command>` - Execute console commands (admin only)
+- **Rich Embeds**: Beautiful formatted messages for all notifications
+  - Color-coded by log type
+  - Detailed information fields
+  - Timestamps and footers
+- **Staff Logs**: Comprehensive logging system
+  - Separate channels for punishments and staff actions
+  - Automatic logging of all staff actions
+  - Economy transaction logs
+  - Achievement notifications
+  - Command execution logs
+- **Account Linking**: Link Discord accounts to Minecraft players
+  - Verification code system
+  - Show linked Discord names in embeds
+  - Enhanced player identification
+- **Player Notifications**: Enhanced join/leave notifications
+  - Optional player statistics in notifications
+  - Account link information
+  - Rich embeds with detailed info
+- **Server Status**: Enhanced server status notifications
+  - Detailed server information embeds
+  - Live status channel updates (optional)
+  - TPS, memory, and player count monitoring
+- **Scheduled Reports**: Automatic server statistics reports
+  - Daily or weekly summaries
+  - Server performance metrics
+  - Player activity statistics
+- **Message Queue System**: Reliable message delivery
+  - Queues messages during Discord outages
+  - Automatic retry with exponential backoff
+  - No message loss during downtime
+- **Role-Based Permissions**: Secure command access
+  - Configurable role requirements
+  - Separate permissions for staff and admin commands
+- **Webhook Support**: Optional webhook integration for better rate limit handling
 
 ### 🛠️ WorldEdit Integration
 - **Selection Tools**: Wand, pos1, pos2 for area selection
@@ -125,6 +188,7 @@ A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation to
 - **Schematics**: Save, load, list, and delete schematics
 - **Brush Tools**: Create spheres and cylinders
 - **Selection Info**: View selection details
+- **Portal Integration**: Use selections to create portals
 
 ### 🗺️ Region System
 - **Region Creation**: Create protected regions from selections
@@ -158,7 +222,7 @@ A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation to
 1. Place `Ecore.jar` in your server's `plugins` folder
 2. Restart the server to generate configuration files
 3. Configure settings in `plugins/Ecore/config.yml` and other config files
-4. For Discord integration, set up the bot token in `discordconf.yml`
+4. For Discord integration, see the [Discord Setup](#-discord-setup) section below
 
 ---
 
@@ -206,13 +270,132 @@ regions:
 ```yaml
 discord:
   enabled: false  # Enable Discord bot
-  bot-token: "INSERT_TOKEN_HERE"
-  channel-id: "INSERT_CHANNEL_ID"
-  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"
+  bot-token: "INSERT_TOKEN_HERE"  # Bot token from Discord Developer Portal
+  channel-id: "INSERT_CHANNEL_ID"  # Chat bridge channel
+  punishment-channel-id: "INSERT_PUNISHMENT_CHANNEL_ID"  # Punishment logs channel
+  staff-logs-channel-id: "INSERT_STAFF_LOGS_CHANNEL_ID"  # Staff action logs (optional)
   use-rich-embeds: true  # Use rich embeds for messages
+  use-webhooks: false  # Use webhooks instead of bot messages
   notify-player-join: false  # Send join notifications
   notify-player-leave: false  # Send leave notifications
+  join-leave-show-stats: true  # Show player stats in join/leave notifications
+  notify-achievements: false  # Send achievement notifications
+  log-economy-transactions: false  # Log economy transactions
+  economy-transaction-threshold: 1000.0  # Minimum amount to log
+  
+  # Chat filtering and moderation
+  chat-filter:
+    enabled: false
+    filtered-words: []  # List of filtered words
+    delete-filtered: true
+    notify-staff: true
+    rate-limit-cooldown: 1000  # Rate limit in milliseconds
+  
+  # Advanced chat features
+  chat-features:
+    mention-support: true  # Enable @player mentions
+  
+  # Role-based permissions
+  permissions:
+    staff: []  # Role IDs/names for staff commands
+    admin: []  # Role IDs/names for admin commands
+  
+  # Server status channel
+  status-channel:
+    enabled: false
+    channel-id: "INSERT_STATUS_CHANNEL_ID"
+    update-interval: 60  # Update interval in seconds
+    topic-format: "🟢 Online: %online%/%max% | TPS: %tps%"
+  
+  # Scheduled reports
+  scheduled-reports:
+    enabled: false
+    schedule: "daily"  # "daily" or "weekly"
+    channel-id: "INSERT_REPORTS_CHANNEL_ID"
 ```
+
+---
+
+## 🔗 Discord Setup
+
+### Step 1: Create a Discord Bot
+
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications) and create a new application
+2. Navigate to the "Bot" tab and click "Add Bot"
+3. Copy the bot token (you'll need this for `discordconf.yml`)
+4. Enable the following **Privileged Gateway Intents**:
+   - ✅ Server Members Intent
+   - ✅ Message Content Intent
+5. Under "OAuth2" → "URL Generator":
+   - Select scope: `bot`
+   - Select permissions:
+     - Send Messages
+     - Read Message History
+     - Embed Links
+     - Attach Files
+     - Use Slash Commands
+     - Manage Messages (for filtering)
+   - Copy the generated URL and invite the bot to your server
+
+### Step 2: Get Channel IDs
+
+1. Enable Developer Mode in Discord (Settings → Advanced → Developer Mode)
+2. Right-click on the channel you want to use for chat bridging
+3. Click "Copy ID" and paste it into `discordconf.yml` as `channel-id`
+4. Repeat for punishment logs channel (`punishment-channel-id`)
+5. Optionally set up a separate staff logs channel (`staff-logs-channel-id`)
+
+### Step 3: Configure discordconf.yml
+
+1. Set `discord.enabled: true`
+2. Paste your bot token into `discord.bot-token`
+3. Paste your channel IDs into the appropriate fields
+4. Configure additional features as needed:
+   - Enable/disable rich embeds
+   - Set up chat filtering
+   - Configure role-based permissions
+   - Enable scheduled reports
+   - Set up status channel updates
+
+### Step 4: Configure Role Permissions
+
+To use Discord slash commands with role-based permissions:
+
+1. Get your role IDs (right-click role → Copy ID with Developer Mode enabled)
+2. Add role IDs or names to `discord.permissions.staff` for staff commands
+3. Add role IDs or names to `discord.permissions.admin` for admin commands
+
+Example:
+```yaml
+permissions:
+  staff:
+    - "123456789012345678"  # Role ID
+    - "Moderator"  # Or role name
+  admin:
+    - "987654321098765432"
+    - "Admin"
+```
+
+### Step 5: Account Linking (Optional)
+
+Players can link their Discord accounts to Minecraft:
+
+1. In-game: `/link` - Generates a verification code
+2. In Discord: `/link <code>` - Links the accounts
+3. Use `/unlink` in Discord to unlink
+
+Linked accounts will show Discord names in embeds and enable enhanced features.
+
+### Step 6: Restart Server
+
+After configuration, restart your server. The Discord bot will connect automatically if configured correctly.
+
+### Troubleshooting
+
+- **Bot not connecting**: Check that the bot token is correct and the bot is invited to your server
+- **Messages not sending**: Verify channel IDs are correct and the bot has permission to send messages
+- **Slash commands not working**: Ensure the bot has "Use Slash Commands" permission and wait a few minutes for commands to register
+- **Rate limiting**: Enable webhook support or increase rate limit cooldown in config
 
 ---
 
@@ -465,6 +648,36 @@ discord:
 | `/region types` | List available region types | `ecore.region.info` | `op` |
 | `/region reload` | Reload regions from file | `ecore.region.reload` | `op` |
 
+### World Management Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/mv create <name> [type] [environment] [seed]` | Create a new world | `ecore.world.create` | `op` |
+| `/multiverse create <name> [type] [environment] [seed]` | Alias for mv create | `ecore.world.create` | `op` |
+| `/mv load <name>` | Load an existing world | `ecore.world.load` | `op` |
+| `/mv unload <name> [save]` | Unload a world | `ecore.world.unload` | `op` |
+| `/mv delete <name>` | Delete a world (WARNING: Permanent!) | `ecore.world.delete` | `op` |
+| `/mv list` | List all worlds | `ecore.world.list` | `op` |
+| `/mv tp <world> [player]` | Teleport to a world | `ecore.world.teleport`, `ecore.world.teleport.others` | `op` |
+| `/mv spawn <world>` | Teleport to world spawn | `ecore.world.spawn` | `op` |
+| `/mv setspawn [world]` | Set world spawn to your location | `ecore.world.setspawn` | `op` |
+| `/mv info <world>` | View world information | `ecore.world.info` | `op` |
+| `/mv reload` | Reload world configuration | `ecore.world.reload` | `op` |
+
+**World Types:** `NORMAL`, `FLAT`, `LARGE_BIOMES`, `AMPLIFIED`, `CUSTOMIZED`  
+**Environments:** `NORMAL`, `NETHER`, `THE_END`
+
+### Portal Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/portal create <name> [material]` | Create a portal from selection | `ecore.portal.create` | `op` |
+| `/portal delete <name>` | Delete a portal | `ecore.portal.delete` | `op` |
+| `/portal list` | List all portals | `ecore.portal.list` | `op` |
+| `/portal info <name>` | View portal information | `ecore.portal.info` | `op` |
+| `/portal setdest <name>` | Set portal destination to your location | `ecore.portal.setdest` | `op` |
+| `/portal wand` | Get portal creation instructions | `ecore.portal.wand` | `op` |
+
+**Note:** To create a portal, first select an area using `/pos1` and `/pos2`, then use `/portal create <name>`. The destination is set to your current location. Use `/portal setdest <name>` to change the destination later.
+
 ### Shop Commands
 | Command | Description | Permission | Default |
 |---------|-------------|------------|---------|
@@ -615,6 +828,32 @@ discord:
 | `ecore.region.bypass` | Bypass all region restrictions | `op` |
 | `ecore.region.unlimited` | Create unlimited regions | `op` |
 
+### World Management Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.world.create` | Create new worlds | `op` |
+| `ecore.world.load` | Load worlds | `op` |
+| `ecore.world.unload` | Unload worlds | `op` |
+| `ecore.world.delete` | Delete worlds | `op` |
+| `ecore.world.list` | List worlds | `op` |
+| `ecore.world.teleport` | Teleport to worlds | `op` |
+| `ecore.world.teleport.others` | Teleport other players to worlds | `op` |
+| `ecore.world.spawn` | Teleport to world spawns | `op` |
+| `ecore.world.setspawn` | Set world spawns | `op` |
+| `ecore.world.info` | View world information | `op` |
+| `ecore.world.reload` | Reload world configuration | `op` |
+
+### Portal Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.portal.create` | Create portals | `op` |
+| `ecore.portal.delete` | Delete portals | `op` |
+| `ecore.portal.list` | List portals | `op` |
+| `ecore.portal.info` | View portal information | `op` |
+| `ecore.portal.setdest` | Set portal destinations | `op` |
+| `ecore.portal.wand` | Use portal creation wand | `op` |
+| `ecore.portal.use` | Use portals (enter portal blocks) | `true` |
+
 ---
 
 ## 🔌 PlaceholderAPI
@@ -687,6 +926,8 @@ Ecore plugin = (Ecore) Bukkit.getPluginManager().getPlugin("Ecore");
 EconomyManager economy = plugin.getEconomyManager();
 HomeManager homes = plugin.getHomeManager();
 TeleportManager teleport = plugin.getTeleportManager();
+WorldManager worlds = plugin.getWorldManager();
+PortalManager portals = plugin.getPortalManager();
 // ... etc
 ```
 
@@ -701,6 +942,10 @@ TeleportManager teleport = plugin.getTeleportManager();
 - Configuration files are automatically validated and migrated on startup
 - Expired shops are automatically cleaned up every 6 hours
 - Bank interest is calculated automatically (implementation depends on BankManager)
+- World data is stored in `worlds.yml` in the plugin data folder
+- Portal data is stored in `portals.yml` in the plugin data folder
+- Portals automatically teleport players when they step into portal blocks
+- World unloading will teleport all players in that world to the default world spawn
 
 ---
 

@@ -61,6 +61,13 @@ public class EconomyManager {
         if (plugin.getStatisticsManager() != null) {
             plugin.getStatisticsManager().trackMoneyEarned(uuid, amount);
         }
+        
+        // Log to Discord
+        if (plugin.getDiscordManager() != null && amount >= plugin.getConfigManager().getDiscordConfig().getDouble("discord.economy-transaction-threshold", 1000.0)) {
+            Player player = Bukkit.getPlayer(uuid);
+            String playerName = player != null ? player.getName() : uuid.toString();
+            plugin.getDiscordManager().sendEconomyTransaction(playerName, "DEPOSIT", amount, "Deposit");
+        }
     }
 
     // Remove funds from a player's balance
@@ -75,6 +82,14 @@ public class EconomyManager {
         if (plugin.getStatisticsManager() != null) {
             plugin.getStatisticsManager().trackMoneySpent(uuid, amount);
         }
+        
+        // Log to Discord
+        if (plugin.getDiscordManager() != null && amount >= plugin.getConfigManager().getDiscordConfig().getDouble("discord.economy-transaction-threshold", 1000.0)) {
+            Player player = Bukkit.getPlayer(uuid);
+            String playerName = player != null ? player.getName() : uuid.toString();
+            plugin.getDiscordManager().sendEconomyTransaction(playerName, "WITHDRAW", amount, "Withdrawal");
+        }
+        
         return true;
     }
 
@@ -89,6 +104,13 @@ public class EconomyManager {
             String toName = toPlayer != null ? toPlayer.getName() : to.toString();
             logTransaction(from, "TRANSFER_OUT", amount, "Transfer to " + toName);
             logTransaction(to, "TRANSFER_IN", amount, "Transfer from " + fromName);
+            
+            // Log to Discord
+            if (plugin.getDiscordManager() != null) {
+                plugin.getDiscordManager().sendEconomyTransaction(fromName, "TRANSFER_OUT", amount, "To: " + toName);
+                plugin.getDiscordManager().sendEconomyTransaction(toName, "TRANSFER_IN", amount, "From: " + fromName);
+            }
+            
             return true;
         }
         return false;

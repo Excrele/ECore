@@ -7,6 +7,7 @@ import com.excrele.ecore.listeners.PlayerBedEnterListener;
 import com.excrele.ecore.listeners.SignListener;
 import com.excrele.ecore.listeners.SitListener;
 import com.excrele.ecore.managers.*;
+import com.excrele.ecore.managers.AccountLinkManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
@@ -75,9 +76,16 @@ public class Ecore extends JavaPlugin {
     private com.excrele.ecore.managers.RegionManager regionManager;
     private ChunkManager chunkManager;
     private com.excrele.ecore.managers.StaffModeManager staffModeManager;
+    private com.excrele.ecore.managers.WorldManager worldManager;
+    private com.excrele.ecore.managers.PortalManager portalManager;
+    private com.excrele.ecore.managers.BlockLogManager blockLogManager;
+    private com.excrele.ecore.managers.InventoryLogManager inventoryLogManager;
+    private com.excrele.ecore.managers.BlockLogGUIManager blockLogGUIManager;
+    private com.excrele.ecore.managers.PerformanceManager performanceManager;
     private com.excrele.ecore.integrations.VaultIntegration vaultIntegration;
     private com.excrele.ecore.integrations.WorldGuardIntegration worldGuardIntegration;
     private com.excrele.ecore.integrations.LuckPermsIntegration luckPermsIntegration;
+    private AccountLinkManager accountLinkManager;
     private final Map<UUID, String> pendingActions;
 
     /**
@@ -128,6 +136,13 @@ public class Ecore extends JavaPlugin {
         regionManager = new com.excrele.ecore.managers.RegionManager(this);
         chunkManager = new ChunkManager(this);
         staffModeManager = new com.excrele.ecore.managers.StaffModeManager(this);
+        worldManager = new com.excrele.ecore.managers.WorldManager(this);
+        portalManager = new com.excrele.ecore.managers.PortalManager(this);
+        accountLinkManager = new AccountLinkManager(this);
+        blockLogManager = new com.excrele.ecore.managers.BlockLogManager(this);
+        inventoryLogManager = new com.excrele.ecore.managers.InventoryLogManager(this);
+        blockLogGUIManager = new com.excrele.ecore.managers.BlockLogGUIManager(this);
+        performanceManager = new com.excrele.ecore.managers.PerformanceManager(this);
         
         // Initialize integrations
         vaultIntegration = new com.excrele.ecore.integrations.VaultIntegration(this);
@@ -259,6 +274,12 @@ public class Ecore extends JavaPlugin {
         registerCommand("chunks", new ChunksCommand(this));
         registerCommand("staffmode", new com.excrele.ecore.commands.StaffModeCommand(this));
         registerCommand("sm", new com.excrele.ecore.commands.StaffModeCommand(this));
+        registerCommand("mv", new com.excrele.ecore.commands.WorldCommand(this));
+        registerCommand("multiverse", new com.excrele.ecore.commands.WorldCommand(this));
+        registerCommand("portal", new com.excrele.ecore.commands.PortalCommand(this));
+        registerCommand("blocklog", new com.excrele.ecore.commands.BlockLogCommand(this));
+        registerCommand("bl", new com.excrele.ecore.commands.BlockLogCommand(this));
+        registerCommand("co", new com.excrele.ecore.commands.BlockLogCommand(this));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
@@ -270,6 +291,12 @@ public class Ecore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CommandSpyListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.WorldEditListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.StaffModeListener(this), this);
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.PortalListener(this), this);
+        
+        // Register block logging listener if enabled
+        if (configManager.getConfig().getBoolean("block-logging.enabled", true)) {
+            getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.BlockLogListener(this), this);
+        }
         
         // Register region listener if regions are enabled
         if (configManager.getConfig().getBoolean("regions.enabled", true)) {
@@ -301,6 +328,12 @@ public class Ecore extends JavaPlugin {
     public void onDisable() {
         if (bankManager != null) {
             bankManager.shutdown();
+        }
+        if (blockLogManager != null) {
+            blockLogManager.shutdown();
+        }
+        if (performanceManager != null) {
+            performanceManager.shutdown();
         }
         // Shutdown Discord bot
         discordManager.shutdownBot();
@@ -452,6 +485,34 @@ public class Ecore extends JavaPlugin {
 
     public com.excrele.ecore.integrations.LuckPermsIntegration getLuckPermsIntegration() {
         return luckPermsIntegration;
+    }
+
+    public AccountLinkManager getAccountLinkManager() {
+        return accountLinkManager;
+    }
+
+    public com.excrele.ecore.managers.WorldManager getWorldManager() {
+        return worldManager;
+    }
+
+    public com.excrele.ecore.managers.PortalManager getPortalManager() {
+        return portalManager;
+    }
+
+    public com.excrele.ecore.managers.BlockLogManager getBlockLogManager() {
+        return blockLogManager;
+    }
+
+    public com.excrele.ecore.managers.InventoryLogManager getInventoryLogManager() {
+        return inventoryLogManager;
+    }
+
+    public com.excrele.ecore.managers.BlockLogGUIManager getBlockLogGUIManager() {
+        return blockLogGUIManager;
+    }
+
+    public com.excrele.ecore.managers.PerformanceManager getPerformanceManager() {
+        return performanceManager;
     }
 
     public StatisticsGUIManager getStatisticsGUIManager() {

@@ -167,6 +167,11 @@ public class AchievementManager {
         // Broadcast to server
         Bukkit.broadcastMessage("§6" + player.getName() + " unlocked achievement: §e" + achievement.getName() + "§6!");
 
+        // Send Discord notification
+        if (plugin.getDiscordManager() != null) {
+            plugin.getDiscordManager().sendAchievementNotification(player, achievement.getName(), achievement.getDescription());
+        }
+
         return true;
     }
 
