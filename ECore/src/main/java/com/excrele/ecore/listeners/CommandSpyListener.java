@@ -9,10 +9,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 public class CommandSpyListener implements Listener {
     private final Ecore plugin;
 

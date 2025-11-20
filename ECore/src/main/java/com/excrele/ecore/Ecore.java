@@ -82,6 +82,27 @@ public class Ecore extends JavaPlugin {
     private com.excrele.ecore.managers.InventoryLogManager inventoryLogManager;
     private com.excrele.ecore.managers.BlockLogGUIManager blockLogGUIManager;
     private com.excrele.ecore.managers.PerformanceManager performanceManager;
+    private com.excrele.ecore.managers.FriendManager friendManager;
+    private com.excrele.ecore.managers.PartyManager partyManager;
+    private com.excrele.ecore.managers.FriendGUIManager friendGUIManager;
+    private com.excrele.ecore.managers.PartyGUIManager partyGUIManager;
+    private com.excrele.ecore.managers.ScoreboardManager scoreboardManager;
+    private com.excrele.ecore.managers.TabListManager tabListManager;
+    private com.excrele.ecore.managers.JobManager jobManager;
+    private com.excrele.ecore.managers.JobGUIManager jobGUIManager;
+    private com.excrele.ecore.managers.QuestManager questManager;
+    private com.excrele.ecore.managers.QuestGUIManager questGUIManager;
+    private com.excrele.ecore.managers.ChatChannelManager chatChannelManager;
+    private com.excrele.ecore.managers.VaultManager vaultManager;
+    private com.excrele.ecore.managers.VaultGUIManager vaultGUIManager;
+    private com.excrele.ecore.managers.TitleManager titleManager;
+    private com.excrele.ecore.managers.CommandControlManager commandControlManager;
+    private com.excrele.ecore.managers.RecipeManager recipeManager;
+    private com.excrele.ecore.managers.EnchantmentManager enchantmentManager;
+    private com.excrele.ecore.managers.NicknameManager nicknameManager;
+    private com.excrele.ecore.managers.BackupManager backupManager;
+    private com.excrele.ecore.managers.RegionGUIManager regionGUIManager;
+    private com.excrele.ecore.managers.MobCustomizationManager mobCustomizationManager;
     private com.excrele.ecore.integrations.VaultIntegration vaultIntegration;
     private com.excrele.ecore.integrations.WorldGuardIntegration worldGuardIntegration;
     private com.excrele.ecore.integrations.LuckPermsIntegration luckPermsIntegration;
@@ -143,6 +164,27 @@ public class Ecore extends JavaPlugin {
         inventoryLogManager = new com.excrele.ecore.managers.InventoryLogManager(this);
         blockLogGUIManager = new com.excrele.ecore.managers.BlockLogGUIManager(this);
         performanceManager = new com.excrele.ecore.managers.PerformanceManager(this);
+        friendManager = new com.excrele.ecore.managers.FriendManager(this);
+        partyManager = new com.excrele.ecore.managers.PartyManager(this);
+        friendGUIManager = new com.excrele.ecore.managers.FriendGUIManager(this);
+        partyGUIManager = new com.excrele.ecore.managers.PartyGUIManager(this);
+        scoreboardManager = new com.excrele.ecore.managers.ScoreboardManager(this);
+        tabListManager = new com.excrele.ecore.managers.TabListManager(this);
+        jobManager = new com.excrele.ecore.managers.JobManager(this);
+        jobGUIManager = new com.excrele.ecore.managers.JobGUIManager(this);
+        questManager = new com.excrele.ecore.managers.QuestManager(this);
+        questGUIManager = new com.excrele.ecore.managers.QuestGUIManager(this);
+        chatChannelManager = new com.excrele.ecore.managers.ChatChannelManager(this);
+        vaultManager = new com.excrele.ecore.managers.VaultManager(this);
+        vaultGUIManager = new com.excrele.ecore.managers.VaultGUIManager(this);
+        titleManager = new com.excrele.ecore.managers.TitleManager(this);
+        commandControlManager = new com.excrele.ecore.managers.CommandControlManager(this);
+        recipeManager = new com.excrele.ecore.managers.RecipeManager(this);
+        enchantmentManager = new com.excrele.ecore.managers.EnchantmentManager(this);
+        nicknameManager = new com.excrele.ecore.managers.NicknameManager(this);
+        backupManager = new com.excrele.ecore.managers.BackupManager(this);
+        regionGUIManager = new com.excrele.ecore.managers.RegionGUIManager(this);
+        mobCustomizationManager = new com.excrele.ecore.managers.MobCustomizationManager(this);
         
         // Initialize integrations
         vaultIntegration = new com.excrele.ecore.integrations.VaultIntegration(this);
@@ -280,6 +322,30 @@ public class Ecore extends JavaPlugin {
         registerCommand("blocklog", new com.excrele.ecore.commands.BlockLogCommand(this));
         registerCommand("bl", new com.excrele.ecore.commands.BlockLogCommand(this));
         registerCommand("co", new com.excrele.ecore.commands.BlockLogCommand(this));
+        registerCommand("friend", new com.excrele.ecore.commands.FriendCommand(this));
+        registerCommand("friends", new com.excrele.ecore.commands.FriendCommand(this));
+        registerCommand("party", new com.excrele.ecore.commands.PartyCommand(this));
+        registerCommand("p", new com.excrele.ecore.commands.PartyCommand(this));
+        registerCommand("scoreboard", new com.excrele.ecore.commands.ScoreboardCommand(this));
+        registerCommand("sb", new com.excrele.ecore.commands.ScoreboardCommand(this));
+        registerCommand("jobs", new com.excrele.ecore.commands.JobCommand(this));
+        registerCommand("quest", new com.excrele.ecore.commands.QuestCommand(this));
+        registerCommand("quests", new com.excrele.ecore.commands.QuestCommand(this));
+        registerCommand("channel", new com.excrele.ecore.commands.ChatChannelCommand(this));
+        registerCommand("ch", new com.excrele.ecore.commands.ChatChannelCommand(this));
+        registerCommand("vault", new com.excrele.ecore.commands.VaultCommand(this));
+        registerCommand("pv", new com.excrele.ecore.commands.VaultCommand(this));
+        registerCommand("title", new com.excrele.ecore.commands.TitleCommand(this));
+        registerCommand("titleall", new com.excrele.ecore.commands.TitleCommand(this));
+        registerCommand("actionbar", new com.excrele.ecore.commands.TitleCommand(this));
+        registerCommand("actionbarall", new com.excrele.ecore.commands.TitleCommand(this));
+        registerCommand("cleartitle", new com.excrele.ecore.commands.TitleCommand(this));
+        registerCommand("recipe", new com.excrele.ecore.commands.RecipeCommand(this));
+        registerCommand("enchant", new com.excrele.ecore.commands.EnchantmentCommand(this));
+        registerCommand("customenchant", new com.excrele.ecore.commands.EnchantmentCommand(this));
+        registerCommand("backup", new com.excrele.ecore.commands.BackupCommand(this));
+        registerCommand("nick", new com.excrele.ecore.commands.NicknameCommand(this));
+        registerCommand("nickname", new com.excrele.ecore.commands.NicknameCommand(this));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
@@ -301,6 +367,22 @@ public class Ecore extends JavaPlugin {
         // Register region listener if regions are enabled
         if (configManager.getConfig().getBoolean("regions.enabled", true)) {
             getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.RegionListener(this), this);
+        }
+        
+        // Register job listener
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.JobListener(this), this);
+        
+        // Register quest listener
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.QuestListener(this), this);
+        
+        // Register chat channel listener if enabled
+        if (configManager.getConfig().getBoolean("chat-channels.enabled", false)) {
+            getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.ChatChannelListener(this), this);
+        }
+        
+        // Register command control listener if enabled
+        if (configManager.getConfig().getBoolean("command-control.enabled", true)) {
+            getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CommandControlListener(this), this);
         }
 
         // Register PlaceholderAPI expansion if available
@@ -334,6 +416,24 @@ public class Ecore extends JavaPlugin {
         }
         if (performanceManager != null) {
             performanceManager.shutdown();
+        }
+        if (scoreboardManager != null) {
+            scoreboardManager.shutdown();
+        }
+        if (tabListManager != null) {
+            tabListManager.shutdown();
+        }
+        if (jobManager != null) {
+            jobManager.shutdown();
+        }
+        if (questManager != null) {
+            questManager.shutdown();
+        }
+        if (vaultManager != null) {
+            vaultManager.shutdown();
+        }
+        if (backupManager != null) {
+            backupManager.stopScheduledBackups();
         }
         // Shutdown Discord bot
         discordManager.shutdownBot();
@@ -513,6 +613,90 @@ public class Ecore extends JavaPlugin {
 
     public com.excrele.ecore.managers.PerformanceManager getPerformanceManager() {
         return performanceManager;
+    }
+
+    public com.excrele.ecore.managers.FriendManager getFriendManager() {
+        return friendManager;
+    }
+
+    public com.excrele.ecore.managers.PartyManager getPartyManager() {
+        return partyManager;
+    }
+
+    public com.excrele.ecore.managers.FriendGUIManager getFriendGUIManager() {
+        return friendGUIManager;
+    }
+
+    public com.excrele.ecore.managers.PartyGUIManager getPartyGUIManager() {
+        return partyGUIManager;
+    }
+
+    public com.excrele.ecore.managers.ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
+    }
+
+    public com.excrele.ecore.managers.TabListManager getTabListManager() {
+        return tabListManager;
+    }
+
+    public com.excrele.ecore.managers.JobManager getJobManager() {
+        return jobManager;
+    }
+
+    public com.excrele.ecore.managers.JobGUIManager getJobGUIManager() {
+        return jobGUIManager;
+    }
+
+    public com.excrele.ecore.managers.QuestManager getQuestManager() {
+        return questManager;
+    }
+
+    public com.excrele.ecore.managers.QuestGUIManager getQuestGUIManager() {
+        return questGUIManager;
+    }
+
+    public com.excrele.ecore.managers.ChatChannelManager getChatChannelManager() {
+        return chatChannelManager;
+    }
+
+    public com.excrele.ecore.managers.VaultManager getVaultManager() {
+        return vaultManager;
+    }
+
+    public com.excrele.ecore.managers.VaultGUIManager getVaultGUIManager() {
+        return vaultGUIManager;
+    }
+
+    public com.excrele.ecore.managers.TitleManager getTitleManager() {
+        return titleManager;
+    }
+
+    public com.excrele.ecore.managers.CommandControlManager getCommandControlManager() {
+        return commandControlManager;
+    }
+
+    public com.excrele.ecore.managers.RecipeManager getRecipeManager() {
+        return recipeManager;
+    }
+
+    public com.excrele.ecore.managers.EnchantmentManager getEnchantmentManager() {
+        return enchantmentManager;
+    }
+
+    public com.excrele.ecore.managers.NicknameManager getNicknameManager() {
+        return nicknameManager;
+    }
+
+    public com.excrele.ecore.managers.BackupManager getBackupManager() {
+        return backupManager;
+    }
+
+    public com.excrele.ecore.managers.RegionGUIManager getRegionGUIManager() {
+        return regionGUIManager;
+    }
+
+    public com.excrele.ecore.managers.MobCustomizationManager getMobCustomizationManager() {
+        return mobCustomizationManager;
     }
 
     public StatisticsGUIManager getStatisticsGUIManager() {

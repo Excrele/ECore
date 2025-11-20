@@ -1,0 +1,1492 @@
+# ============================================
+# ECore Quests Configuration
+# ============================================
+# This file defines all available quests in the system.
+# 
+# QUEST CONFIGURATION GUIDE
+# ============================================
+# 
+# To add a new quest, follow this structure:
+#
+# quests:
+#   your-quest-id:                    # Unique identifier (lowercase, use hyphens)
+#     name: "Quest Display Name"      # Name shown to players
+#     description: "Quest description" # Description shown to players
+#     type: KILL                      # Quest type (see types below)
+#     category: COMBAT                # Quest category (see categories below)
+#     required-amount: 10             # Amount needed to complete
+#     target-material: IRON_SWORD     # Material target (for COLLECT, CRAFT, BREAK, PLACE, MINE, HARVEST, EAT)
+#     target-entity: ZOMBIE           # Entity target (for KILL, BREED)
+#     prerequisites:                  # List of quest IDs that must be completed first
+#       - "quest-id-1"
+#       - "quest-id-2"
+#     rewards:
+#       money: 100.0                  # Money reward (0.0 for none)
+#       xp: 50                        # Experience points reward (0 for none)
+#       items:                         # Item rewards (optional)
+#         reward-1:
+#           material: DIAMOND
+#           amount: 1
+#           chance: 1.0               # Chance 0.0-1.0 (1.0 = 100%)
+#     daily: false                    # true for daily quests (resets every 24 hours)
+#     weekly: false                   # true for weekly quests (resets every 7 days)
+#     cooldown-hours: 0               # Hours before quest can be repeated (0 = no cooldown)
+#     min-level: 0                    # Minimum player level required (0 = no requirement)
+#     icon: BOOK                      # Material icon for GUI (default: BOOK)
+#     lore:                           # Additional lore lines (optional)
+#       - "Additional information"
+#       - "More details"
+#
+# QUEST TYPES:
+# ============================================
+# KILL      - Kill entities (requires target-entity)
+# COLLECT   - Collect items (requires target-material)
+# CRAFT     - Craft items (requires target-material)
+# BREAK     - Break blocks (requires target-material)
+# PLACE     - Place blocks (requires target-material)
+# FISH      - Catch fish (no target required)
+# BREED     - Breed animals (requires target-entity)
+# TRAVEL    - Travel distance (no target required)
+# EAT       - Eat food (requires target-material)
+# ENCHANT   - Enchant items (no target required)
+# TRADE     - Trade with villagers (no target required)
+# MINE      - Mine blocks (requires target-material)
+# HARVEST   - Harvest crops (requires target-material)
+# CUSTOM    - Custom quest type
+#
+# QUEST CATEGORIES:
+# ============================================
+# COMBAT      - Combat-related quests
+# GATHERING   - Gathering/collecting quests
+# CRAFTING    - Crafting quests
+# EXPLORATION - Exploration/travel quests
+# FARMING     - Farming quests
+# FISHING     - Fishing quests
+# MINING      - Mining quests
+# DAILY       - Daily quests
+# WEEKLY      - Weekly quests
+# STORY       - Story/main quests
+# SIDE        - Side quests
+#
+# EXAMPLES:
+# ============================================
+# 
+# Example 1: Simple kill quest
+#   kill-10-zombies:
+#     name: "Zombie Slayer"
+#     description: "Kill 10 zombies"
+#     type: KILL
+#     category: COMBAT
+#     required-amount: 10
+#     target-entity: ZOMBIE
+#     rewards:
+#       money: 50.0
+#       xp: 25
+#
+# Example 2: Daily mining quest
+#   daily-mine-stone:
+#     name: "Daily Mining"
+#     description: "Mine 100 stone blocks"
+#     type: MINE
+#     category: DAILY
+#     required-amount: 100
+#     target-material: STONE
+#     daily: true
+#     rewards:
+#       money: 200.0
+#       xp: 100
+#
+# Example 3: Quest with prerequisites
+#   advanced-crafting:
+#     name: "Master Crafter"
+#     description: "Craft a diamond sword"
+#     type: CRAFT
+#     category: CRAFTING
+#     required-amount: 1
+#     target-material: DIAMOND_SWORD
+#     prerequisites:
+#       - "basic-crafting"
+#     rewards:
+#       money: 500.0
+#       xp: 200
+#       items:
+#         reward-1:
+#           material: DIAMOND
+#           amount: 2
+#           chance: 1.0
+#
+# ============================================
+# END OF DOCUMENTATION
+# ============================================
+
+quests:
+  # ============================================
+  # COMBAT QUESTS (1-20)
+  # ============================================
+  
+  quest-001:
+    name: "First Kill"
+    description: "Kill your first zombie"
+    type: KILL
+    category: COMBAT
+    required-amount: 1
+    target-entity: ZOMBIE
+    rewards:
+      money: 10.0
+      xp: 5
+    icon: IRON_SWORD
+  
+  quest-002:
+    name: "Zombie Slayer"
+    description: "Kill 10 zombies"
+    type: KILL
+    category: COMBAT
+    required-amount: 10
+    target-entity: ZOMBIE
+    prerequisites:
+      - "quest-001"
+    rewards:
+      money: 50.0
+      xp: 25
+    icon: IRON_SWORD
+  
+  quest-003:
+    name: "Skeleton Hunter"
+    description: "Kill 15 skeletons"
+    type: KILL
+    category: COMBAT
+    required-amount: 15
+    target-entity: SKELETON
+    rewards:
+      money: 75.0
+      xp: 30
+    icon: BOW
+  
+  quest-004:
+    name: "Creeper Explosion"
+    description: "Kill 5 creepers"
+    type: KILL
+    category: COMBAT
+    required-amount: 5
+    target-entity: CREEPER
+    rewards:
+      money: 100.0
+      xp: 40
+    icon: TNT
+  
+  quest-005:
+    name: "Spider Slayer"
+    description: "Kill 20 spiders"
+    type: KILL
+    category: COMBAT
+    required-amount: 20
+    target-entity: SPIDER
+    rewards:
+      money: 80.0
+      xp: 35
+    icon: STRING
+  
+  quest-006:
+    name: "Enderman Hunter"
+    description: "Kill 3 endermen"
+    type: KILL
+    category: COMBAT
+    required-amount: 3
+    target-entity: ENDERMAN
+    min-level: 5
+    rewards:
+      money: 150.0
+      xp: 60
+    icon: ENDER_PEARL
+  
+  quest-007:
+    name: "Witch Hunter"
+    description: "Kill 5 witches"
+    type: KILL
+    category: COMBAT
+    required-amount: 5
+    target-entity: WITCH
+    rewards:
+      money: 120.0
+      xp: 50
+    icon: POTION
+  
+  quest-008:
+    name: "Zombie Horde"
+    description: "Kill 50 zombies"
+    type: KILL
+    category: COMBAT
+    required-amount: 50
+    target-entity: ZOMBIE
+    prerequisites:
+      - "quest-002"
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: DIAMOND_SWORD
+  
+  quest-009:
+    name: "Skeleton Army"
+    description: "Kill 30 skeletons"
+    type: KILL
+    category: COMBAT
+    required-amount: 30
+    target-entity: SKELETON
+    prerequisites:
+      - "quest-003"
+    rewards:
+      money: 150.0
+      xp: 75
+    icon: BOW
+  
+  quest-010:
+    name: "Monster Slayer"
+    description: "Kill 100 hostile mobs"
+    type: KILL
+    category: COMBAT
+    required-amount: 100
+    target-entity: ZOMBIE
+    min-level: 10
+    rewards:
+      money: 500.0
+      xp: 250
+      items:
+        reward-1:
+          material: DIAMOND
+          amount: 1
+          chance: 0.5
+    icon: DIAMOND_SWORD
+  
+  quest-011:
+    name: "Blaze Hunter"
+    description: "Kill 10 blazes"
+    type: KILL
+    category: COMBAT
+    required-amount: 10
+    target-entity: BLAZE
+    min-level: 15
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: BLAZE_ROD
+  
+  quest-012:
+    name: "Ghast Slayer"
+    description: "Kill 5 ghasts"
+    type: KILL
+    category: COMBAT
+    required-amount: 5
+    target-entity: GHAST
+    min-level: 15
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: GHAST_TEAR
+  
+  quest-013:
+    name: "Piglin Warrior"
+    description: "Kill 20 zombified piglins"
+    type: KILL
+    category: COMBAT
+    required-amount: 20
+    target-entity: ZOMBIFIED_PIGLIN
+    rewards:
+      money: 180.0
+      xp: 90
+    icon: GOLD_INGOT
+  
+  quest-014:
+    name: "Hoglin Hunter"
+    description: "Kill 15 hoglins"
+    type: KILL
+    category: COMBAT
+    required-amount: 15
+    target-entity: HOGLIN
+    rewards:
+      money: 250.0
+      xp: 125
+    icon: LEATHER
+  
+  quest-015:
+    name: "Slime Slayer"
+    description: "Kill 25 slimes"
+    type: KILL
+    category: COMBAT
+    required-amount: 25
+    target-entity: SLIME
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: SLIME_BALL
+  
+  quest-016:
+    name: "Magma Cube Hunter"
+    description: "Kill 20 magma cubes"
+    type: KILL
+    category: COMBAT
+    required-amount: 20
+    target-entity: MAGMA_CUBE
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: MAGMA_CREAM
+  
+  quest-017:
+    name: "Cave Spider Exterminator"
+    description: "Kill 15 cave spiders"
+    type: KILL
+    category: COMBAT
+    required-amount: 15
+    target-entity: CAVE_SPIDER
+    rewards:
+      money: 120.0
+      xp: 60
+    icon: SPIDER_EYE
+  
+  quest-018:
+    name: "Wither Skeleton Hunter"
+    description: "Kill 10 wither skeletons"
+    type: KILL
+    category: COMBAT
+    required-amount: 10
+    target-entity: WITHER_SKELETON
+    min-level: 20
+    rewards:
+      money: 600.0
+      xp: 300
+    icon: WITHER_SKELETON_SKULL
+  
+  quest-019:
+    name: "Guardian Slayer"
+    description: "Kill 10 guardians"
+    type: KILL
+    category: COMBAT
+    required-amount: 10
+    target-entity: GUARDIAN
+    rewards:
+      money: 350.0
+      xp: 175
+    icon: PRISMARINE_SHARD
+  
+  quest-020:
+    name: "Elder Guardian Challenge"
+    description: "Kill 1 elder guardian"
+    type: KILL
+    category: COMBAT
+    required-amount: 1
+    target-entity: ELDER_GUARDIAN
+    min-level: 25
+    rewards:
+      money: 1000.0
+      xp: 500
+      items:
+        reward-1:
+          material: SPONGE
+          amount: 1
+          chance: 1.0
+    icon: PRISMARINE_CRYSTALS
+  
+  # ============================================
+  # MINING QUESTS (21-35)
+  # ============================================
+  
+  quest-021:
+    name: "First Stone"
+    description: "Mine 50 stone blocks"
+    type: MINE
+    category: MINING
+    required-amount: 50
+    target-material: STONE
+    rewards:
+      money: 25.0
+      xp: 10
+    icon: STONE
+  
+  quest-022:
+    name: "Coal Miner"
+    description: "Mine 32 coal ore"
+    type: MINE
+    category: MINING
+    required-amount: 32
+    target-material: COAL_ORE
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: COAL
+  
+  quest-023:
+    name: "Iron Digger"
+    description: "Mine 20 iron ore"
+    type: MINE
+    category: MINING
+    required-amount: 20
+    target-material: IRON_ORE
+    rewards:
+      money: 150.0
+      xp: 75
+    icon: IRON_INGOT
+  
+  quest-024:
+    name: "Gold Rush"
+    description: "Mine 15 gold ore"
+    type: MINE
+    category: MINING
+    required-amount: 15
+    target-material: GOLD_ORE
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: GOLD_INGOT
+  
+  quest-025:
+    name: "Diamond Hunter"
+    description: "Mine 5 diamond ore"
+    type: MINE
+    category: MINING
+    required-amount: 5
+    target-material: DIAMOND_ORE
+    min-level: 10
+    rewards:
+      money: 500.0
+      xp: 250
+      items:
+        reward-1:
+          material: DIAMOND
+          amount: 1
+          chance: 0.3
+    icon: DIAMOND
+  
+  quest-026:
+    name: "Emerald Seeker"
+    description: "Mine 3 emerald ore"
+    type: MINE
+    category: MINING
+    required-amount: 3
+    target-material: EMERALD_ORE
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: EMERALD
+  
+  quest-027:
+    name: "Redstone Collector"
+    description: "Mine 30 redstone ore"
+    type: MINE
+    category: MINING
+    required-amount: 30
+    target-material: REDSTONE_ORE
+    rewards:
+      money: 120.0
+      xp: 60
+    icon: REDSTONE
+  
+  quest-028:
+    name: "Lapis Miner"
+    description: "Mine 25 lapis ore"
+    type: MINE
+    category: MINING
+    required-amount: 25
+    target-material: LAPIS_ORE
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: LAPIS_LAZULI
+  
+  quest-029:
+    name: "Nether Quartz"
+    description: "Mine 40 nether quartz ore"
+    type: MINE
+    category: MINING
+    required-amount: 40
+    target-material: NETHER_QUARTZ_ORE
+    rewards:
+      money: 180.0
+      xp: 90
+    icon: QUARTZ
+  
+  quest-030:
+    name: "Deepslate Miner"
+    description: "Mine 100 deepslate"
+    type: MINE
+    category: MINING
+    required-amount: 100
+    target-material: DEEPSLATE
+    rewards:
+      money: 150.0
+      xp: 75
+    icon: COBBLED_DEEPSLATE
+  
+  quest-031:
+    name: "Ancient Debris Hunter"
+    description: "Mine 3 ancient debris"
+    type: MINE
+    category: MINING
+    required-amount: 3
+    target-material: ANCIENT_DEBRIS
+    min-level: 20
+    rewards:
+      money: 1000.0
+      xp: 500
+    icon: NETHERITE_SCRAP
+  
+  quest-032:
+    name: "Master Miner"
+    description: "Mine 200 stone blocks"
+    type: MINE
+    category: MINING
+    required-amount: 200
+    target-material: STONE
+    prerequisites:
+      - "quest-021"
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: STONE
+  
+  quest-033:
+    name: "Coal Master"
+    description: "Mine 64 coal ore"
+    type: MINE
+    category: MINING
+    required-amount: 64
+    target-material: COAL_ORE
+    prerequisites:
+      - "quest-022"
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: COAL
+  
+  quest-034:
+    name: "Iron Master"
+    description: "Mine 50 iron ore"
+    type: MINE
+    category: MINING
+    required-amount: 50
+    target-material: IRON_ORE
+    prerequisites:
+      - "quest-023"
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: IRON_INGOT
+  
+  quest-035:
+    name: "Diamond Master"
+    description: "Mine 20 diamond ore"
+    type: MINE
+    category: MINING
+    required-amount: 20
+    target-material: DIAMOND_ORE
+    prerequisites:
+      - "quest-025"
+    min-level: 15
+    rewards:
+      money: 1500.0
+      xp: 750
+      items:
+        reward-1:
+          material: DIAMOND
+          amount: 2
+          chance: 1.0
+    icon: DIAMOND
+  
+  # ============================================
+  # FARMING QUESTS (36-50)
+  # ============================================
+  
+  quest-036:
+    name: "Wheat Farmer"
+    description: "Harvest 50 wheat"
+    type: HARVEST
+    category: FARMING
+    required-amount: 50
+    target-material: WHEAT
+    rewards:
+      money: 40.0
+      xp: 20
+    icon: WHEAT
+  
+  quest-037:
+    name: "Carrot Collector"
+    description: "Harvest 30 carrots"
+    type: HARVEST
+    category: FARMING
+    required-amount: 30
+    target-material: CARROT
+    rewards:
+      money: 50.0
+      xp: 25
+    icon: CARROT
+  
+  quest-038:
+    name: "Potato Farmer"
+    description: "Harvest 30 potatoes"
+    type: HARVEST
+    category: FARMING
+    required-amount: 30
+    target-material: POTATO
+    rewards:
+      money: 50.0
+      xp: 25
+    icon: POTATO
+  
+  quest-039:
+    name: "Beetroot Grower"
+    description: "Harvest 25 beetroots"
+    type: HARVEST
+    category: FARMING
+    required-amount: 25
+    target-material: BEETROOT
+    rewards:
+      money: 40.0
+      xp: 20
+    icon: BEETROOT
+  
+  quest-040:
+    name: "Melon Farmer"
+    description: "Harvest 20 melons"
+    type: HARVEST
+    category: FARMING
+    required-amount: 20
+    target-material: MELON
+    rewards:
+      money: 60.0
+      xp: 30
+    icon: MELON
+  
+  quest-041:
+    name: "Pumpkin Grower"
+    description: "Harvest 15 pumpkins"
+    type: HARVEST
+    category: FARMING
+    required-amount: 15
+    target-material: PUMPKIN
+    rewards:
+      money: 50.0
+      xp: 25
+    icon: PUMPKIN
+  
+  quest-042:
+    name: "Sugar Cane Collector"
+    description: "Harvest 40 sugar cane"
+    type: HARVEST
+    category: FARMING
+    required-amount: 40
+    target-material: SUGAR_CANE
+    rewards:
+      money: 60.0
+      xp: 30
+    icon: SUGAR_CANE
+  
+  quest-043:
+    name: "Nether Wart Farmer"
+    description: "Harvest 25 nether wart"
+    type: HARVEST
+    category: FARMING
+    required-amount: 25
+    target-material: NETHER_WART
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: NETHER_WART
+  
+  quest-044:
+    name: "Cow Breeder"
+    description: "Breed 10 cows"
+    type: BREED
+    category: FARMING
+    required-amount: 10
+    target-entity: COW
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: COW_SPAWN_EGG
+  
+  quest-045:
+    name: "Pig Breeder"
+    description: "Breed 10 pigs"
+    type: BREED
+    category: FARMING
+    required-amount: 10
+    target-entity: PIG
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: PIG_SPAWN_EGG
+  
+  quest-046:
+    name: "Chicken Breeder"
+    description: "Breed 15 chickens"
+    type: BREED
+    category: FARMING
+    required-amount: 15
+    target-entity: CHICKEN
+    rewards:
+      money: 60.0
+      xp: 30
+    icon: CHICKEN_SPAWN_EGG
+  
+  quest-047:
+    name: "Sheep Breeder"
+    description: "Breed 10 sheep"
+    type: BREED
+    category: FARMING
+    required-amount: 10
+    target-entity: SHEEP
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: SHEEP_SPAWN_EGG
+  
+  quest-048:
+    name: "Horse Breeder"
+    description: "Breed 5 horses"
+    type: BREED
+    category: FARMING
+    required-amount: 5
+    target-entity: HORSE
+    rewards:
+      money: 150.0
+      xp: 75
+    icon: HORSE_SPAWN_EGG
+  
+  quest-049:
+    name: "Master Farmer"
+    description: "Harvest 200 crops"
+    type: HARVEST
+    category: FARMING
+    required-amount: 200
+    target-material: WHEAT
+    prerequisites:
+      - "quest-036"
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: GOLDEN_HOE
+  
+  quest-050:
+    name: "Animal Master"
+    description: "Breed 50 animals"
+    type: BREED
+    category: FARMING
+    required-amount: 50
+    target-entity: COW
+    prerequisites:
+      - "quest-044"
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: WHEAT
+  
+  # ============================================
+  # CRAFTING QUESTS (51-65)
+  # ============================================
+  
+  quest-051:
+    name: "First Craft"
+    description: "Craft a wooden pickaxe"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: WOODEN_PICKAXE
+    rewards:
+      money: 20.0
+      xp: 10
+    icon: WOODEN_PICKAXE
+  
+  quest-052:
+    name: "Iron Tools"
+    description: "Craft an iron pickaxe"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: IRON_PICKAXE
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: IRON_PICKAXE
+  
+  quest-053:
+    name: "Diamond Tools"
+    description: "Craft a diamond pickaxe"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: DIAMOND_PICKAXE
+    min-level: 10
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: DIAMOND_PICKAXE
+  
+  quest-054:
+    name: "Sword Crafter"
+    description: "Craft an iron sword"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: IRON_SWORD
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: IRON_SWORD
+  
+  quest-055:
+    name: "Diamond Sword"
+    description: "Craft a diamond sword"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: DIAMOND_SWORD
+    min-level: 10
+    rewards:
+      money: 600.0
+      xp: 300
+    icon: DIAMOND_SWORD
+  
+  quest-056:
+    name: "Armor Set"
+    description: "Craft a full set of iron armor"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 4
+    target-material: IRON_CHESTPLATE
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: IRON_CHESTPLATE
+  
+  quest-057:
+    name: "Diamond Armor"
+    description: "Craft a diamond chestplate"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: DIAMOND_CHESTPLATE
+    min-level: 15
+    rewards:
+      money: 800.0
+      xp: 400
+    icon: DIAMOND_CHESTPLATE
+  
+  quest-058:
+    name: "Bow Maker"
+    description: "Craft a bow"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: BOW
+    rewards:
+      money: 60.0
+      xp: 30
+    icon: BOW
+  
+  quest-059:
+    name: "Enchanted Table"
+    description: "Craft an enchanting table"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: ENCHANTING_TABLE
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: ENCHANTING_TABLE
+  
+  quest-060:
+    name: "Anvil Crafter"
+    description: "Craft an anvil"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: ANVIL
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: ANVIL
+  
+  quest-061:
+    name: "Beacon Builder"
+    description: "Craft a beacon"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: BEACON
+    min-level: 20
+    rewards:
+      money: 1000.0
+      xp: 500
+    icon: BEACON
+  
+  quest-062:
+    name: "Ender Chest"
+    description: "Craft an ender chest"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: ENDER_CHEST
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: ENDER_CHEST
+  
+  quest-063:
+    name: "Shulker Box"
+    description: "Craft a shulker box"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: SHULKER_BOX
+    min-level: 15
+    rewards:
+      money: 600.0
+      xp: 300
+    icon: SHULKER_BOX
+  
+  quest-064:
+    name: "Master Crafter"
+    description: "Craft 50 different items"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 50
+    target-material: CRAFTING_TABLE
+    prerequisites:
+      - "quest-051"
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: CRAFTING_TABLE
+  
+  quest-065:
+    name: "Netherite Upgrade"
+    description: "Craft a netherite ingot"
+    type: CRAFT
+    category: CRAFTING
+    required-amount: 1
+    target-material: NETHERITE_INGOT
+    min-level: 25
+    rewards:
+      money: 2000.0
+      xp: 1000
+    icon: NETHERITE_INGOT
+  
+  # ============================================
+  # FISHING QUESTS (66-70)
+  # ============================================
+  
+  quest-066:
+    name: "First Catch"
+    description: "Catch 5 fish"
+    type: FISH
+    category: FISHING
+    required-amount: 5
+    rewards:
+      money: 30.0
+      xp: 15
+    icon: COD
+  
+  quest-067:
+    name: "Fisherman"
+    description: "Catch 20 fish"
+    type: FISH
+    category: FISHING
+    required-amount: 20
+    prerequisites:
+      - "quest-066"
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: SALMON
+  
+  quest-068:
+    name: "Master Angler"
+    description: "Catch 50 fish"
+    type: FISH
+    category: FISHING
+    required-amount: 50
+    prerequisites:
+      - "quest-067"
+    rewards:
+      money: 250.0
+      xp: 125
+    icon: TROPICAL_FISH
+  
+  quest-069:
+    name: "Treasure Hunter"
+    description: "Catch 10 treasure items"
+    type: FISH
+    category: FISHING
+    required-amount: 10
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: FISHING_ROD
+  
+  quest-070:
+    name: "Legendary Fisher"
+    description: "Catch 100 fish"
+    type: FISH
+    category: FISHING
+    required-amount: 100
+    prerequisites:
+      - "quest-068"
+    rewards:
+      money: 500.0
+      xp: 250
+      items:
+        reward-1:
+          material: ENCHANTED_BOOK
+          amount: 1
+          chance: 0.3
+    icon: FISHING_ROD
+  
+  # ============================================
+  # DAILY QUESTS (71-80)
+  # ============================================
+  
+  quest-071:
+    name: "Daily Miner"
+    description: "Mine 100 stone blocks"
+    type: MINE
+    category: DAILY
+    required-amount: 100
+    target-material: STONE
+    daily: true
+    rewards:
+      money: 150.0
+      xp: 75
+    icon: STONE
+  
+  quest-072:
+    name: "Daily Hunter"
+    description: "Kill 10 zombies"
+    type: KILL
+    category: DAILY
+    required-amount: 10
+    target-entity: ZOMBIE
+    daily: true
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: IRON_SWORD
+  
+  quest-073:
+    name: "Daily Farmer"
+    description: "Harvest 30 crops"
+    type: HARVEST
+    category: DAILY
+    required-amount: 30
+    target-material: WHEAT
+    daily: true
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: WHEAT
+  
+  quest-074:
+    name: "Daily Crafter"
+    description: "Craft 10 items"
+    type: CRAFT
+    category: DAILY
+    required-amount: 10
+    target-material: CRAFTING_TABLE
+    daily: true
+    rewards:
+      money: 120.0
+      xp: 60
+    icon: CRAFTING_TABLE
+  
+  quest-075:
+    name: "Daily Fisher"
+    description: "Catch 10 fish"
+    type: FISH
+    category: DAILY
+    required-amount: 10
+    daily: true
+    rewards:
+      money: 90.0
+      xp: 45
+    icon: COD
+  
+  quest-076:
+    name: "Daily Explorer"
+    description: "Travel 1000 blocks"
+    type: TRAVEL
+    category: DAILY
+    required-amount: 1000
+    daily: true
+    rewards:
+      money: 100.0
+      xp: 50
+    icon: COMPASS
+  
+  quest-077:
+    name: "Daily Builder"
+    description: "Place 50 blocks"
+    type: PLACE
+    category: DAILY
+    required-amount: 50
+    target-material: STONE
+    daily: true
+    rewards:
+      money: 80.0
+      xp: 40
+    icon: BRICKS
+  
+  quest-078:
+    name: "Daily Breeder"
+    description: "Breed 5 animals"
+    type: BREED
+    category: DAILY
+    required-amount: 5
+    target-entity: COW
+    daily: true
+    rewards:
+      money: 70.0
+      xp: 35
+    icon: WHEAT
+  
+  quest-079:
+    name: "Daily Eater"
+    description: "Eat 10 food items"
+    type: EAT
+    category: DAILY
+    required-amount: 10
+    target-material: BREAD
+    daily: true
+    rewards:
+      money: 60.0
+      xp: 30
+    icon: BREAD
+  
+  quest-080:
+    name: "Daily Challenge"
+    description: "Complete 5 different activities"
+    type: CUSTOM
+    category: DAILY
+    required-amount: 5
+    daily: true
+    rewards:
+      money: 200.0
+      xp: 100
+    icon: STAR
+  
+  # ============================================
+  # WEEKLY QUESTS (81-90)
+  # ============================================
+  
+  quest-081:
+    name: "Weekly Miner"
+    description: "Mine 1000 stone blocks"
+    type: MINE
+    category: WEEKLY
+    required-amount: 1000
+    target-material: STONE
+    weekly: true
+    rewards:
+      money: 1000.0
+      xp: 500
+    icon: STONE
+  
+  quest-082:
+    name: "Weekly Slayer"
+    description: "Kill 100 hostile mobs"
+    type: KILL
+    category: WEEKLY
+    required-amount: 100
+    target-entity: ZOMBIE
+    weekly: true
+    rewards:
+      money: 800.0
+      xp: 400
+    icon: DIAMOND_SWORD
+  
+  quest-083:
+    name: "Weekly Farmer"
+    description: "Harvest 500 crops"
+    type: HARVEST
+    category: WEEKLY
+    required-amount: 500
+    target-material: WHEAT
+    weekly: true
+    rewards:
+      money: 600.0
+      xp: 300
+    icon: GOLDEN_HOE
+  
+  quest-084:
+    name: "Weekly Crafter"
+    description: "Craft 50 items"
+    type: CRAFT
+    category: WEEKLY
+    required-amount: 50
+    target-material: CRAFTING_TABLE
+    weekly: true
+    rewards:
+      money: 700.0
+      xp: 350
+    icon: CRAFTING_TABLE
+  
+  quest-085:
+    name: "Weekly Fisher"
+    description: "Catch 100 fish"
+    type: FISH
+    category: WEEKLY
+    required-amount: 100
+    weekly: true
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: FISHING_ROD
+  
+  quest-086:
+    name: "Weekly Explorer"
+    description: "Travel 10000 blocks"
+    type: TRAVEL
+    category: WEEKLY
+    required-amount: 10000
+    weekly: true
+    rewards:
+      money: 600.0
+      xp: 300
+    icon: COMPASS
+  
+  quest-087:
+    name: "Weekly Builder"
+    description: "Place 500 blocks"
+    type: PLACE
+    category: WEEKLY
+    required-amount: 500
+    target-material: STONE
+    weekly: true
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: BRICKS
+  
+  quest-088:
+    name: "Weekly Breeder"
+    description: "Breed 50 animals"
+    type: BREED
+    category: WEEKLY
+    required-amount: 50
+    target-entity: COW
+    weekly: true
+    rewards:
+      money: 400.0
+      xp: 200
+    icon: WHEAT
+  
+  quest-089:
+    name: "Weekly Master"
+    description: "Complete 20 different quests"
+    type: CUSTOM
+    category: WEEKLY
+    required-amount: 20
+    weekly: true
+    rewards:
+      money: 1500.0
+      xp: 750
+    icon: TROPHY
+  
+  quest-090:
+    name: "Weekly Champion"
+    description: "Complete all weekly quests"
+    type: CUSTOM
+    category: WEEKLY
+    required-amount: 8
+    weekly: true
+    prerequisites:
+      - "quest-081"
+      - "quest-082"
+      - "quest-083"
+      - "quest-084"
+      - "quest-085"
+      - "quest-086"
+      - "quest-087"
+      - "quest-088"
+    rewards:
+      money: 5000.0
+      xp: 2500
+      items:
+        reward-1:
+          material: DIAMOND
+          amount: 5
+          chance: 1.0
+    icon: TROPHY
+  
+  # ============================================
+  # STORY QUESTS (91-100)
+  # ============================================
+  
+  quest-091:
+    name: "The Beginning"
+    description: "Complete your first quest"
+    type: CUSTOM
+    category: STORY
+    required-amount: 1
+    rewards:
+      money: 50.0
+      xp: 25
+    icon: BOOK
+  
+  quest-092:
+    name: "Rising Warrior"
+    description: "Complete 10 combat quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 10
+    prerequisites:
+      - "quest-091"
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: IRON_SWORD
+  
+  quest-093:
+    name: "Master Craftsman"
+    description: "Complete 10 crafting quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 10
+    prerequisites:
+      - "quest-091"
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: CRAFTING_TABLE
+  
+  quest-094:
+    name: "Legendary Miner"
+    description: "Complete 10 mining quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 10
+    prerequisites:
+      - "quest-091"
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: DIAMOND_PICKAXE
+  
+  quest-095:
+    name: "Nature's Friend"
+    description: "Complete 10 farming quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 10
+    prerequisites:
+      - "quest-091"
+    rewards:
+      money: 500.0
+      xp: 250
+    icon: GOLDEN_HOE
+  
+  quest-096:
+    name: "The Explorer"
+    description: "Complete 5 exploration quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 5
+    prerequisites:
+      - "quest-091"
+    rewards:
+      money: 300.0
+      xp: 150
+    icon: COMPASS
+  
+  quest-097:
+    name: "Quest Master"
+    description: "Complete 50 quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 50
+    prerequisites:
+      - "quest-092"
+      - "quest-093"
+      - "quest-094"
+      - "quest-095"
+    rewards:
+      money: 2000.0
+      xp: 1000
+      items:
+        reward-1:
+          material: DIAMOND
+          amount: 3
+          chance: 1.0
+    icon: TROPHY
+  
+  quest-098:
+    name: "Champion of Quests"
+    description: "Complete 100 quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 100
+    prerequisites:
+      - "quest-097"
+    rewards:
+      money: 5000.0
+      xp: 2500
+      items:
+        reward-1:
+          material: NETHERITE_INGOT
+          amount: 1
+          chance: 1.0
+    icon: TROPHY
+  
+  quest-099:
+    name: "Legendary Hero"
+    description: "Complete all story quests"
+    type: CUSTOM
+    category: STORY
+    required-amount: 8
+    prerequisites:
+      - "quest-092"
+      - "quest-093"
+      - "quest-094"
+      - "quest-095"
+      - "quest-096"
+      - "quest-097"
+      - "quest-098"
+    rewards:
+      money: 10000.0
+      xp: 5000
+      items:
+        reward-1:
+          material: BEACON
+          amount: 1
+          chance: 1.0
+        reward-2:
+          material: DIAMOND
+          amount: 10
+          chance: 1.0
+    icon: BEACON
+  
+  quest-100:
+    name: "The Ultimate Quest"
+    description: "Achieve mastery in all areas"
+    type: CUSTOM
+    category: STORY
+    required-amount: 1
+    prerequisites:
+      - "quest-099"
+    min-level: 30
+    rewards:
+      money: 20000.0
+      xp: 10000
+      items:
+        reward-1:
+          material: NETHERITE_INGOT
+          amount: 5
+          chance: 1.0
+        reward-2:
+          material: BEACON
+          amount: 1
+          chance: 1.0
+        reward-3:
+          material: ENCHANTED_GOLDEN_APPLE
+          amount: 5
+          chance: 1.0
+    icon: NETHER_STAR
+

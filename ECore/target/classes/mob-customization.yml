@@ -1,0 +1,66 @@
+# Mob Customization Configuration
+# Customize mob drops, health, damage, and spawn rates
+
+# Enable or disable the mob customization system
+enabled: true
+
+# Mob configurations
+mobs:
+  # Example: Customize Zombie
+  ZOMBIE:
+    # Custom health (default: 20.0)
+    health: 30.0
+    
+    # Custom damage when attacking (default: uses mob's default)
+    damage: 5.0
+    
+    # Spawn rate multiplier (1.0 = normal, 0.5 = half, 2.0 = double)
+    spawn-rate: 1.0
+    
+    # Replace default drops with custom drops
+    replace-drops: false
+    
+    # Custom drops
+    drops:
+      - type: DIAMOND
+        amount: 1
+        chance: 0.1  # 10% chance
+      - type: GOLD_INGOT
+        amount: 2
+        chance: 0.3  # 30% chance
+      - type: IRON_INGOT
+        amount: 3
+        chance: 0.5  # 50% chance
+
+  # Example: Customize Skeleton
+  SKELETON:
+    health: 25.0
+    damage: 4.0
+    spawn-rate: 1.0
+    replace-drops: false
+    drops:
+      - type: BOW
+        amount: 1
+        chance: 0.2
+      - type: ARROW
+        amount: 5
+        chance: 0.8
+
+  # Example: Customize Creeper
+  CREEPER:
+    health: 25.0
+    damage: 6.0
+    spawn-rate: 0.8  # 80% spawn rate
+    replace-drops: false
+    drops:
+      - type: TNT
+        amount: 1
+        chance: 0.15
+      - type: GUNPOWDER
+        amount: 2
+        chance: 0.6
+
+# Note: You can customize any mob type by adding its name here
+# Available mob types include: ZOMBIE, SKELETON, CREEPER, SPIDER, ENDERMAN, etc.
+# For a full list, see: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+

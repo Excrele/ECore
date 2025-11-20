@@ -1,0 +1,68 @@
+# ============================================
+# ECore Tab List Configuration
+# ============================================
+# This file controls the custom tab list header and footer
+# ============================================
+
+# Enable or disable the tab list system
+enabled: true
+
+# Update interval in ticks (20 ticks = 1 second)
+# Lower values = more frequent updates (more server load)
+update-interval: 20
+
+# Tab list header (single line)
+# Supports color codes with &
+# Supports placeholders: %player%, %online%, %max%, %balance%, %tps%, etc.
+# PlaceholderAPI placeholders are also supported (if PlaceholderAPI is installed)
+header: "&6&lWelcome to Server!"
+
+# Use multiline header (if true, uses header-lines instead of header)
+header-multiline: false
+
+# Multiline header (used if header-multiline is true)
+header-lines:
+  - "&6&l═══════════════════════"
+  - "&6&l   Your Server Name"
+  - "&6&l═══════════════════════"
+
+# Tab list footer (single line)
+# Supports color codes with &
+# Supports placeholders: %player%, %online%, %max%, %balance%, %tps%, etc.
+# PlaceholderAPI placeholders are also supported (if PlaceholderAPI is installed)
+footer: "&7Visit our website!"
+
+# Use multiline footer (if true, uses footer-lines instead of footer)
+footer-multiline: false
+
+# Multiline footer (used if footer-multiline is true)
+footer-lines:
+  - "&7&m-------------------"
+  - "&eOnline: &a%online%/%max%"
+  - "&eTPS: &a%tps%"
+  - "&7&m-------------------"
+
+# Per-world tab lists (optional)
+# If enabled, different worlds can have different tab lists
+per-world:
+  enabled: false
+  worlds:
+    world:
+      header: "&6&lOverworld"
+      footer: "&7Welcome!"
+    world_nether:
+      header: "&4&lNether"
+      footer: "&7Welcome to the Nether!"
+
+# Per-group tab lists (optional, requires LuckPerms)
+# If enabled, different permission groups can have different tab lists
+per-group:
+  enabled: false
+  groups:
+    vip:
+      header: "&6&lVIP Tab List"
+      footer: "&7You are a VIP!"
+    admin:
+      header: "&c&lAdmin Tab List"
+      footer: "&7You are an Admin!"
+

@@ -1,0 +1,1352 @@
+# ============================================
+# ECore Custom Enchantments Configuration
+# ============================================
+# This file contains all custom enchantments for the ECore plugin.
+# 
+# HOW TO CREATE CUSTOM ENCHANTMENTS:
+# ============================================
+# 
+# To add a new custom enchantment, follow this structure:
+# 
+# enchantments:
+#   your-enchantment-id:
+#     name: "Display Name"  # The name shown in-game
+#     description: "What this enchantment does"  # Description of the effect
+#     max-level: 5  # Maximum level (1-10 recommended)
+#     applicable-items:  # List of items this can be applied to
+#       - DIAMOND_SWORD
+#       - IRON_SWORD
+#       - NETHERITE_SWORD
+# 
+# ITEM TYPE GROUPS:
+# ============================================
+# 
+# Weapons (Swords, Axes, Tridents):
+#   - DIAMOND_SWORD, IRON_SWORD, GOLDEN_SWORD, WOODEN_SWORD, STONE_SWORD, NETHERITE_SWORD
+#   - DIAMOND_AXE, IRON_AXE, GOLDEN_AXE, WOODEN_AXE, STONE_AXE, NETHERITE_AXE
+#   - TRIDENT
+# 
+# Armor (Helmet, Chestplate, Leggings, Boots):
+#   - DIAMOND_HELMET, IRON_HELMET, GOLDEN_HELMET, LEATHER_HELMET, CHAINMAIL_HELMET, NETHERITE_HELMET
+#   - DIAMOND_CHESTPLATE, IRON_CHESTPLATE, GOLDEN_CHESTPLATE, LEATHER_CHESTPLATE, CHAINMAIL_CHESTPLATE, NETHERITE_CHESTPLATE
+#   - DIAMOND_LEGGINGS, IRON_LEGGINGS, GOLDEN_LEGGINGS, LEATHER_LEGGINGS, CHAINMAIL_LEGGINGS, NETHERITE_LEGGINGS
+#   - DIAMOND_BOOTS, IRON_BOOTS, GOLDEN_BOOTS, LEATHER_BOOTS, CHAINMAIL_BOOTS, NETHERITE_BOOTS
+# 
+# Tools (Pickaxe, Axe, Shovel, Hoe):
+#   - DIAMOND_PICKAXE, IRON_PICKAXE, GOLDEN_PICKAXE, WOODEN_PICKAXE, STONE_PICKAXE, NETHERITE_PICKAXE
+#   - DIAMOND_AXE, IRON_AXE, GOLDEN_AXE, WOODEN_AXE, STONE_AXE, NETHERITE_AXE
+#   - DIAMOND_SHOVEL, IRON_SHOVEL, GOLDEN_SHOVEL, WOODEN_SHOVEL, STONE_SHOVEL, NETHERITE_SHOVEL
+#   - DIAMOND_HOE, IRON_HOE, GOLDEN_HOE, WOODEN_HOE, STONE_HOE, NETHERITE_HOE
+# 
+# Ranged Weapons:
+#   - BOW, CROSSBOW
+# 
+# Other:
+#   - FISHING_ROD
+# 
+# SCALING BY LEVEL:
+# ============================================
+# Enchantment effects scale with level. The plugin will pass the level (1-max-level)
+# to event handlers. You can implement scaling formulas like:
+# - Linear: effect = baseEffect * level
+# - Exponential: effect = baseEffect * (level^1.5)
+# - Logarithmic: effect = baseEffect * log(level + 1)
+# 
+# Example scaling formulas:
+# - Damage boost: damage = baseDamage * (1 + level * 0.1)  # 10% per level
+# - Chance effects: chance = baseChance * level  # 5% base = 5%, 10%, 15% at levels 1-3
+# - Cooldown reduction: cooldown = baseCooldown / (1 + level * 0.2)  # 20% reduction per level
+# 
+# ============================================
+
+enchantments:
+  # ============================================
+  # WEAPON ENCHANTMENTS (Swords, Axes, Tridents)
+  # ============================================
+  
+  # 1. Lifesteal - Heals attacker based on damage dealt
+  lifesteal:
+    name: "Lifesteal"
+    description: "Heals you for a percentage of damage dealt"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - TRIDENT
+  
+  # 2. Venom - Poisons enemies on hit
+  venom:
+    name: "Venom"
+    description: "Poisons enemies on hit"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 3. Wither - Applies wither effect on hit
+  wither:
+    name: "Wither"
+    description: "Applies wither effect to enemies"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 4. Lightning - Chance to strike lightning on hit
+  lightning:
+    name: "Lightning"
+    description: "Chance to strike lightning on enemies"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 5. Fire Aspect Plus - Enhanced fire damage
+  fire-aspect-plus:
+    name: "Fire Aspect Plus"
+    description: "Enhanced fire damage that scales with level"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+  
+  # 6. Vampiric - Steals health from enemies
+  vampiric:
+    name: "Vampiric"
+    description: "Steals health from enemies and transfers to you"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - NETHERITE_AXE
+      - DIAMOND_AXE
+  
+  # 7. Executioner - Extra damage to low-health enemies
+  executioner:
+    name: "Executioner"
+    description: "Deals extra damage to enemies below 50% health"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 8. Berserker - More damage when low on health
+  berserker:
+    name: "Berserker"
+    description: "Increases damage when you're low on health"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - DIAMOND_AXE
+      - IRON_AXE
+      - NETHERITE_AXE
+  
+  # 9. Soul Stealer - Chance to gain experience on kill
+  soul-stealer:
+    name: "Soul Stealer"
+    description: "Chance to gain bonus experience on kill"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 10. Cripple - Slows enemies on hit
+  cripple:
+    name: "Cripple"
+    description: "Slows enemies when you hit them"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 11. Decay - Applies mining fatigue to enemies
+  decay:
+    name: "Decay"
+    description: "Applies mining fatigue to enemies"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+  
+  # 12. Thunder Strike - Area damage on critical hit
+  thunder-strike:
+    name: "Thunder Strike"
+    description: "Area damage on critical hits"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 13. Bloodlust - Faster attack speed on kill
+  bloodlust:
+    name: "Bloodlust"
+    description: "Increases attack speed after killing an enemy"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - DIAMOND_AXE
+      - IRON_AXE
+      - NETHERITE_AXE
+  
+  # 14. Frost - Freezes enemies on hit
+  frost:
+    name: "Frost"
+    description: "Freezes enemies, slowing them significantly"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 15. Leech - Steals hunger from enemies
+  leech:
+    name: "Leech"
+    description: "Steals hunger from enemies"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+  
+  # 16. Explosive - Chance to cause explosion on hit
+  explosive:
+    name: "Explosive"
+    description: "Chance to cause explosion on hit"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+  
+  # 17. Midas Touch - Chance to drop gold on kill
+  midas-touch:
+    name: "Midas Touch"
+    description: "Chance to drop gold ingots on kill"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+  
+  # 18. Soulbound - Prevents item from dropping on death
+  soulbound:
+    name: "Soulbound"
+    description: "Prevents item from dropping on death"
+    max-level: 1
+    applicable-items:
+      - DIAMOND_SWORD
+      - IRON_SWORD
+      - GOLDEN_SWORD
+      - WOODEN_SWORD
+      - STONE_SWORD
+      - NETHERITE_SWORD
+      - TRIDENT
+      - DIAMOND_AXE
+      - IRON_AXE
+      - NETHERITE_AXE
+  
+  # ============================================
+  # ARMOR ENCHANTMENTS (Helmet, Chestplate, Leggings, Boots)
+  # ============================================
+  
+  # 1. Regeneration - Slowly regenerates health
+  regeneration:
+    name: "Regeneration"
+    description: "Slowly regenerates health over time"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+  
+  # 2. Absorption - Provides absorption hearts
+  absorption:
+    name: "Absorption"
+    description: "Provides temporary absorption hearts"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 3. Thorns Plus - Enhanced thorns damage
+  thorns-plus:
+    name: "Thorns Plus"
+    description: "Enhanced thorns that deal more damage"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+  
+  # 4. Fire Resistance - Provides fire resistance
+  fire-resistance:
+    name: "Fire Resistance"
+    description: "Provides fire resistance effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 5. Water Breathing - Provides water breathing
+  water-breathing:
+    name: "Water Breathing"
+    description: "Provides water breathing effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+  
+  # 6. Night Vision - Provides night vision
+  night-vision:
+    name: "Night Vision"
+    description: "Provides night vision effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+  
+  # 7. Speed Boost - Increases movement speed
+  speed-boost:
+    name: "Speed Boost"
+    description: "Increases movement speed"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+  
+  # 8. Damage Reduction - Reduces incoming damage
+  damage-reduction:
+    name: "Damage Reduction"
+    description: "Reduces incoming damage"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+  
+  # 9. Knockback Resistance - Reduces knockback
+  knockback-resistance:
+    name: "Knockback Resistance"
+    description: "Reduces knockback taken"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+  
+  # 10. Poison Immunity - Provides poison immunity
+  poison-immunity:
+    name: "Poison Immunity"
+    description: "Provides immunity to poison"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 11. Wither Immunity - Provides wither immunity
+  wither-immunity:
+    name: "Wither Immunity"
+    description: "Provides immunity to wither effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 12. Hunger Immunity - Prevents hunger loss
+  hunger-immunity:
+    name: "Hunger Immunity"
+    description: "Prevents hunger loss"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - IRON_LEGGINGS
+      - GOLDEN_LEGGINGS
+      - LEATHER_LEGGINGS
+      - CHAINMAIL_LEGGINGS
+      - NETHERITE_LEGGINGS
+  
+  # 13. Feather Falling Plus - Enhanced fall damage reduction
+  feather-falling-plus:
+    name: "Feather Falling Plus"
+    description: "Enhanced fall damage reduction"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+  
+  # 14. Health Boost - Provides extra health
+  health-boost:
+    name: "Health Boost"
+    description: "Provides extra maximum health"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 15. Saturation - Provides saturation effect
+  saturation:
+    name: "Saturation"
+    description: "Provides saturation effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HELMET
+      - IRON_HELMET
+      - GOLDEN_HELMET
+      - LEATHER_HELMET
+      - CHAINMAIL_HELMET
+      - NETHERITE_HELMET
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 16. Resistance - Provides resistance effect
+  resistance:
+    name: "Resistance"
+    description: "Provides resistance to all damage"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 17. Strength Boost - Provides strength effect
+  strength-boost:
+    name: "Strength Boost"
+    description: "Provides strength effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_CHESTPLATE
+      - IRON_CHESTPLATE
+      - GOLDEN_CHESTPLATE
+      - LEATHER_CHESTPLATE
+      - CHAINMAIL_CHESTPLATE
+      - NETHERITE_CHESTPLATE
+  
+  # 18. Jump Boost - Increases jump height
+  jump-boost:
+    name: "Jump Boost"
+    description: "Increases jump height"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_BOOTS
+      - IRON_BOOTS
+      - GOLDEN_BOOTS
+      - LEATHER_BOOTS
+      - CHAINMAIL_BOOTS
+      - NETHERITE_BOOTS
+  
+  # ============================================
+  # TOOL ENCHANTMENTS (Pickaxe, Axe, Shovel, Hoe)
+  # ============================================
+  
+  # 1. Auto Smelt - Automatically smelts mined blocks
+  auto-smelt:
+    name: "Auto Smelt"
+    description: "Automatically smelts mined blocks"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+  
+  # 2. Vein Miner - Mines connected blocks
+  vein-miner:
+    name: "Vein Miner"
+    description: "Mines connected blocks of the same type"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 3. Experience Boost - More experience from mining
+  experience-boost:
+    name: "Experience Boost"
+    description: "Grants more experience from mining"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+  
+  # 4. Fortune Plus - Enhanced fortune effect
+  fortune-plus:
+    name: "Fortune Plus"
+    description: "Enhanced fortune for more drops"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 5. Telekinesis - Items go directly to inventory
+  telekinesis:
+    name: "Telekinesis"
+    description: "Mined items go directly to your inventory"
+    max-level: 1
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 6. Haste - Increases mining speed
+  haste:
+    name: "Haste"
+    description: "Increases mining speed"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 7. Efficiency Plus - Enhanced efficiency
+  efficiency-plus:
+    name: "Efficiency Plus"
+    description: "Enhanced mining efficiency"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 8. Tree Feller - Cuts entire trees
+  tree-feller:
+    name: "Tree Feller"
+    description: "Cuts entire trees at once"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+  
+  # 9. Lumberjack - More wood drops
+  lumberjack:
+    name: "Lumberjack"
+    description: "Increases wood drops from trees"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+  
+  # 10. Excavator - Mines in area
+  excavator:
+    name: "Excavator"
+    description: "Mines blocks in an area"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 11. Replant - Automatically replants crops
+  replant:
+    name: "Replant"
+    description: "Automatically replants crops when harvesting"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 12. Harvest - Increases crop yield
+  harvest:
+    name: "Harvest"
+    description: "Increases crop yield when harvesting"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 13. Magnetism - Attracts nearby items
+  magnetism:
+    name: "Magnetism"
+    description: "Attracts nearby items when mining"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 14. Unbreaking Plus - Enhanced durability
+  unbreaking-plus:
+    name: "Unbreaking Plus"
+    description: "Enhanced durability protection"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 15. Mending Plus - Enhanced mending
+  mending-plus:
+    name: "Mending Plus"
+    description: "Enhanced mending effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+      - DIAMOND_HOE
+      - IRON_HOE
+      - GOLDEN_HOE
+      - WOODEN_HOE
+      - STONE_HOE
+      - NETHERITE_HOE
+  
+  # 16. Silk Touch Plus - Enhanced silk touch
+  silk-touch-plus:
+    name: "Silk Touch Plus"
+    description: "Enhanced silk touch effect"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+      - DIAMOND_AXE
+      - IRON_AXE
+      - GOLDEN_AXE
+      - WOODEN_AXE
+      - STONE_AXE
+      - NETHERITE_AXE
+      - DIAMOND_SHOVEL
+      - IRON_SHOVEL
+      - GOLDEN_SHOVEL
+      - WOODEN_SHOVEL
+      - STONE_SHOVEL
+      - NETHERITE_SHOVEL
+  
+  # 17. Multi Break - Breaks multiple blocks
+  multi-break:
+    name: "Multi Break"
+    description: "Breaks multiple blocks in a line"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+  
+  # 18. Ore Finder - Highlights nearby ores
+  ore-finder:
+    name: "Ore Finder"
+    description: "Highlights nearby ores"
+    max-level: 5
+    applicable-items:
+      - DIAMOND_PICKAXE
+      - IRON_PICKAXE
+      - GOLDEN_PICKAXE
+      - WOODEN_PICKAXE
+      - STONE_PICKAXE
+      - NETHERITE_PICKAXE
+  
+  # ============================================
+  # BOW/CROSSBOW ENCHANTMENTS
+  # ============================================
+  
+  # 1. Explosive Arrows - Arrows explode on impact
+  explosive-arrows:
+    name: "Explosive Arrows"
+    description: "Arrows explode on impact"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 2. Poison Arrows - Arrows poison targets
+  poison-arrows:
+    name: "Poison Arrows"
+    description: "Arrows poison targets"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 3. Lightning Arrows - Arrows strike lightning
+  lightning-arrows:
+    name: "Lightning Arrows"
+    description: "Arrows strike lightning on impact"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 4. Multi Shot Plus - Enhanced multi shot
+  multi-shot-plus:
+    name: "Multi Shot Plus"
+    description: "Enhanced multi shot effect"
+    max-level: 5
+    applicable-items:
+      - CROSSBOW
+  
+  # 5. Piercing Plus - Enhanced piercing
+  piercing-plus:
+    name: "Piercing Plus"
+    description: "Enhanced piercing through entities"
+    max-level: 5
+    applicable-items:
+      - CROSSBOW
+  
+  # 6. Power Plus - Enhanced power
+  power-plus:
+    name: "Power Plus"
+    description: "Enhanced arrow damage"
+    max-level: 5
+    applicable-items:
+      - BOW
+  
+  # 7. Punch Plus - Enhanced knockback
+  punch-plus:
+    name: "Punch Plus"
+    description: "Enhanced arrow knockback"
+    max-level: 5
+    applicable-items:
+      - BOW
+  
+  # 8. Quick Charge Plus - Faster crossbow reload
+  quick-charge-plus:
+    name: "Quick Charge Plus"
+    description: "Faster crossbow reload speed"
+    max-level: 5
+    applicable-items:
+      - CROSSBOW
+  
+  # 9. Infinity Plus - Enhanced infinity
+  infinity-plus:
+    name: "Infinity Plus"
+    description: "Enhanced infinity effect"
+    max-level: 5
+    applicable-items:
+      - BOW
+  
+  # 10. Homing - Arrows home in on targets
+  homing:
+    name: "Homing"
+    description: "Arrows home in on nearby targets"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 11. Teleport Arrows - Teleports shooter to impact
+  teleport-arrows:
+    name: "Teleport Arrows"
+    description: "Teleports you to arrow impact location"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 12. Fire Arrows - Arrows set targets on fire
+  fire-arrows:
+    name: "Fire Arrows"
+    description: "Arrows set targets on fire"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 13. Slow Arrows - Arrows slow targets
+  slow-arrows:
+    name: "Slow Arrows"
+    description: "Arrows slow down targets"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 14. Wither Arrows - Arrows apply wither
+  wither-arrows:
+    name: "Wither Arrows"
+    description: "Arrows apply wither effect"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 15. Lifesteal Arrows - Arrows heal shooter
+  lifesteal-arrows:
+    name: "Lifesteal Arrows"
+    description: "Arrows heal you based on damage dealt"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 16. Chain Arrows - Arrows chain to nearby enemies
+  chain-arrows:
+    name: "Chain Arrows"
+    description: "Arrows chain to nearby enemies"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 17. Freeze Arrows - Arrows freeze targets
+  freeze-arrows:
+    name: "Freeze Arrows"
+    description: "Arrows freeze targets in place"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # 18. Vampire Arrows - Arrows steal health
+  vampire-arrows:
+    name: "Vampire Arrows"
+    description: "Arrows steal health from targets"
+    max-level: 5
+    applicable-items:
+      - BOW
+      - CROSSBOW
+  
+  # ============================================
+  # FISHING ROD ENCHANTMENTS
+  # ============================================
+  
+  # 1. Treasure Hunter - More treasure catches
+  treasure-hunter:
+    name: "Treasure Hunter"
+    description: "Increases chance of catching treasure"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 2. Double Catch - Chance to catch two fish
+  double-catch:
+    name: "Double Catch"
+    description: "Chance to catch two fish at once"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 3. Experience Fisher - More experience from fishing
+  experience-fisher:
+    name: "Experience Fisher"
+    description: "Grants more experience from fishing"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 4. Lure Plus - Enhanced lure
+  lure-plus:
+    name: "Lure Plus"
+    description: "Enhanced lure effect"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 5. Luck of the Sea Plus - Enhanced luck
+  luck-of-the-sea-plus:
+    name: "Luck of the Sea Plus"
+    description: "Enhanced luck of the sea"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 6. Auto Reel - Automatically reels in
+  auto-reel:
+    name: "Auto Reel"
+    description: "Automatically reels in when fish bites"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 7. Magnet Rod - Attracts items from water
+  magnet-rod:
+    name: "Magnet Rod"
+    description: "Attracts items from nearby water"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 8. Big Catch - Larger fish
+  big-catch:
+    name: "Big Catch"
+    description: "Increases chance of catching larger fish"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 9. Rare Catch - More rare items
+  rare-catch:
+    name: "Rare Catch"
+    description: "Increases chance of catching rare items"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 10. Fast Reel - Faster reeling speed
+  fast-reel:
+    name: "Fast Reel"
+    description: "Increases reeling speed"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 11. Water Walking - Walk on water while fishing
+  water-walking:
+    name: "Water Walking"
+    description: "Allows walking on water while fishing"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 12. Fish Finder - Highlights fish in water
+  fish-finder:
+    name: "Fish Finder"
+    description: "Highlights fish in nearby water"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 13. Bait Saver - Reduces bait consumption
+  bait-saver:
+    name: "Bait Saver"
+    description: "Reduces bait consumption"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 14. Multi Hook - Catches multiple fish
+  multi-hook:
+    name: "Multi Hook"
+    description: "Chance to catch multiple fish"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 15. Treasure Magnet - Attracts treasure
+  treasure-magnet:
+    name: "Treasure Magnet"
+    description: "Attracts treasure items from water"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 16. Perfect Catch - Guaranteed catch
+  perfect-catch:
+    name: "Perfect Catch"
+    description: "Increases chance of perfect catch"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 17. Underwater Breathing - Breathe underwater while fishing
+  underwater-breathing:
+    name: "Underwater Breathing"
+    description: "Allows breathing underwater while fishing"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+  
+  # 18. Fish Whisperer - Attracts fish to you
+  fish-whisperer:
+    name: "Fish Whisperer"
+    description: "Attracts fish to your fishing location"
+    max-level: 5
+    applicable-items:
+      - FISHING_ROD
+

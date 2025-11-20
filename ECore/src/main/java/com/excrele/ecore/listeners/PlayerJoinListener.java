@@ -33,6 +33,23 @@ public class PlayerJoinListener implements Listener {
         
         // Send Discord join notification
         plugin.getDiscordManager().sendPlayerJoinNotification(event.getPlayer());
+        
+        // Apply nickname
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (plugin.getNicknameManager() != null) {
+                plugin.getNicknameManager().applyNickname(event.getPlayer());
+            }
+        }, 5L); // Small delay to ensure player is loaded
+        
+        // Setup scoreboard and tab list
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (plugin.getScoreboardManager() != null) {
+                plugin.getScoreboardManager().setupScoreboard(event.getPlayer());
+            }
+            if (plugin.getTabListManager() != null) {
+                plugin.getTabListManager().setupTabList(event.getPlayer());
+            }
+        }, 20L); // Delay 1 second to ensure player is fully loaded
     }
 }
 

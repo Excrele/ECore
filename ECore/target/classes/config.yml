@@ -20,6 +20,81 @@ chat:
   # This is separate from slow mode and applies to all players
   cooldown: 0
 
+# Nickname System Configuration
+# Enhanced nickname system with colors and formatting
+nicknames:
+  # Enable or disable the nickname system
+  enabled: true
+  
+  # Maximum nickname length
+  max-length: 32
+  
+  # Allow color codes in nicknames (requires ecore.nickname.color permission)
+  allow-colors: true
+  
+  # Allow custom formatting (requires ecore.nickname.format permission)
+  allow-formatting: true
+  
+  # Default nickname format (use %nickname% for nickname, %name% for original name)
+  # Leave empty for no default format
+  default-format: ""
+
+# Chat Channels System Configuration
+# Multiple chat channels with permissions and range-based local chat
+chat-channels:
+  # Enable or disable the chat channels system
+  enabled: true
+  
+  # Default channel ID (players will auto-join this channel)
+  default-channel: global
+  
+  # Channel configurations
+  channels:
+    global:
+      name: "Global"
+      prefix: "&7[Global]"
+      permission: ecore.chat.global
+      range: -1  # -1 = unlimited (global), positive number = block range
+      color: WHITE
+      default: true  # Set as default channel
+      auto-join: true  # Auto-join players on login
+    
+    local:
+      name: "Local"
+      prefix: "&a[Local]"
+      permission: ecore.chat.local
+      range: 100  # 100 block range
+      color: GREEN
+      default: false
+      auto-join: false
+    
+    trade:
+      name: "Trade"
+      prefix: "&6[Trade]"
+      permission: ecore.chat.trade
+      range: -1  # Global
+      color: GOLD
+      default: false
+      auto-join: false
+    
+    help:
+      name: "Help"
+      prefix: "&b[Help]"
+      permission: ecore.chat.help
+      range: -1  # Global
+      color: AQUA
+      default: false
+      auto-join: false
+    
+    staff:
+      name: "Staff"
+      prefix: "&c[Staff]"
+      permission: ecore.chat.staff
+      range: -1  # Global
+      color: RED
+      default: false
+      auto-join: false
+
 # Home System Configuration
 # Manages player homes, teleportation, and bed spawn integration
 home:
@@ -320,6 +395,91 @@ block-logging:
     database: ecore
     username: root
     password: ""
+
+# Player Vaults System Configuration
+# Extra storage vaults for players (like EnderChest but multiple)
+vaults:
+  # Maximum number of vaults each player can have (default)
+  # Players with permission ecore.vault.<number> can have that many vaults
+  # Example: ecore.vault.5 allows 5 vaults
+  max-vaults: 1
+  
+  # Default vault size (in slots)
+  # Standard chest = 27, Double chest = 54, Ender chest = 27
+  # Vaults use 54 slots (6 rows) by default
+  vault-size: 54
+
+# Command Cooldowns & Costs Configuration
+# Control command usage with cooldowns and economy costs
+command-control:
+  # Enable or disable the command control system
+  enabled: true
+  
+  # Per-command configuration
+  commands:
+    # Example: Home command with 60 second cooldown and 10 currency cost
+    home:
+      cooldown: 60  # Cooldown in seconds (0 to disable)
+      cost: 10.0  # Economy cost (0.0 to disable)
+      bypass-permission: ecore.home.bypass  # Permission to bypass cooldown/cost
+    
+    # Example: Warp command with 30 second cooldown and 5 currency cost
+    warp:
+      cooldown: 30
+      cost: 5.0
+      bypass-permission: ecore.warp.bypass
+    
+    # Example: Teleport command with 120 second cooldown and no cost
+    tp:
+      cooldown: 120
+      cost: 0.0
+      bypass-permission: ecore.tp.bypass
+    
+    # Example: Spawn command with no cooldown but 2 currency cost
+    spawn:
+      cooldown: 0
+      cost: 2.0
+      bypass-permission: ecore.spawn.bypass
+
+# Backup System Configuration
+# Automatic backup system for server data and worlds
+backup:
+  # Enable or disable the backup system
+  enabled: false
+  
+  # Backup directory (relative to server root)
+  directory: backups
+  
+  # Automatic backup interval (in seconds)
+  # Default: 3600 (1 hour)
+  interval: 3600
+  
+  # Maximum number of backups to keep (oldest will be deleted)
+  max-backups: 10
+  
+  # Files to backup (relative to server root)
+  # These files will be included in backups
+  files:
+    - "server.properties"
+    - "bukkit.yml"
+    - "spigot.yml"
+    - "paper.yml"
+    - "plugins"
+  
+  # Worlds to backup
+  # List world names to include in backups
+  # Leave empty to backup all loaded worlds
+  worlds:
+    - "world"
+    - "world_nether"
+    - "world_the_end"
+
+# Mob Customization Configuration
+# Customize mob drops, health, damage, and spawn rates
+# See mob-customization.yml for detailed configuration
+mob-customization:
+  # Enable or disable the mob customization system
+  enabled: true
 
 # ============================================
 # Configuration Version (DO NOT MODIFY)

@@ -1,0 +1,226 @@
+# ============================================
+# ECore Jobs Configuration
+# ============================================
+# This file defines all available jobs and their configurations.
+# Each job can have multiple actions that give experience and rewards.
+# ============================================
+
+jobs:
+  # Miner Job - Earn money and experience by mining blocks
+  miner:
+    name: "Miner"
+    description: "Mine blocks to earn experience and money!"
+    icon: DIAMOND_PICKAXE
+    lore:
+      - "&7Mine various blocks to progress"
+      - "&7Higher level blocks give more rewards"
+    actions:
+      mine:
+        name: "Mining"
+        base-exp: 2.0
+        exp-multiplier: 0.2  # Additional exp per level
+        base-money: 0.5
+        money-multiplier: 0.1  # Additional money per level
+        materials:
+          # Common blocks
+          STONE: 1.0
+          COBBLESTONE: 1.0
+          DIRT: 0.5
+          GRASS_BLOCK: 0.5
+          SAND: 0.5
+          GRAVEL: 0.5
+          # Ores (higher multipliers)
+          COAL_ORE: 2.0
+          IRON_ORE: 3.0
+          GOLD_ORE: 4.0
+          REDSTONE_ORE: 3.5
+          LAPIS_ORE: 3.0
+          DIAMOND_ORE: 5.0
+          EMERALD_ORE: 6.0
+          NETHER_QUARTZ_ORE: 3.0
+          DEEPSLATE_COAL_ORE: 2.5
+          DEEPSLATE_IRON_ORE: 3.5
+          DEEPSLATE_GOLD_ORE: 4.5
+          DEEPSLATE_DIAMOND_ORE: 5.5
+          DEEPSLATE_EMERALD_ORE: 6.5
+        item-rewards:
+          coal-reward:
+            material: COAL
+            amount: 1
+            level: 5
+            chance: 0.1  # 10% chance
+          iron-reward:
+            material: IRON_INGOT
+            amount: 1
+            level: 10
+            chance: 0.05  # 5% chance
+
+  # Farmer Job - Farm crops and animals
+  farmer:
+    name: "Farmer"
+    description: "Grow crops and breed animals for rewards!"
+    icon: GOLDEN_HOE
+    lore:
+      - "&7Plant and harvest crops"
+      - "&7Breed animals for bonuses"
+    actions:
+      harvest:
+        name: "Harvesting"
+        base-exp: 1.5
+        exp-multiplier: 0.15
+        base-money: 0.3
+        money-multiplier: 0.08
+        materials:
+          WHEAT: 1.0
+          CARROT: 1.2
+          POTATO: 1.2
+          BEETROOT: 1.0
+          MELON: 1.5
+          PUMPKIN: 1.5
+          SUGAR_CANE: 1.0
+          BAMBOO: 0.8
+          CACTUS: 0.8
+          COCOA_BEANS: 1.3
+          NETHER_WART: 2.0
+        item-rewards:
+          seed-reward:
+            material: WHEAT_SEEDS
+            amount: 2
+            level: 3
+            chance: 0.2
+      breed:
+        name: "Breeding"
+        base-exp: 3.0
+        exp-multiplier: 0.25
+        base-money: 1.0
+        money-multiplier: 0.15
+        entities:
+          COW: 1.0
+          PIG: 1.0
+          CHICKEN: 0.8
+          SHEEP: 1.0
+          HORSE: 2.0
+          RABBIT: 0.7
+          LLAMA: 1.5
+          WOLF: 1.5
+          CAT: 1.2
+          FOX: 1.3
+
+  # Hunter Job - Kill mobs for rewards
+  hunter:
+    name: "Hunter"
+    description: "Hunt mobs and monsters for experience!"
+    icon: BOW
+    lore:
+      - "&7Kill various mobs to progress"
+      - "&7Dangerous mobs give better rewards"
+    actions:
+      kill:
+        name: "Hunting"
+        base-exp: 3.0
+        exp-multiplier: 0.3
+        base-money: 1.0
+        money-multiplier: 0.2
+        entities:
+          # Passive mobs
+          COW: 1.0
+          PIG: 1.0
+          CHICKEN: 0.8
+          SHEEP: 1.0
+          RABBIT: 0.7
+          # Hostile mobs (higher rewards)
+          ZOMBIE: 2.0
+          SKELETON: 2.0
+          CREEPER: 2.5
+          SPIDER: 1.8
+          CAVE_SPIDER: 2.0
+          ENDERMAN: 3.0
+          WITCH: 2.5
+          ZOMBIFIED_PIGLIN: 2.0
+          PIGLIN: 1.5
+          HOGLIN: 2.5
+          ZOGLIN: 2.5
+          GHAST: 4.0
+          BLAZE: 3.5
+          MAGMA_CUBE: 2.0
+          SLIME: 1.5
+          # Boss mobs
+          WITHER: 10.0
+          ENDER_DRAGON: 15.0
+        item-rewards:
+          leather-reward:
+            material: LEATHER
+            amount: 1
+            level: 5
+            chance: 0.15
+          string-reward:
+            material: STRING
+            amount: 2
+            level: 8
+            chance: 0.2
+
+  # Builder Job - Place blocks to earn rewards
+  builder:
+    name: "Builder"
+    description: "Build structures and place blocks!"
+    icon: BRICKS
+    lore:
+      - "&7Place blocks to earn experience"
+      - "&7Creative building rewards"
+    actions:
+      build:
+        name: "Building"
+        base-exp: 1.0
+        exp-multiplier: 0.1
+        base-money: 0.2
+        money-multiplier: 0.05
+        materials:
+          # Building blocks
+          STONE: 1.0
+          COBBLESTONE: 1.0
+          BRICKS: 1.2
+          STONE_BRICKS: 1.2
+          PLANKS: 1.0
+          LOGS: 1.0
+          GLASS: 1.1
+          CONCRETE: 1.3
+          TERRACOTTA: 1.2
+          WOOL: 1.0
+          # Decorative blocks
+          FLOWER_POT: 1.5
+          PAINTING: 2.0
+          ITEM_FRAME: 1.8
+
+  # Fisher Job - Fish for rewards
+  fisher:
+    name: "Fisher"
+    description: "Catch fish and treasure from the sea!"
+    icon: FISHING_ROD
+    lore:
+      - "&7Fish to earn experience"
+      - "&7Rare catches give better rewards"
+    actions:
+      fish:
+        name: "Fishing"
+        base-exp: 2.0
+        exp-multiplier: 0.2
+        base-money: 0.8
+        money-multiplier: 0.12
+        # Fishing is handled by fishing event, no material/entity mapping needed
+        item-rewards:
+          fish-reward:
+            material: COD
+            amount: 1
+            level: 1
+            chance: 0.3
+          salmon-reward:
+            material: SALMON
+            amount: 1
+            level: 5
+            chance: 0.2
+          treasure-reward:
+            material: GOLD_NUGGET
+            amount: 1
+            level: 10
+            chance: 0.05
+

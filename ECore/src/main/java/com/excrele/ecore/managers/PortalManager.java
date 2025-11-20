@@ -2,7 +2,6 @@ package com.excrele.ecore.managers;
 
 import com.excrele.ecore.Ecore;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

@@ -208,6 +208,117 @@ A comprehensive Spigot plugin for Minecraft 1.21+, providing staff moderation to
 - **Report System**: Submit and manage player reports
 - **Sit System**: Sit on stairs and slabs
 - **Sign Colors**: Use color codes on signs
+- **Enhanced Nickname System**: Custom nicknames with colors and formatting support
+
+### 🔍 Block Logging System (CoreProtect-like)
+- **Comprehensive Logging**: Logs block breaks, places, container access, and inventory changes
+- **Rollback System**: Rollback player actions or specific areas to previous states
+- **Inventory Protection**: Track and rollback player inventories to snapshots
+- **Inspector Tool**: Right-click blocks to view their history
+- **Database Support**: SQLite (default) or MySQL for efficient log storage
+- **GUI System**: Easy-to-use interfaces for browsing logs and performing rollbacks
+- **Automatic Purging**: Configurable log retention with automatic cleanup
+
+### ⚡ Performance Optimization (ClearLagg-like)
+- **Automatic Cleanup**: Removes excessive entities (items, mobs, projectiles)
+- **TPS-Based Cleanup**: Automatically triggers when TPS drops below threshold
+- **Item Stacking**: Merges nearby items of the same type
+- **Chunk Optimization**: Unloads empty chunks to reduce memory usage
+- **Performance Statistics**: Detailed metrics and entity breakdown
+- **Scheduled Maintenance**: Automatic cleanup on configurable intervals
+- **Integrated with ServerInfo**: Uses existing TPS monitoring
+
+### 👥 Friends & Party System
+- **Friend Lists**: Add, remove, and manage friends
+- **Friend Requests**: Send, accept, and deny friend requests
+- **Friend GUI**: Browse friends and pending requests
+- **Party System**: Create and manage parties/teams
+- **Party Chat**: Private chat channel for party members
+- **Party Management**: Invite, kick, and leave parties
+- **Party GUI**: Easy party management interface
+- **Online Status**: See which friends/party members are online
+
+### 📊 Custom Scoreboard & Tab List
+- **Custom Scoreboards**: Fully customizable scoreboard with placeholders
+- **Placeholder Support**: ECore and PlaceholderAPI placeholders
+- **Per-World Scoreboards**: Different scoreboards for different worlds (optional)
+- **Per-Group Scoreboards**: Different scoreboards for permission groups (optional)
+- **Custom Tab List**: Customizable header and footer
+- **Multiline Support**: Support for multiline headers and footers
+- **Separate Config Files**: `scoreboard.yml` and `tablist.yml` for easy editing
+- **Auto-Updates**: Configurable update intervals
+
+### 💼 Jobs System
+- **Multiple Job Types**: Miner, Farmer, Hunter, Builder, Fisher, and more
+- **Job Levels & Experience**: Level up through job-specific actions
+- **Job Rewards**: Earn money and items from completing job actions
+- **Job GUI**: Easy-to-use interface for browsing and joining jobs
+- **Job Statistics**: Track your progress and earnings
+- **Job Leaderboards**: Compare with other players
+- **Job Progression**: Exponential leveling system with configurable rewards
+
+### 🎯 Quests System
+- **100+ Predefined Quests**: Extensive quest library included
+- **Quest Types**: Kill, Collect, Craft, Break, Place, Fish, Breed, Travel, Eat, Enchant, Trade, Mine, Harvest, and Custom quests
+- **Quest Chains**: Quests with prerequisites and chains
+- **Quest Rewards**: Money, items, and experience rewards
+- **Quest GUI**: Browse quests by category with filtering
+- **Daily/Weekly Quests**: Automatically resetting quests
+- **Quest Progress Tracking**: Real-time progress updates
+- **Quest Completion Notifications**: Get notified when completing quests
+
+### 💬 Chat Channels System
+- **Multiple Channels**: Global, Local, Trade, Help, Staff channels
+- **Channel Switching**: Easy channel management
+- **Channel Permissions**: Per-channel permission support
+- **Channel Prefixes**: Color-coded channel prefixes
+- **Range-Based Local Chat**: Configurable range for local channels
+- **Channel Muting**: Mute specific channels per player
+- **Auto-Join**: Auto-join to default channel on login
+- **Admin Channel Management**: Create and delete channels
+
+### 🗄️ Player Vaults System
+- **Multiple Vaults**: Permission-based vault limits (1-10 vaults)
+- **Vault GUI**: Easy vault selection and management
+- **Vault Naming**: Custom names for each vault
+- **Trust System**: Share vaults with friends
+- **54-Slot Storage**: Each vault has 54 slots (6 rows)
+- **Vault Management**: Create, rename, and manage vaults easily
+
+### 📺 Title, Subtitle & Action Bar System
+- **Titles & Subtitles**: Send custom titles to players
+- **Action Bar Messages**: Send messages to action bar
+- **Broadcast Support**: Broadcast to all players
+- **Customizable Timings**: Configure fade in, stay, and fade out times
+- **Color Support**: Full color code support
+
+### ⏱️ Command Cooldowns & Costs
+- **Per-Command Cooldowns**: Set cooldowns for any command (in seconds)
+- **Per-Command Economy Costs**: Charge players for using commands
+- **Bypass Permissions**: Configurable bypass permissions per command
+- **Cooldown Messages**: User-friendly cooldown notifications
+- **Cost Notifications**: Inform players of charges
+- **Configuration**: Easy setup in `config.yml`
+
+### 🍳 Custom Recipes System
+- **Shaped Recipes**: Create shaped crafting recipes
+- **Shapeless Recipes**: Create shapeless crafting recipes
+- **Recipe Management**: Create, remove, and list recipes
+- **Recipe Permissions**: Per-recipe permission support
+- **Recipe Storage**: Recipes saved in `recipes.yml`
+- **Recipe Reload**: Hot-reload recipes without restart
+
+### ✨ Custom Enchantments System
+- **90+ Unique Enchantments**: Extensive enchantment library
+  - **Weapons**: 18 enchantments (Lifesteal, Venom, Wither, Lightning, etc.)
+  - **Armor**: 18 enchantments (Regeneration, Absorption, Thorns Plus, etc.)
+  - **Tools**: 18 enchantments (Auto Smelt, Vein Miner, Tree Feller, etc.)
+  - **Bows/Crossbows**: 18 enchantments (Explosive Arrows, Homing, Teleport Arrows, etc.)
+  - **Fishing Rods**: 18 enchantments (Treasure Hunter, Double Catch, Fish Finder, etc.)
+- **Scalable by Level**: All enchantments scale with level (1-5 or 1-10)
+- **Item-Specific**: Enchantments can only be applied to applicable items
+- **Event Handlers**: Automatic effect application on attack, defend, and fishing
+- **Documentation**: Comprehensive guide in `enchantments.yml` for creating new enchantments
 
 ### 🔌 Plugin Integrations
 - **PlaceholderAPI**: Extensive placeholder support (see PlaceholderAPI section)
@@ -264,6 +375,45 @@ server-info:
 # Regions
 regions:
   enabled: true  # Enable region system
+
+# Player Vaults
+vaults:
+  max-vaults: 1  # Default maximum vaults per player
+  vault-size: 54  # Vault size in slots (54 = 6 rows)
+
+# Command Cooldowns & Costs
+command-control:
+  enabled: true  # Enable command control system
+  commands:
+    home:
+      cooldown: 60  # Cooldown in seconds (0 to disable)
+      cost: 10.0  # Economy cost (0.0 to disable)
+      bypass-permission: ecore.home.bypass
+    warp:
+      cooldown: 30
+      cost: 5.0
+      bypass-permission: ecore.warp.bypass
+```
+
+### scoreboard.yml
+```yaml
+enabled: true
+title: "&6&lYour Server"
+update-interval: 20
+lines:
+  - "&7&m-------------------"
+  - "&eBalance: &a%ecore_balance%"
+  - "&eHomes: &a%ecore_homes%/%ecore_max_homes%"
+  - "&eKills: &a%ecore_kills%"
+  - "&7&m-------------------"
+```
+
+### tablist.yml
+```yaml
+enabled: true
+update-interval: 20
+header: "&6&lWelcome to Server!"
+footer: "&7Visit our website!"
 ```
 
 ### discordconf.yml
@@ -312,6 +462,19 @@ discord:
     enabled: false
     schedule: "daily"  # "daily" or "weekly"
     channel-id: "INSERT_REPORTS_CHANNEL_ID"
+```
+
+### jobs.yml
+Jobs configuration file. See the file for detailed job setup with actions, experience, and rewards.
+
+### quests.yml
+Quests configuration file with 100+ predefined quests. See the file for detailed quest setup with types, chains, and rewards.
+
+### enchantments.yml
+Custom enchantments configuration file with 90+ unique enchantments. Includes comprehensive documentation on creating new enchantments.
+
+### recipes.yml
+Custom recipes storage file. Recipes are created via commands and stored here.
 ```
 
 ---
@@ -602,6 +765,51 @@ After configuration, restart your server. The Discord bot will connect automatic
 | Command | Description | Permission | Default |
 |---------|-------------|------------|---------|
 | `/serverinfo` | Display server information | `ecore.serverinfo` | `op` |
+| `/serverinfo clear` | Perform entity cleanup | `ecore.serverinfo.cleanup` | `op` |
+| `/serverinfo stats` | Show performance statistics | `ecore.serverinfo.stats` | `op` |
+| `/serverinfo merge [radius]` | Merge nearby items | `ecore.serverinfo.merge` | `op` |
+| `/serverinfo chunks` | Optimize chunks | `ecore.serverinfo.chunks` | `op` |
+
+### Block Logging Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/blocklog` | Open block logging GUI | `ecore.blocklog.use` | `op` |
+| `/blocklog lookup <player> [time]` | View player logs | `ecore.blocklog.lookup` | `op` |
+| `/blocklog rollback <player> [time]` | Rollback player actions | `ecore.blocklog.rollback` | `op` |
+| `/blocklog restore [time]` | Restore selected area | `ecore.blocklog.restore` | `op` |
+| `/blocklog inspect` | Get inspector wand | `ecore.blocklog.inspect` | `op` |
+| `/blocklog inventory <player> [time]` | Rollback inventory | `ecore.blocklog.inventory` | `op` |
+| `/blocklog purge [days]` | Purge old logs | `ecore.blocklog.purge` | `op` |
+| `/bl` | Alias for blocklog | `ecore.blocklog.use` | `op` |
+| `/co` | Alias for blocklog (CoreProtect-like) | `ecore.blocklog.use` | `op` |
+
+### Friends & Party Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/friend` | Open friend GUI | `ecore.friend` | `true` |
+| `/friend add <player>` | Send friend request | `ecore.friend` | `true` |
+| `/friend remove <player>` | Remove friend | `ecore.friend` | `true` |
+| `/friend list` | List friends | `ecore.friend` | `true` |
+| `/friend accept <player>` | Accept friend request | `ecore.friend` | `true` |
+| `/friend deny <player>` | Deny friend request | `ecore.friend` | `true` |
+| `/friend requests` | View pending requests | `ecore.friend` | `true` |
+| `/party` | Open party GUI | `ecore.party` | `true` |
+| `/party create` | Create a party | `ecore.party` | `true` |
+| `/party invite <player>` | Invite player to party | `ecore.party` | `true` |
+| `/party accept <leader>` | Accept party invite | `ecore.party` | `true` |
+| `/party leave` | Leave party | `ecore.party` | `true` |
+| `/party kick <player>` | Kick player (leader only) | `ecore.party` | `true` |
+| `/party list` | Show party info | `ecore.party` | `true` |
+| `/party chat <message>` | Send party message | `ecore.party` | `true` |
+| `/p` | Alias for party | `ecore.party` | `true` |
+
+### Scoreboard & Tab List Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/scoreboard toggle` | Toggle your scoreboard | `ecore.scoreboard.use` | `true` |
+| `/scoreboard reload` | Reload scoreboard config | `ecore.scoreboard.reload` | `op` |
+| `/scoreboard tablist reload` | Reload tab list config | `ecore.tablist.reload` | `op` |
+| `/sb` | Alias for scoreboard | `ecore.scoreboard.use` | `true` |
 
 ### Chunk Pregeneration Commands
 | Command | Description | Permission | Default |
@@ -682,6 +890,96 @@ After configuration, restart your server. The Discord bot will connect automatic
 | Command | Description | Permission | Default |
 |---------|-------------|------------|---------|
 | `/shopedit <buy\|sell\|quantity> <value>` | Edit shop prices or quantity | `ecore.adminshop.edit` or `ecore.pshop.edit` | `op` |
+
+### Nickname Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/nick <nickname>` | Set your nickname | `ecore.nickname` | `true` |
+| `/nickname <nickname>` | Alias for nick | `ecore.nickname` | `true` |
+| `/nick set <nickname>` | Set nickname (explicit) | `ecore.nickname` | `true` |
+| `/nick reset` | Reset your nickname | `ecore.nickname` | `true` |
+| `/nick color <color>` | Set nickname color | `ecore.nickname.color` | `false` |
+| `/nick format <format>` | Set nickname format | `ecore.nickname.format` | `false` |
+| `/nick view [player]` | View nickname | `ecore.nickname`, `ecore.nickname.view.others` | `true` |
+
+### Jobs Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/jobs` | Open jobs GUI | `ecore.jobs` | `true` |
+| `/jobs join <job>` | Join a job | `ecore.jobs` | `true` |
+| `/jobs leave` | Leave current job | `ecore.jobs` | `true` |
+| `/jobs info` | View job info | `ecore.jobs` | `true` |
+| `/jobs top [job]` | View job leaderboard | `ecore.jobs` | `true` |
+| `/jobs list` | List available jobs | `ecore.jobs` | `true` |
+
+### Quest Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/quest` | Open quest GUI | `ecore.quests` | `true` |
+| `/quests` | Alias for quest | `ecore.quests` | `true` |
+| `/quest list [category]` | List available quests | `ecore.quests` | `true` |
+| `/quest start <quest-id>` | Start a quest | `ecore.quests` | `true` |
+| `/quest active` | View active quests | `ecore.quests` | `true` |
+| `/quest completed` | View completed quests | `ecore.quests` | `true` |
+| `/quest info <quest-id>` | View quest information | `ecore.quests` | `true` |
+
+### Chat Channel Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/channel` | Show channel help | `ecore.channel` | `true` |
+| `/channel join <channel>` | Join a channel | `ecore.channel` | `true` |
+| `/channel leave <channel>` | Leave a channel | `ecore.channel` | `true` |
+| `/channel list` | List available channels | `ecore.channel` | `true` |
+| `/channel current` | View current channel info | `ecore.channel` | `true` |
+| `/channel mute <channel>` | Mute a channel | `ecore.channel` | `true` |
+| `/channel unmute <channel>` | Unmute a channel | `ecore.channel` | `true` |
+| `/channel create <id> [name] [prefix]` | Create channel (admin) | `ecore.channel.admin` | `op` |
+| `/channel delete <id>` | Delete channel (admin) | `ecore.channel.admin` | `op` |
+| `/ch <message>` | Chat in current channel | `ecore.channel` | `true` |
+
+### Player Vault Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/vault` | Open vault selection GUI | `ecore.vault` | `true` |
+| `/pv` | Alias for vault | `ecore.vault` | `true` |
+| `/vault open <number>` | Open specific vault | `ecore.vault` | `true` |
+| `/vault create <number>` | Create new vault | `ecore.vault` | `true` |
+| `/vault rename <number> <name>` | Rename vault | `ecore.vault` | `true` |
+| `/vault trust <number> <player>` | Trust player with vault | `ecore.vault` | `true` |
+| `/vault untrust <number> <player>` | Untrust player | `ecore.vault` | `true` |
+| `/vault list` | List your vaults | `ecore.vault` | `true` |
+
+### Title & Action Bar Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/title <player> <title> [subtitle] [fadeIn] [stay] [fadeOut]` | Send title to player | `ecore.title` | `op` |
+| `/titleall <title> [subtitle] [fadeIn] [stay] [fadeOut]` | Broadcast title to all | `ecore.title.all` | `op` |
+| `/actionbar <player> <message>` | Send action bar message | `ecore.actionbar` | `op` |
+| `/actionbarall <message>` | Broadcast action bar to all | `ecore.actionbar.all` | `op` |
+| `/cleartitle [player\|all]` | Clear title | `ecore.title.clear`, `ecore.title.clear.all` | `op` |
+
+### Custom Recipe Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/recipe list` | List all custom recipes | `ecore.recipe` | `true` |
+| `/recipe create <id> <shaped\|shapeless>` | Create a recipe (admin) | `ecore.recipe.admin` | `op` |
+| `/recipe remove <id>` | Remove a recipe (admin) | `ecore.recipe.admin` | `op` |
+| `/recipe reload` | Reload recipes from config (admin) | `ecore.recipe.admin` | `op` |
+
+### Custom Enchantment Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/enchant list` | List all custom enchantments | `ecore.enchant` | `true` |
+| `/customenchant list` | Alias for enchant list | `ecore.enchant` | `true` |
+| `/enchant info <id>` | View enchantment info | `ecore.enchant` | `true` |
+| `/enchant apply <id> [level]` | Apply enchantment to held item (admin) | `ecore.enchant.admin` | `op` |
+| `/enchant remove <id>` | Remove enchantment from held item (admin) | `ecore.enchant.admin` | `op` |
+
+### Staff Mode Commands
+| Command | Description | Permission | Default |
+|---------|-------------|------------|---------|
+| `/staffmode` | Toggle staff mode | `ecore.staffmode` | `op` |
+| `/sm` | Alias for staffmode | `ecore.staffmode` | `op` |
 
 ---
 
@@ -854,6 +1152,124 @@ After configuration, restart your server. The Discord bot will connect automatic
 | `ecore.portal.wand` | Use portal creation wand | `op` |
 | `ecore.portal.use` | Use portals (enter portal blocks) | `true` |
 
+### Block Logging Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.blocklog.use` | Use block logging commands | `op` |
+| `ecore.blocklog.lookup` | Lookup block logs | `op` |
+| `ecore.blocklog.rollback` | Rollback blocks | `op` |
+| `ecore.blocklog.restore` | Restore blocks | `op` |
+| `ecore.blocklog.inspect` | Use inspector tool | `op` |
+| `ecore.blocklog.inventory` | Rollback inventories | `op` |
+| `ecore.blocklog.purge` | Purge old logs | `op` |
+| `ecore.blocklog.reload` | Reload block logging config | `op` |
+
+### Performance Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.serverinfo.cleanup` | Perform server cleanup | `op` |
+| `ecore.serverinfo.stats` | View performance statistics | `op` |
+| `ecore.serverinfo.merge` | Merge items | `op` |
+| `ecore.serverinfo.chunks` | Optimize chunks | `op` |
+
+### Friends & Party Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.friend` | Use friend commands | `true` |
+| `ecore.party` | Use party commands | `true` |
+
+### Scoreboard & Tab List Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.scoreboard.use` | Use scoreboard | `true` |
+| `ecore.scoreboard.reload` | Reload scoreboard config | `op` |
+| `ecore.tablist.use` | Use custom tab list | `true` |
+| `ecore.tablist.reload` | Reload tab list config | `op` |
+
+### Jobs Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.jobs` | Use jobs commands | `true` |
+| `ecore.jobs.admin` | Manage jobs (admin only) | `op` |
+
+### Quest Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.quests` | Use quest commands | `true` |
+| `ecore.quests.admin` | Manage quests (admin only) | `op` |
+
+### Chat Channel Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.channel` | Use chat channel commands | `true` |
+| `ecore.channel.admin` | Manage channels (admin only) | `op` |
+| `ecore.chat.global` | Use global channel | `true` |
+| `ecore.chat.local` | Use local channel | `true` |
+| `ecore.chat.trade` | Use trade channel | `true` |
+| `ecore.chat.help` | Use help channel | `true` |
+| `ecore.chat.staff` | Use staff channel | `op` |
+
+### Player Vault Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.vault` | Use vault commands | `true` |
+| `ecore.vault.1` | Allows having 1 vault | `true` |
+| `ecore.vault.2` | Allows having 2 vaults | `false` |
+| `ecore.vault.3` | Allows having 3 vaults | `false` |
+| `ecore.vault.4` | Allows having 4 vaults | `false` |
+| `ecore.vault.5` | Allows having 5 vaults | `false` |
+| `ecore.vault.6` | Allows having 6 vaults | `false` |
+| `ecore.vault.7` | Allows having 7 vaults | `false` |
+| `ecore.vault.8` | Allows having 8 vaults | `false` |
+| `ecore.vault.9` | Allows having 9 vaults | `false` |
+| `ecore.vault.10` | Allows having 10 vaults | `false` |
+
+### Title & Action Bar Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.title` | Use /title command | `op` |
+| `ecore.title.all` | Use /titleall command | `op` |
+| `ecore.actionbar` | Use /actionbar command | `op` |
+| `ecore.actionbar.all` | Use /actionbarall command | `op` |
+| `ecore.title.clear` | Use /cleartitle command | `op` |
+| `ecore.title.clear.all` | Clear all titles | `op` |
+
+### Custom Recipe Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.recipe` | View custom recipes | `true` |
+| `ecore.recipe.admin` | Manage custom recipes | `op` |
+
+### Custom Enchantment Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.enchant` | View custom enchantments | `true` |
+| `ecore.enchant.admin` | Apply/remove custom enchantments | `op` |
+
+### Staff Mode Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.staffmode` | Enter/exiting staff mode | `op` |
+
+### Nickname Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.nickname` | Set and use nicknames | `true` |
+| `ecore.nickname.color` | Use colors in nicknames | `false` |
+| `ecore.nickname.format` | Use custom formatting in nicknames | `false` |
+| `ecore.nickname.view.others` | View other players' nicknames | `true` |
+
+### Command Control Permissions
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `ecore.command.bypass` | Bypass all command cooldowns and costs | `op` |
+| `ecore.home.bypass` | Bypass home command cooldown/cost | `op` |
+| `ecore.warp.bypass` | Bypass warp command cooldown/cost | `op` |
+| `ecore.tp.bypass` | Bypass teleport command cooldown/cost | `op` |
+| `ecore.spawn.bypass` | Bypass spawn command cooldown/cost | `op` |
+
+**Note:** Command cooldowns and costs are configured in `config.yml` under `command-control.commands`. Each command can have its own bypass permission configured.
+
 ---
 
 ## 🔌 PlaceholderAPI
@@ -958,6 +1374,83 @@ For issues, feature requests, or questions, please open an issue on the GitHub r
 ## 📄 License
 
 This plugin is provided as-is for use on Minecraft servers.
+
+---
+
+## 🆕 Recent Updates (Version 1.0)
+
+### New Modules Added
+
+#### 🔍 Block Logging System
+- Complete CoreProtect-like functionality with block and inventory logging
+- Rollback system for blocks and player inventories
+- Comprehensive GUI system for easy log browsing
+- SQLite/MySQL database support with automatic purging
+
+#### ⚡ Performance Optimization
+- Automatic entity cleanup (items, mobs, projectiles)
+- TPS-based emergency cleanup when server performance drops
+- Item stacking and chunk optimization
+- Fully integrated with ServerInfoManager
+
+#### 👥 Friends & Party System
+- Complete friend list management with requests
+- Party/team system with private party chat
+- Beautiful GUI interfaces for both systems
+- Online status tracking for friends and party members
+
+#### 📊 Custom Scoreboard & Tab List
+- Fully customizable scoreboards with placeholders
+- Custom tab list headers and footers
+- Separate configuration files (`scoreboard.yml` and `tablist.yml`)
+- PlaceholderAPI and ECore placeholder support
+- Per-world and per-group customization options
+
+#### 💼 Jobs System
+- Multiple job types with levels, experience, and rewards
+- Job GUI for easy management
+- Job leaderboards and statistics
+- Configurable job actions and rewards
+
+#### 🎯 Quests System
+- 100+ predefined quests with multiple quest types
+- Quest chains with prerequisites
+- Daily and weekly quests with automatic resets
+- Quest GUI with category filtering
+- Comprehensive quest configuration
+
+#### 💬 Chat Channels System
+- Multiple chat channels (global, local, trade, help, staff)
+- Range-based local chat
+- Channel permissions and muting
+- Easy channel switching
+
+#### 🗄️ Player Vaults System
+- Multiple vaults per player (permission-based)
+- Vault GUI for easy management
+- Vault naming and trust system
+- 54-slot storage per vault
+
+#### 📺 Title, Subtitle & Action Bar System
+- Send titles and subtitles to players
+- Action bar messages
+- Broadcast capabilities
+- Customizable timings
+
+#### ⏱️ Command Cooldowns & Costs
+- Per-command cooldowns and economy costs
+- Bypass permissions
+- Easy configuration
+
+#### 🍳 Custom Recipes System
+- Shaped and shapeless recipe creation
+- Recipe management and permissions
+- Hot-reload support
+
+#### ✨ Custom Enchantments System
+- 90+ unique enchantments across all item types
+- Scalable by level
+- Comprehensive documentation for creating new enchantments
 
 ---
 

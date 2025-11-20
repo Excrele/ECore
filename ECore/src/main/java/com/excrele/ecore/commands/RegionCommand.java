@@ -67,6 +67,25 @@ public class RegionCommand implements CommandExecutor {
                 return handleTypes(sender);
             case "reload":
                 return handleReload(sender);
+            case "gui":
+                return handleGUI(sender, args);
+            case "visualize":
+            case "viz":
+                return handleVisualize(sender, args);
+            case "buy":
+                return handleBuy(sender, args);
+            case "rent":
+                return handleRent(sender, args);
+            case "sellprice":
+            case "setsellprice":
+                return handleSetSellPrice(sender, args);
+            case "rentprice":
+            case "setrentprice":
+                return handleSetRentPrice(sender, args);
+            case "setsale":
+                return handleSetSale(sender, args);
+            case "setrent":
+                return handleSetRent(sender, args);
             default:
                 sendHelp(sender);
                 return true;
@@ -87,6 +106,14 @@ public class RegionCommand implements CommandExecutor {
         sender.sendMessage(ChatColor.YELLOW + "/region removemember <name> <player> - Remove a member");
         sender.sendMessage(ChatColor.YELLOW + "/region types - List available region types");
         sender.sendMessage(ChatColor.YELLOW + "/region reload - Reload regions from file");
+        sender.sendMessage(ChatColor.YELLOW + "/region gui [world] - Open region GUI");
+        sender.sendMessage(ChatColor.YELLOW + "/region visualize <name> - Show region borders");
+        sender.sendMessage(ChatColor.YELLOW + "/region buy <name> - Buy a region");
+        sender.sendMessage(ChatColor.YELLOW + "/region rent <name> - Rent a region");
+        sender.sendMessage(ChatColor.YELLOW + "/region sellprice <name> <price> - Set sale price");
+        sender.sendMessage(ChatColor.YELLOW + "/region rentprice <name> <price> - Set rent price");
+        sender.sendMessage(ChatColor.YELLOW + "/region setsale <name> <true|false> - Set for sale");
+        sender.sendMessage(ChatColor.YELLOW + "/region setrent <name> <true|false> - Set for rent");
     }
 
     private boolean handleCreate(CommandSender sender, String[] args) {
@@ -546,6 +573,227 @@ public class RegionCommand implements CommandExecutor {
         plugin.getRegionManager().loadRegions();
         sender.sendMessage(ChatColor.GREEN + "Regions reloaded!");
 
+        return true;
+    }
+
+    private boolean handleGUI(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        World world = player.getWorld();
+        
+        if (args.length > 1) {
+            world = plugin.getServer().getWorld(args[1]);
+            if (world == null) {
+                player.sendMessage(ChatColor.RED + "World not found: " + args[1]);
+                return true;
+            }
+        }
+
+        plugin.getRegionGUIManager().openRegionListGUI(player, world);
+        return true;
+    }
+
+    private boolean handleVisualize(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region visualize <name>");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Region region = plugin.getRegionManager().getRegion(player.getWorld(), args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        plugin.getRegionManager().visualizeRegion(player, region);
+        player.sendMessage(ChatColor.GREEN + "Region borders visualized!");
+        return true;
+    }
+
+    private boolean handleBuy(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region buy <name>");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Region region = plugin.getRegionManager().getRegion(player.getWorld(), args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        if (plugin.getRegionManager().buyRegion(player, region)) {
+            sender.sendMessage(ChatColor.GREEN + "You successfully bought the region!");
+        }
+        return true;
+    }
+
+    private boolean handleRent(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players!");
+            return true;
+        }
+
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region rent <name>");
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Region region = plugin.getRegionManager().getRegion(player.getWorld(), args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        if (plugin.getRegionManager().rentRegion(player, region)) {
+            sender.sendMessage(ChatColor.GREEN + "You successfully rented the region!");
+        }
+        return true;
+    }
+
+    private boolean handleSetSellPrice(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("ecore.region.owner")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to set sale prices!");
+            return true;
+        }
+
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region sellprice <name> <price>");
+            return true;
+        }
+
+        World world = sender instanceof Player ? ((Player) sender).getWorld() : plugin.getServer().getWorlds().get(0);
+        Region region = plugin.getRegionManager().getRegion(world, args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        try {
+            double price = Double.parseDouble(args[2]);
+            if (price < 0) {
+                sender.sendMessage(ChatColor.RED + "Price must be positive!");
+                return true;
+            }
+            
+            region.setSalePrice(price);
+            plugin.getRegionManager().saveRegions();
+            sender.sendMessage(ChatColor.GREEN + "Sale price set to " + String.format("%.2f", price));
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ChatColor.RED + "Invalid price: " + args[2]);
+        }
+        
+        return true;
+    }
+
+    private boolean handleSetRentPrice(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("ecore.region.owner")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to set rent prices!");
+            return true;
+        }
+
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region rentprice <name> <price>");
+            return true;
+        }
+
+        World world = sender instanceof Player ? ((Player) sender).getWorld() : plugin.getServer().getWorlds().get(0);
+        Region region = plugin.getRegionManager().getRegion(world, args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        try {
+            double price = Double.parseDouble(args[2]);
+            if (price < 0) {
+                sender.sendMessage(ChatColor.RED + "Price must be positive!");
+                return true;
+            }
+            
+            region.setRentPrice(price);
+            plugin.getRegionManager().saveRegions();
+            sender.sendMessage(ChatColor.GREEN + "Rent price set to " + String.format("%.2f", price));
+        } catch (NumberFormatException e) {
+            sender.sendMessage(ChatColor.RED + "Invalid price: " + args[2]);
+        }
+        
+        return true;
+    }
+
+    private boolean handleSetSale(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("ecore.region.owner")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to set sale status!");
+            return true;
+        }
+
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region setsale <name> <true|false>");
+            return true;
+        }
+
+        World world = sender instanceof Player ? ((Player) sender).getWorld() : plugin.getServer().getWorlds().get(0);
+        Region region = plugin.getRegionManager().getRegion(world, args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        boolean forSale = Boolean.parseBoolean(args[2]);
+        region.setForSale(forSale);
+        plugin.getRegionManager().saveRegions();
+        sender.sendMessage(ChatColor.GREEN + "Region is now " + (forSale ? "for sale" : "not for sale"));
+        
+        return true;
+    }
+
+    private boolean handleSetRent(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("ecore.region.owner")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to set rent status!");
+            return true;
+        }
+
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.RED + "Usage: /region setrent <name> <true|false>");
+            return true;
+        }
+
+        World world = sender instanceof Player ? ((Player) sender).getWorld() : plugin.getServer().getWorlds().get(0);
+        Region region = plugin.getRegionManager().getRegion(world, args[1]);
+        
+        if (region == null) {
+            sender.sendMessage(ChatColor.RED + "Region not found: " + args[1]);
+            return true;
+        }
+
+        boolean forRent = Boolean.parseBoolean(args[2]);
+        region.setForRent(forRent);
+        plugin.getRegionManager().saveRegions();
+        sender.sendMessage(ChatColor.GREEN + "Region is now " + (forRent ? "for rent" : "not for rent"));
+        
         return true;
     }
 }

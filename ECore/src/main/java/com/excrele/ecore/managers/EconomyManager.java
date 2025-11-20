@@ -197,6 +197,11 @@ public class EconomyManager {
         return sorted.subList(0, Math.min(limit, sorted.size()));
     }
 
+    // Format currency amount
+    public String format(double amount) {
+        return String.format("%.2f", amount);
+    }
+
     // Get economy statistics
     public Map<String, Object> getStatistics() {
         Map<String, Object> stats = new HashMap<>();

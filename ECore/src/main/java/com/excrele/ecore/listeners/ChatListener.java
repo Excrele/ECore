@@ -20,10 +20,15 @@ public class ChatListener implements Listener {
             event.setMessage(message);
         }
 
-        if (event.getPlayer().hasPermission("ecore.nickname")) {
+        // Use nickname system if available
+        if (plugin.getNicknameManager() != null && plugin.getNicknameManager().hasNickname(event.getPlayer())) {
+            String formattedNickname = plugin.getNicknameManager().getFormattedNickname(event.getPlayer());
+            event.setFormat(formattedNickname + ChatColor.RESET + ": %2$s");
+        } else if (event.getPlayer().hasPermission("ecore.nickname")) {
+            // Fallback to display name if nickname system not available
             String nickname = event.getPlayer().getDisplayName();
-            if (nickname != null) {
-                event.setFormat(ChatColor.translateAlternateColorCodes('&', nickname) + "§r: %2$s");
+            if (nickname != null && !nickname.equals(event.getPlayer().getName())) {
+                event.setFormat(ChatColor.translateAlternateColorCodes('&', nickname) + ChatColor.RESET + ": %2$s");
             }
         }
 

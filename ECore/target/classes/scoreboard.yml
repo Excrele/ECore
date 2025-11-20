@@ -1,0 +1,63 @@
+# ============================================
+# ECore Scoreboard Configuration
+# ============================================
+# This file controls the custom scoreboard display
+# ============================================
+
+# Enable or disable the scoreboard system
+enabled: true
+
+# Scoreboard title (supports color codes with &)
+title: "&6&lYour Server"
+
+# Update interval in ticks (20 ticks = 1 second)
+# Lower values = more frequent updates (more server load)
+update-interval: 20
+
+# Scoreboard lines (displayed from bottom to top)
+# Supports color codes with &
+# Supports placeholders: %player%, %balance%, %homes%, %kills%, etc.
+# PlaceholderAPI placeholders are also supported (if PlaceholderAPI is installed)
+lines:
+  - "&7&m-------------------"
+  - "&eBalance: &a%ecore_balance%"
+  - "&eHomes: &a%ecore_homes%/%ecore_max_homes%"
+  - "&eKills: &a%ecore_kills%"
+  - "&eDeaths: &a%ecore_deaths%"
+  - "&eKDR: &a%ecore_kdr%"
+  - "&7&m-------------------"
+  - "&eOnline: &a%online%/%max%"
+  - "&7&m-------------------"
+
+# Per-world scoreboards (optional)
+# If enabled, different worlds can have different scoreboards
+per-world:
+  enabled: false
+  worlds:
+    world:
+      title: "&6&lOverworld"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+    world_nether:
+      title: "&4&lNether"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+
+# Per-group scoreboards (optional, requires LuckPerms)
+# If enabled, different permission groups can have different scoreboards
+per-group:
+  enabled: false
+  groups:
+    vip:
+      title: "&6&lVIP Scoreboard"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+    admin:
+      title: "&c&lAdmin Scoreboard"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+

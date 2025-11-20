@@ -23,6 +23,13 @@ public class Region {
     private final String regionType;
     private final UUID creator;
     private final long createdAt;
+    private double salePrice;
+    private boolean forSale;
+    private boolean forRent;
+    private double rentPrice;
+    private long rentDuration; // Duration in milliseconds
+    private UUID renter;
+    private long rentExpires;
     
     /**
      * Creates a new region.
@@ -50,6 +57,13 @@ public class Region {
         this.regionType = regionType;
         this.creator = creator;
         this.createdAt = System.currentTimeMillis();
+        this.salePrice = 0.0;
+        this.forSale = false;
+        this.forRent = false;
+        this.rentPrice = 0.0;
+        this.rentDuration = 0L;
+        this.renter = null;
+        this.rentExpires = 0L;
     }
     
     /**
@@ -263,6 +277,72 @@ public class Region {
      */
     public long getCreatedAt() {
         return createdAt;
+    }
+    
+    // Rent/Sell methods
+    public double getSalePrice() {
+        return salePrice;
+    }
+    
+    public void setSalePrice(double price) {
+        this.salePrice = price;
+    }
+    
+    public boolean isForSale() {
+        return forSale;
+    }
+    
+    public void setForSale(boolean forSale) {
+        this.forSale = forSale;
+    }
+    
+    public boolean isForRent() {
+        return forRent;
+    }
+    
+    public void setForRent(boolean forRent) {
+        this.forRent = forRent;
+    }
+    
+    public double getRentPrice() {
+        return rentPrice;
+    }
+    
+    public void setRentPrice(double price) {
+        this.rentPrice = price;
+    }
+    
+    public long getRentDuration() {
+        return rentDuration;
+    }
+    
+    public void setRentDuration(long duration) {
+        this.rentDuration = duration;
+    }
+    
+    public UUID getRenter() {
+        return renter;
+    }
+    
+    public void setRenter(UUID renter) {
+        this.renter = renter;
+        if (renter != null) {
+            this.rentExpires = System.currentTimeMillis() + rentDuration;
+        } else {
+            this.rentExpires = 0L;
+        }
+    }
+    
+    public void setRentExpires(long expires) {
+        this.rentExpires = expires;
+    }
+    
+    public long getRentExpires() {
+        return rentExpires;
+    }
+    
+    public boolean isRented() {
+        return renter != null && System.currentTimeMillis() < rentExpires;
     }
 }
 

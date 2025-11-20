@@ -176,6 +176,52 @@ public class ChatManager implements Listener {
         } else if (action.startsWith("home:set")) {
             // Home setting (handled elsewhere, but we cancel chat here)
             // This is handled in HomeGUIManager or similar
+        } else if (action.equals("friend:add")) {
+            // Friend add
+            Player target = Bukkit.getPlayer(message);
+            if (target == null) {
+                player.sendMessage("§cPlayer not found: " + message);
+                plugin.registerPendingAction(player, action);
+            } else {
+                plugin.getFriendManager().sendFriendRequest(player, target);
+            }
+        } else if (action.startsWith("party:invite")) {
+            // Party invite
+            Player target = Bukkit.getPlayer(message);
+            if (target == null) {
+                player.sendMessage("§cPlayer not found: " + message);
+                plugin.registerPendingAction(player, action);
+            } else {
+                plugin.getPartyManager().invitePlayer(player, target);
+            }
+        } else if (action.startsWith("party:kick")) {
+            // Party kick
+            Player target = Bukkit.getPlayer(message);
+            if (target == null) {
+                player.sendMessage("§cPlayer not found: " + message);
+                plugin.registerPendingAction(player, action);
+            } else {
+                plugin.getPartyManager().kickPlayer(player, target);
+            }
+        } else if (action.startsWith("blocklog:")) {
+            // Block log actions (handled in BlockLogCommand or similar)
+            String[] parts = action.split(":");
+            if (parts.length >= 3 && parts[2].equals("player")) {
+                Player target = Bukkit.getPlayer(message);
+                if (target == null) {
+                    player.sendMessage("§cPlayer not found: " + message);
+                    plugin.registerPendingAction(player, action);
+                } else {
+                    // Handle based on action type
+                    if (parts[1].equals("lookup")) {
+                        plugin.getBlockLogGUIManager().openLookupGUI(player, target.getUniqueId(), target.getName(), 3600000L);
+                    } else if (parts[1].equals("rollback")) {
+                        plugin.getBlockLogManager().rollbackPlayer(target.getUniqueId(), 3600000L, player);
+                    } else if (parts[1].equals("inventory")) {
+                        plugin.getBlockLogGUIManager().openInventoryRollbackGUI(player, target.getUniqueId(), target.getName(), 3600000L);
+                    }
+                }
+            }
         }
     }
 

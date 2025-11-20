@@ -134,6 +134,27 @@ public class RegionManager {
                     }
                     
                     Region region = new Region(regionName, world, min, max, flags, owners, members, regionType, creator);
+                    
+                    // Load rent/sell data
+                    if (regionsConfig.contains(path + ".for-sale")) {
+                        region.setForSale(regionsConfig.getBoolean(path + ".for-sale"));
+                        region.setSalePrice(regionsConfig.getDouble(path + ".sale-price", 0.0));
+                    }
+                    if (regionsConfig.contains(path + ".for-rent")) {
+                        region.setForRent(regionsConfig.getBoolean(path + ".for-rent"));
+                        region.setRentPrice(regionsConfig.getDouble(path + ".rent-price", 0.0));
+                        region.setRentDuration(regionsConfig.getLong(path + ".rent-duration", 0L));
+                    }
+                    if (regionsConfig.contains(path + ".renter")) {
+                        try {
+                            UUID renter = UUID.fromString(regionsConfig.getString(path + ".renter"));
+                            region.setRenter(renter);
+                            region.setRentExpires(regionsConfig.getLong(path + ".rent-expires", 0L));
+                        } catch (IllegalArgumentException e) {
+                            plugin.getLogger().warning("Invalid renter UUID in region '" + regionName + "'");
+                        }
+                    }
+                    
                     worldRegions.put(regionName, region);
                 } catch (Exception e) {
                     plugin.getLogger().log(Level.WARNING, "Failed to load region '" + regionName + "' in world '" + worldName + "': " + e.getMessage());
@@ -188,6 +209,17 @@ public class RegionManager {
                 regionsConfig.set(path + ".type", region.getRegionType());
                 if (region.getCreator() != null) {
                     regionsConfig.set(path + ".creator", region.getCreator().toString());
+                }
+                
+                // Save rent/sell data
+                regionsConfig.set(path + ".for-sale", region.isForSale());
+                regionsConfig.set(path + ".sale-price", region.getSalePrice());
+                regionsConfig.set(path + ".for-rent", region.isForRent());
+                regionsConfig.set(path + ".rent-price", region.getRentPrice());
+                regionsConfig.set(path + ".rent-duration", region.getRentDuration());
+                if (region.getRenter() != null) {
+                    regionsConfig.set(path + ".renter", region.getRenter().toString());
+                    regionsConfig.set(path + ".rent-expires", region.getRentExpires());
                 }
             }
         }
@@ -385,6 +417,165 @@ public class RegionManager {
             count += worldRegions.size();
         }
         return count;
+    }
+    
+    /**
+     * Visualizes a region by showing particles at the borders.
+     * 
+     * @param player The player to show particles to
+     * @param region The region to visualize
+     */
+    public void visualizeRegion(Player player, Region region) {
+        if (!player.getWorld().equals(region.getWorld())) {
+            player.sendMessage("§cYou must be in the same world as the region!");
+            return;
+        }
+        
+        Location min = region.getMin();
+        Location max = region.getMax();
+        
+        // Show particles at corners and edges
+        int minX = min.getBlockX();
+        int minY = min.getBlockY();
+        int minZ = min.getBlockZ();
+        int maxX = max.getBlockX();
+        int maxY = max.getBlockY();
+        int maxZ = max.getBlockZ();
+        
+        // Spawn particles along edges
+        for (int x = minX; x <= maxX; x += 2) {
+            spawnParticle(player, new Location(region.getWorld(), x, minY, minZ));
+            spawnParticle(player, new Location(region.getWorld(), x, maxY, minZ));
+            spawnParticle(player, new Location(region.getWorld(), x, minY, maxZ));
+            spawnParticle(player, new Location(region.getWorld(), x, maxY, maxZ));
+        }
+        
+        for (int y = minY; y <= maxY; y += 2) {
+            spawnParticle(player, new Location(region.getWorld(), minX, y, minZ));
+            spawnParticle(player, new Location(region.getWorld(), maxX, y, minZ));
+            spawnParticle(player, new Location(region.getWorld(), minX, y, maxZ));
+            spawnParticle(player, new Location(region.getWorld(), maxX, y, maxZ));
+        }
+        
+        for (int z = minZ; z <= maxZ; z += 2) {
+            spawnParticle(player, new Location(region.getWorld(), minX, minY, z));
+            spawnParticle(player, new Location(region.getWorld(), maxX, minY, z));
+            spawnParticle(player, new Location(region.getWorld(), minX, maxY, z));
+            spawnParticle(player, new Location(region.getWorld(), maxX, maxY, z));
+        }
+    }
+    
+    private void spawnParticle(Player player, Location location) {
+        try {
+            // Use FLAME particle for compatibility
+            player.spawnParticle(org.bukkit.Particle.FLAME, location, 1);
+        } catch (Exception e) {
+            // If particles don't work, just skip
+        }
+    }
+    
+    /**
+     * Buys a region for a player.
+     * 
+     * @param player The player buying the region
+     * @param region The region to buy
+     * @return true if successful
+     */
+    public boolean buyRegion(Player player, Region region) {
+        if (!region.isForSale()) {
+            player.sendMessage("§cThis region is not for sale!");
+            return false;
+        }
+        
+        double price = region.getSalePrice();
+        if (price <= 0) {
+            player.sendMessage("§cInvalid sale price!");
+            return false;
+        }
+        
+        if (plugin.getEconomyManager().getBalance(player.getUniqueId()) < price) {
+            player.sendMessage("§cYou don't have enough money! Required: §e" + 
+                    String.format("%.2f", price));
+            return false;
+        }
+        
+        // Transfer ownership
+        UUID oldOwner = region.getCreator();
+        if (oldOwner != null && plugin.getServer().getOfflinePlayer(oldOwner).isOnline()) {
+            Player oldOwnerPlayer = plugin.getServer().getPlayer(oldOwner);
+            if (oldOwnerPlayer != null) {
+                plugin.getEconomyManager().addBalance(oldOwnerPlayer.getUniqueId(), price);
+                oldOwnerPlayer.sendMessage("§aYour region '" + region.getName() + "' was sold to " + 
+                        player.getName() + " for " + String.format("%.2f", price));
+            } else {
+                plugin.getEconomyManager().addBalance(oldOwner, price);
+            }
+        }
+        
+        plugin.getEconomyManager().removeBalance(player.getUniqueId(), price);
+        
+        // Transfer ownership
+        region.getOwners().clear();
+        region.addOwner(player.getUniqueId());
+        region.setForSale(false);
+        region.setSalePrice(0.0);
+        saveRegions();
+        
+        player.sendMessage("§aYou bought the region '" + region.getName() + "' for " + 
+                String.format("%.2f", price));
+        return true;
+    }
+    
+    /**
+     * Rents a region for a player.
+     * 
+     * @param player The player renting the region
+     * @param region The region to rent
+     * @return true if successful
+     */
+    public boolean rentRegion(Player player, Region region) {
+        if (!region.isForRent()) {
+            player.sendMessage("§cThis region is not for rent!");
+            return false;
+        }
+        
+        if (region.isRented()) {
+            player.sendMessage("§cThis region is already rented!");
+            return false;
+        }
+        
+        double price = region.getRentPrice();
+        if (price <= 0) {
+            player.sendMessage("§cInvalid rent price!");
+            return false;
+        }
+        
+        if (plugin.getEconomyManager().getBalance(player.getUniqueId()) < price) {
+            player.sendMessage("§cYou don't have enough money! Required: §e" + 
+                    String.format("%.2f", price));
+            return false;
+        }
+        
+        UUID owner = region.getCreator();
+        if (owner != null && plugin.getServer().getOfflinePlayer(owner).isOnline()) {
+            Player ownerPlayer = plugin.getServer().getPlayer(owner);
+            if (ownerPlayer != null) {
+                plugin.getEconomyManager().addBalance(ownerPlayer.getUniqueId(), price);
+                ownerPlayer.sendMessage("§aYour region '" + region.getName() + "' was rented by " + 
+                        player.getName() + " for " + String.format("%.2f", price));
+            } else {
+                plugin.getEconomyManager().addBalance(owner, price);
+            }
+        }
+        
+        plugin.getEconomyManager().removeBalance(player.getUniqueId(), price);
+        
+        region.setRenter(player.getUniqueId());
+        saveRegions();
+        
+        player.sendMessage("§aYou rented the region '" + region.getName() + "' for " + 
+                String.format("%.2f", price));
+        return true;
     }
 }
 

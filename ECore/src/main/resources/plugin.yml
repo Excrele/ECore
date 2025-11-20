@@ -33,6 +33,15 @@ permissions:
   ecore.nickname:
     description: Allows setting nicknames
     default: true
+  ecore.nickname.color:
+    description: Allows using colors in nicknames
+    default: false
+  ecore.nickname.format:
+    description: Allows using custom formats in nicknames
+    default: false
+  ecore.nickname.view.others:
+    description: Allows viewing other players' nicknames
+    default: true
   ecore.colorchat:
     description: Allows using color codes in chat
     default: true
@@ -329,6 +338,132 @@ permissions:
     default: op
   ecore.blocklog.reload:
     description: Allows reloading block logging config
+    default: op
+  ecore.friend:
+    description: Allows using friend commands
+    default: true
+  ecore.party:
+    description: Allows using party commands
+    default: true
+  ecore.scoreboard.use:
+    description: Allows using scoreboard
+    default: true
+  ecore.scoreboard.reload:
+    description: Allows reloading scoreboard config
+    default: op
+  ecore.jobs:
+    description: Allows using jobs commands
+    default: true
+  ecore.jobs.admin:
+    description: Allows managing jobs (admin only)
+    default: op
+  ecore.quests:
+    description: Allows using quest commands
+    default: true
+  ecore.quests.admin:
+    description: Allows managing quests (admin only)
+    default: op
+  ecore.vault:
+    description: Allows using vault commands
+    default: true
+  ecore.vault.1:
+    description: Allows having 1 vault
+    default: true
+  ecore.vault.2:
+    description: Allows having 2 vaults
+    default: false
+  ecore.vault.3:
+    description: Allows having 3 vaults
+    default: false
+  ecore.vault.4:
+    description: Allows having 4 vaults
+    default: false
+  ecore.vault.5:
+    description: Allows having 5 vaults
+    default: false
+  ecore.vault.6:
+    description: Allows having 6 vaults
+    default: false
+  ecore.vault.7:
+    description: Allows having 7 vaults
+    default: false
+  ecore.vault.8:
+    description: Allows having 8 vaults
+    default: false
+  ecore.vault.9:
+    description: Allows having 9 vaults
+    default: false
+  ecore.vault.10:
+    description: Allows having 10 vaults
+    default: false
+  ecore.title:
+    description: Allows using /title command
+    default: op
+  ecore.title.all:
+    description: Allows using /titleall command
+    default: op
+  ecore.actionbar:
+    description: Allows using /actionbar command
+    default: op
+  ecore.actionbar.all:
+    description: Allows using /actionbarall command
+    default: op
+  ecore.title.clear:
+    description: Allows using /cleartitle command
+    default: op
+  ecore.title.clear.all:
+    description: Allows clearing all titles
+    default: op
+  ecore.recipe:
+    description: Allows viewing custom recipes
+    default: true
+  ecore.recipe.admin:
+    description: Allows managing custom recipes
+    default: op
+  ecore.enchant:
+    description: Allows viewing custom enchantments
+    default: true
+  ecore.enchant.admin:
+    description: Allows applying/removing custom enchantments
+    default: op
+  ecore.backup.create:
+    description: Allows creating backups
+    default: op
+  ecore.backup.list:
+    description: Allows listing backups
+    default: op
+  ecore.backup.restore:
+    description: Allows restoring backups
+    default: op
+  ecore.backup.reload:
+    description: Allows reloading backup configuration
+    default: op
+  ecore.channel:
+    description: Allows using chat channel commands
+    default: true
+  ecore.channel.admin:
+    description: Allows managing channels (admin only)
+    default: op
+  ecore.chat.global:
+    description: Allows using global channel
+    default: true
+  ecore.chat.local:
+    description: Allows using local channel
+    default: true
+  ecore.chat.trade:
+    description: Allows using trade channel
+    default: true
+  ecore.chat.help:
+    description: Allows using help channel
+    default: true
+  ecore.chat.staff:
+    description: Allows using staff channel
+    default: op
+  ecore.tablist.use:
+    description: Allows using custom tab list
+    default: true
+  ecore.tablist.reload:
+    description: Allows reloading tab list config
     default: op
   listhomes:
     description: List all your homes
@@ -702,3 +837,75 @@ permissions:
   co:
     description: Block logging alias (CoreProtect-like)
     usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  friend:
+    description: Friend system commands
+    usage: /<command> [add|remove|list|accept|deny|requests]
+  friends:
+    description: Friend system alias
+    usage: /<command> [add|remove|list|accept|deny|requests]
+  party:
+    description: Party system commands
+    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
+  p:
+    description: Party system alias
+    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
+  scoreboard:
+    description: Scoreboard management commands
+    usage: /<command> [toggle|reload|tablist reload]
+  sb:
+    description: Scoreboard alias
+    usage: /<command> [toggle|reload|tablist reload]
+  jobs:
+    description: Jobs system commands
+    usage: /<command> [join|leave|info|top|list] [args]
+  quest:
+    description: Quests system commands
+    usage: /<command> [list|start|active|completed|info] [args]
+  quests:
+    description: Quests system alias
+    usage: /<command> [list|start|active|completed|info] [args]
+  channel:
+    description: Chat channels system commands
+    usage: /<command> [join|leave|list|current|mute|unmute] [args]
+  ch:
+    description: Chat channel alias
+    usage: /<command> [message] or [join|leave|list|current|mute|unmute] [args]
+  vault:
+    description: Player vault system commands
+    usage: /<command> [open|create|rename|trust|untrust|list] [args]
+  pv:
+    description: Player vault alias
+    usage: /<command> [open|create|rename|trust|untrust|list] [args]
+  title:
+    description: Send title to a player
+    usage: /<command> <player> <title> [subtitle] [fadeIn] [stay] [fadeOut]
+  titleall:
+    description: Broadcast title to all players
+    usage: /<command> <title> [subtitle] [fadeIn] [stay] [fadeOut]
+  actionbar:
+    description: Send action bar message to a player
+    usage: /<command> <player> <message>
+  actionbarall:
+    description: Broadcast action bar message to all players
+    usage: /<command> <message>
+  cleartitle:
+    description: Clear title for a player
+    usage: /<command> [player|all]
+  recipe:
+    description: Custom recipes management
+    usage: /<command> [create|remove|list|reload] [args]
+  enchant:
+    description: Custom enchantments management
+    usage: /<command> [apply|remove|list|info] [args]
+  customenchant:
+    description: Custom enchantments alias
+    usage: /<command> [apply|remove|list|info] [args]
+  nick:
+    description: Nickname management commands
+    usage: /<command> [set|reset|color|format|view] [args]
+  nickname:
+    description: Nickname management alias
+    usage: /<command> [set|reset|color|format|view] [args]
+  backup:
+    description: Backup system commands
+    usage: /<command> [create|list|restore|reload] [args]
