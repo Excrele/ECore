@@ -48,8 +48,46 @@ public class ReportManager {
         );
     }
 
-    // Alias for submitReport to resolve compilation error
     public void createReport(String reporter, String target, String reason) {
         submitReport(reporter, target, reason);
+    }
+
+    public java.util.Set<String> getReportIds() {
+        if (!reportConfig.contains("reports")) {
+            return new java.util.HashSet<>();
+        }
+        return reportConfig.getConfigurationSection("reports").getKeys(false);
+    }
+
+    public String getReporter(String reportId) {
+        return reportConfig.getString("reports." + reportId + ".reporter");
+    }
+
+    public String getTarget(String reportId) {
+        return reportConfig.getString("reports." + reportId + ".target");
+    }
+
+    public String getReason(String reportId) {
+        return reportConfig.getString("reports." + reportId + ".reason");
+    }
+
+    public long getTimestamp(String reportId) {
+        return reportConfig.getLong("reports." + reportId + ".timestamp", 0);
+    }
+
+    public boolean isResolved(String reportId) {
+        return reportConfig.getBoolean("reports." + reportId + ".resolved", false);
+    }
+
+    public void resolveReport(String reportId, String resolver, String notes) {
+        reportConfig.set("reports." + reportId + ".resolved", true);
+        reportConfig.set("reports." + reportId + ".resolver", resolver);
+        reportConfig.set("reports." + reportId + ".resolution-notes", notes);
+        reportConfig.set("reports." + reportId + ".resolved-time", System.currentTimeMillis());
+        try {
+            reportConfig.save(reportFile);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Failed to save report resolution: " + e.getMessage());
+        }
     }
 }

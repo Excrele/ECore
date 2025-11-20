@@ -1,10 +1,18 @@
 home:
   max-homes: 5  # Maximum number of homes per player
+  teleport-cost: 0.0  # Cost to teleport to a home (0 = free)
+  cooldown: 0  # Cooldown in seconds between home teleports (0 = no cooldown)
+  warmup: 0  # Warmup delay in seconds before teleport (0 = instant)
 report:
   max-reports: 5  # Maximum number of reports a player can submit
   report-cooldown: 300  # Cooldown in seconds between reports
 economy:
   starting-balance: 100.0  # Starting balance for new players
+bank:
+  max-accounts: 3  # Maximum number of bank accounts per player
+  default-interest-rate: 0.01  # Default interest rate (1% = 0.01)
+  interest-interval: 86400000  # Time between interest calculations in milliseconds (24 hours)
+  interest-check-interval: 3600000  # How often to check for interest in milliseconds (1 hour)
 shops:
   admin-sign-format:
     - "&2[Admin Shop]"

@@ -4,7 +4,12 @@ import com.excrele.ecore.Ecore;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.logging.Level;
@@ -12,126 +17,188 @@ import java.util.logging.Level;
 public class DiscordManager {
     private final Ecore plugin;
     private JDA jda;
-    private TextChannel chatChannel;
-    private TextChannel punishmentChannel;
-    private TextChannel staffLogsChannel;
+    private final FileConfiguration config;
 
     public DiscordManager(Ecore plugin) {
         this.plugin = plugin;
-        initializeDiscord();
+        this.config = plugin.getConfigManager().getDiscordConfig();
+        if (config.getBoolean("discord.enabled")) {
+            initializeBot();
+        } else {
+            plugin.getLogger().info("Discord bot is disabled in discordconf.yml.");
+        }
     }
 
-    private void initializeDiscord() {
-        FileConfiguration config = plugin.getConfigManager().getDiscordConfig();
-        if (!config.getBoolean("discord.enabled", false)) {
-            plugin.getLogger().info("Discord integration is disabled in discordconf.yml.");
-            return;
-        }
-
-        String token = config.getString("discord.bot-token", "");
-        if (token == null || token.trim().isEmpty()) {
-            plugin.getLogger().warning("Discord bot token is not set or invalid in discordconf.yml!");
+    private void initializeBot() {
+        String token = config.getString("discord.bot-token");
+        if (token == null || token.isEmpty() || token.equals("YOUR_BOT_TOKEN_HERE")) {
+            plugin.getLogger().warning("Invalid or missing Discord bot token in discordconf.yml. Bot will not start.");
             return;
         }
 
         try {
             jda = JDABuilder.createDefault(token)
                     .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+                    .addEventListeners(new DiscordMessageListener())
                     .build();
             jda.awaitReady();
-
-            String chatChannelId = config.getString("discord.channel-id", "");
-            String punishmentChannelId = config.getString("discord.punishment-channel-id", "");
-            String staffLogsChannelId = config.getString("discord.staff-logs-channel-id", "");
-
-            chatChannel = jda.getTextChannelById(chatChannelId);
-            punishmentChannel = jda.getTextChannelById(punishmentChannelId);
-            staffLogsChannel = jda.getTextChannelById(staffLogsChannelId);
-
-            if (chatChannel == null) {
-                plugin.getLogger().warning("Chat channel ID " + chatChannelId + " is invalid or bot lacks access!");
-            }
-            if (punishmentChannel == null) {
-                plugin.getLogger().warning("Punishment channel ID " + punishmentChannelId + " is invalid or bot lacks access!");
-            }
-            if (staffLogsChannel == null) {
-                plugin.getLogger().warning("Staff logs channel ID " + staffLogsChannelId + " is invalid or bot lacks access!");
-            }
-
-            if (chatChannel != null) {
-                sendServerStartNotification();
-            }
-        } catch (IllegalArgumentException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to initialize Discord bot: Invalid token or configuration!", e);
+            plugin.getLogger().info("Discord bot connected successfully as " + jda.getSelfUser().getName());
         } catch (InterruptedException e) {
-            plugin.getLogger().log(Level.SEVERE, "Interrupted while waiting for Discord bot to be ready!", e);
+            plugin.getLogger().warning("Discord bot initialization interrupted: " + e.getMessage());
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Unexpected error initializing Discord bot!", e);
+            plugin.getLogger().warning("Failed to initialize Discord bot: " + e.getMessage());
+        }
+    }
+
+    public void sendChatToDiscord(String playerName, String message) {
+        if (jda == null) return;
+
+        String channelId = config.getString("discord.channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel == null) return;
+
+        String format = config.getString("discord.message-formats.minecraft-to-discord", 
+            "[Minecraft] %player%: %message%");
+        String discordMessage = format
+            .replace("%player%", playerName)
+            .replace("%message%", message);
+
+        try {
+            channel.sendMessage(discordMessage).queue();
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to send chat to Discord: " + e.getMessage());
+        }
+    }
+
+    private class DiscordMessageListener extends ListenerAdapter {
+        @Override
+        public void onMessageReceived(MessageReceivedEvent event) {
+            if (event.getAuthor().isBot()) return;
+            if (!event.getChannel().getId().equals(config.getString("discord.channel-id"))) return;
+
+            String format = config.getString("discord.message-formats.discord-to-minecraft",
+                "&7[Discord] &f%user%: %message%");
+            String minecraftMessage = format
+                .replace("%user%", event.getAuthor().getName())
+                .replace("%message%", event.getMessage().getContentDisplay());
+
+            String formatted = ChatColor.translateAlternateColorCodes('&', minecraftMessage);
+            Bukkit.broadcastMessage(formatted);
         }
     }
 
     public void sendServerStartNotification() {
-        if (chatChannel != null) {
-            chatChannel.sendMessage("Server has started!").queue(
-                    success -> plugin.getLogger().info("Sent server start message to Discord chat channel."),
-                    error -> plugin.getLogger().warning("Failed to send server start message: " + error.getMessage())
-            );
-        } else {
-            plugin.getLogger().warning("Cannot send server start message: Chat channel is not initialized!");
+        if (jda == null) {
+            plugin.getLogger().warning("Cannot send server start notification: Discord bot is not initialized.");
+            return;
+        }
+
+        String channelId = config.getString("discord.channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel != null) {
+            try {
+                channel.sendMessage("Server has started!").queue();
+                plugin.getLogger().info("Sent server start message to Discord chat channel.");
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send server start message: " + e.getMessage());
+            }
         }
     }
 
-    public void sendChatNotification(String message) {
-        if (chatChannel != null) {
-            chatChannel.sendMessage(message).queue(
-                    success -> plugin.getLogger().info("Sent chat notification to Discord: " + message),
-                    error -> plugin.getLogger().warning("Failed to send chat notification: " + error.getMessage())
-            );
-        } else {
-            plugin.getLogger().warning("Cannot send chat notification: Chat channel is not initialized!");
+    public void sendServerStopNotification() {
+        if (jda == null) {
+            plugin.getLogger().warning("Cannot send server stop notification: Discord bot is not initialized.");
+            return;
+        }
+
+        String channelId = config.getString("discord.channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel != null) {
+            try {
+                channel.sendMessage("Server is stopping!").queue();
+                plugin.getLogger().info("Sent server stop message to Discord chat channel.");
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to send server stop message: " + e.getMessage());
+            }
         }
     }
 
-    public void sendPunishmentNotification(String player, String action, String reason, String duration) {
-        if (punishmentChannel != null) {
-            String message = String.format("**Punishment Log**\nPlayer: %s\nAction: %s\nReason: %s\nDuration: %s", player, action, reason, duration);
-            punishmentChannel.sendMessage(message).queue(
-                    success -> plugin.getLogger().info("Sent punishment notification for " + player + " to Discord."),
-                    error -> plugin.getLogger().warning("Failed to send punishment notification: " + error.getMessage())
-            );
-        } else {
-            plugin.getLogger().warning("Cannot send punishment notification: Punishment channel is not initialized!");
+    public void sendStaffLogNotification(String logType, String playerName, String action, String target, String details) {
+        if (jda == null) {
+            plugin.getLogger().warning("Cannot send staff log: Discord bot is not initialized.");
+            return;
+        }
+
+        String channelId = config.getString("discord.punishment-channel-id");
+        TextChannel channel = getChannel(channelId);
+        if (channel == null) {
+            return;
+        }
+
+        String message;
+        switch (logType.toLowerCase()) {
+            case "shop-log":
+                message = String.format("**Shop Edit Log**\nPlayer: %s\nAction: %s\nTarget: %s\nDetails: %s",
+                        playerName, action, target, details);
+                break;
+            case "report-log":
+                message = String.format("**Report Log**\nReporter: %s\nAction: %s\nTarget: %s\nReason: %s",
+                        playerName, action, target, details);
+                break;
+            case "home-log":
+                message = String.format("**Home Log**\nPlayer: %s\nAction: %s\nHome: %s\nLocation: %s",
+                        playerName, action, target, details);
+                break;
+            case "punishment-log":
+                message = String.format("**Punishment Log**\nStaff: %s\nAction: %s\nTarget: %s\nReason: %s",
+                        playerName, action, target, details);
+                break;
+            default:
+                message = String.format("**Staff Log**\nPlayer: %s\nAction: %s\nTarget: %s\nDetails: %s",
+                        playerName, action, target, details);
+        }
+
+        try {
+            channel.sendMessage(message).queue();
+            plugin.getLogger().info("Sent staff log to Discord: " + message);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to send staff log: " + e.getMessage());
         }
     }
 
-    public void sendStaffLogNotification(String channel, String player, String action, String target, String value) {
-        TextChannel logChannel = channel.equals("playershop-log") || channel.equals("adminshop-log") ? punishmentChannel : staffLogsChannel;
-        if (logChannel != null) {
-            String message = String.format("**Staff Log**\nPlayer: %s\nAction: %s\nTarget: %s\nValue: %s", player, action, target, value);
-            logChannel.sendMessage(message).queue(
-                    success -> plugin.getLogger().info("Sent staff log for " + player + " to Discord channel " + channel + "."),
-                    error -> plugin.getLogger().warning("Failed to send staff log to " + channel + ": " + error.getMessage())
-            );
-        } else {
-            plugin.getLogger().warning("Cannot send staff log to " + channel + ": Log channel is not initialized!");
+    private TextChannel getChannel(String channelId) {
+        if (channelId == null || channelId.isEmpty() || channelId.equals("YOUR_CHANNEL_ID_HERE")) {
+            plugin.getLogger().warning("Invalid or missing channel ID in discordconf.yml.");
+            return null;
         }
-    }
 
-    public void shutdown() {
-        if (chatChannel != null) {
-            chatChannel.sendMessage("Server is stopping!").queue(
-                    success -> plugin.getLogger().info("Sent server stop message to Discord chat channel."),
-                    error -> plugin.getLogger().warning("Failed to send server stop message: " + error.getMessage())
-            );
-        }
-        if (jda != null) {
-            jda.shutdown();
-            plugin.getLogger().info("Discord bot has been shut down.");
+        try {
+            TextChannel channel = jda.getTextChannelById(channelId);
+            if (channel == null) {
+                plugin.getLogger().warning("Discord channel not found for ID: " + channelId);
+                return null;
+            }
+            if (!channel.canTalk()) {
+                plugin.getLogger().warning("Bot lacks permission to send messages in channel: " + channelId);
+                return null;
+            }
+            return channel;
+        } catch (Exception e) {
+            plugin.getLogger().warning("Error retrieving Discord channel " + channelId + ": " + e.getMessage());
+            return null;
         }
     }
 
     public void shutdownBot() {
-        shutdown();
+        if (jda != null) {
+            sendServerStopNotification();
+            try {
+                jda.shutdown();
+                plugin.getLogger().info("Discord bot shut down successfully.");
+            } catch (Exception e) {
+                plugin.getLogger().warning("Error shutting down Discord bot: " + e.getMessage());
+            }
+        }
     }
 }

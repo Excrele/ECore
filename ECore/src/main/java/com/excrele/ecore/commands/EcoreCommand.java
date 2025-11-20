@@ -45,9 +45,7 @@ public class EcoreCommand implements CommandExecutor {
                 break;
             case "home":
                 if (player.hasPermission("ecore.home")) {
-                    plugin.getHomeManager().getPlayerHomes(player);
-                    // Open home GUI (to be implemented)
-                    player.sendMessage("Home GUI opened!");
+                    plugin.getHomeGUIManager().openHomeGUI(player);
                 } else {
                     player.sendMessage("You don't have permission!");
                 }

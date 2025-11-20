@@ -1,11 +1,13 @@
 package com.excrele.ecore.managers;
 
-import com.excrele.ecore.Ecore;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
+import com.excrele.ecore.Ecore;
 
 public class ConfigManager {
     private final Ecore plugin;
@@ -14,52 +16,38 @@ public class ConfigManager {
     private FileConfiguration adminShopConfig;
     private FileConfiguration playerShopConfig;
     private File configFile;
-    private File discordFile;
+    private File discordConfigFile;
     private File adminShopFile;
     private File playerShopFile;
 
     public ConfigManager(Ecore plugin) {
         this.plugin = plugin;
-        saveDefaultConfigs();
+        initializeConfigs();
     }
 
-    // Save default configuration files
-    public void saveDefaultConfigs() {
-        saveDefaultConfig();
-        saveDefaultDiscordConfig();
-        saveDefaultAdminShopConfig();
-        saveDefaultPlayerShopConfig();
-    }
-
-    // Save default main config
-    public void saveDefaultConfig() {
+    private void initializeConfigs() {
+        // Main config
         configFile = new File(plugin.getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             plugin.saveResource("config.yml", false);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
-    }
 
-    // Save default discord config
-    public void saveDefaultDiscordConfig() {
-        discordFile = new File(plugin.getDataFolder(), "discordconf.yml");
-        if (!discordFile.exists()) {
+        // Discord config
+        discordConfigFile = new File(plugin.getDataFolder(), "discordconf.yml");
+        if (!discordConfigFile.exists()) {
             plugin.saveResource("discordconf.yml", false);
         }
-        discordConfig = YamlConfiguration.loadConfiguration(discordFile);
-    }
+        discordConfig = YamlConfiguration.loadConfiguration(discordConfigFile);
 
-    // Save default admin shop config
-    public void saveDefaultAdminShopConfig() {
+        // Admin Shop config
         adminShopFile = new File(plugin.getDataFolder(), "adminshops.yml");
         if (!adminShopFile.exists()) {
             plugin.saveResource("adminshops.yml", false);
         }
         adminShopConfig = YamlConfiguration.loadConfiguration(adminShopFile);
-    }
 
-    // Save default player shop config
-    public void saveDefaultPlayerShopConfig() {
+        // Player Shop config
         playerShopFile = new File(plugin.getDataFolder(), "playershops.yml");
         if (!playerShopFile.exists()) {
             plugin.saveResource("playershops.yml", false);
@@ -67,40 +55,50 @@ public class ConfigManager {
         playerShopConfig = YamlConfiguration.loadConfiguration(playerShopFile);
     }
 
-    // Get main config
     public FileConfiguration getConfig() {
         return config;
     }
 
-    // Get discord config
     public FileConfiguration getDiscordConfig() {
         return discordConfig;
     }
 
-    // Get admin shop config
+    public void saveConfig() {
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Failed to save config.yml: " + e.getMessage());
+        }
+    }
+
+    public void saveDiscordConfig() {
+        try {
+            discordConfig.save(discordConfigFile);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Failed to save discordconf.yml: " + e.getMessage());
+        }
+    }
+
+    public int getMaxHomes() {
+        return config.getInt("home.max-homes", 5);
+    }
+
     public FileConfiguration getAdminShopConfig() {
         return adminShopConfig;
     }
 
-    // Get player shop config
     public FileConfiguration getPlayerShopConfig() {
         return playerShopConfig;
     }
 
-    // Get maximum homes
-    public int getMaxHomes() {
-        return config.getInt("homes.max-homes", 5);
-    }
-
-    // Save specific config file
     public void saveConfig(String fileName) {
         try {
-            switch (fileName) {
+            switch (fileName.toLowerCase()) {
                 case "config.yml":
                     config.save(configFile);
                     break;
                 case "discordconf.yml":
-                    discordConfig.save(discordFile);
+                    discordConfig.save(discordConfigFile);
                     break;
                 case "adminshops.yml":
                     adminShopConfig.save(adminShopFile);
@@ -108,23 +106,15 @@ public class ConfigManager {
                 case "playershops.yml":
                     playerShopConfig.save(playerShopFile);
                     break;
-                default:
-                    plugin.getLogger().warning("Unknown config file: " + fileName);
             }
         } catch (IOException e) {
-            plugin.getLogger().warning("Failed to save config " + fileName + ": " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Failed to save " + fileName + ": " + e.getMessage());
         }
     }
 
-    // Reload main config
     public void reloadConfig() {
         config = YamlConfiguration.loadConfiguration(configFile);
-    }
-
-    // Reload all configs
-    public void reloadConfigs() {
-        config = YamlConfiguration.loadConfiguration(configFile);
-        discordConfig = YamlConfiguration.loadConfiguration(discordFile);
+        discordConfig = YamlConfiguration.loadConfiguration(discordConfigFile);
         adminShopConfig = YamlConfiguration.loadConfiguration(adminShopFile);
         playerShopConfig = YamlConfiguration.loadConfiguration(playerShopFile);
     }
