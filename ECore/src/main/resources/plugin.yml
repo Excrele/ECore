@@ -1,5 +1,5 @@
 name: Ecore
-version: 1.0
+version: 1.0.1
 main: com.excrele.ecore.Ecore
 api-version: 1.21
 description: Excrele's Core plugin for staff moderation, home system, player reports, Discord integration with server status and staff logs, economy, shops, gamemode GUI, and gameplay features.

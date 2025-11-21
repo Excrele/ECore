@@ -496,6 +496,15 @@ mob-customization:
   # Enable or disable the mob customization system
   enabled: true
 
+# Combat Back to the Roots Configuration
+# Removes attack cooldowns for melee weapons and tools (like older Minecraft versions and Bedrock edition)
+# Bows and crossbows still have their wind-up time
+combat-back-to-roots:
+  # Enable or disable the combat back to the roots feature
+  # When enabled, removes attack cooldowns for swords, axes, and tools
+  # Allows for smoother, faster combat similar to pre-1.9 Minecraft
+  enabled: false
+
 # ============================================
 # Configuration Version (DO NOT MODIFY)
 # ============================================

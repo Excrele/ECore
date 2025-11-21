@@ -14,6 +14,11 @@ title: "&6&lYour Server"
 # Lower values = more frequent updates (more server load)
 update-interval: 20
 
+# Show score numbers on the right side of the scoreboard
+# If false, all scores will be set to 0 (making them less noticeable)
+# If true, scores will be displayed based on line position
+show-scores: true
+
 # Scoreboard lines (displayed from bottom to top)
 # Supports color codes with &
 # Supports placeholders: %player%, %balance%, %homes%, %kills%, etc.

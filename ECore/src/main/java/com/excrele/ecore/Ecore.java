@@ -39,7 +39,7 @@ import java.util.UUID;
  * </ul>
  * 
  * @author Excrele
- * @version 1.0
+ * @version 1.0.1
  */
 public class Ecore extends JavaPlugin {
     private ConfigManager configManager;
@@ -384,6 +384,9 @@ public class Ecore extends JavaPlugin {
         if (configManager.getConfig().getBoolean("command-control.enabled", true)) {
             getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CommandControlListener(this), this);
         }
+        
+        // Register combat back to the roots listener
+        getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CombatBackToRootsListener(this), this);
 
         // Register PlaceholderAPI expansion if available
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {

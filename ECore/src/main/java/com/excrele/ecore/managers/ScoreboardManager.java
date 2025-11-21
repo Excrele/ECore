@@ -67,6 +67,9 @@ public class ScoreboardManager {
             scoreboard.resetScores(entry);
         }
 
+        // Check if scores should be displayed
+        boolean showScores = scoreboardConfig.getBoolean("show-scores", true);
+        
         // Add new lines (in reverse order for scoreboard)
         int score = lines.size();
         for (String line : lines) {
@@ -85,7 +88,14 @@ public class ScoreboardManager {
             String entry = getEntryForScore(score);
             team.addEntry(entry);
             team.setPrefix(processedLine);
-            objective.getScore(entry).setScore(score);
+            
+            // Set score based on configuration
+            if (showScores) {
+                objective.getScore(entry).setScore(score);
+            } else {
+                // Set all scores to 0 to make them less noticeable
+                objective.getScore(entry).setScore(0);
+            }
             score--;
         }
     }
