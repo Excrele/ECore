@@ -196,7 +196,13 @@ public class JobManager {
             String path = "jobs." + jobId;
             String name = jobsConfig.getString(path + ".name", jobId);
             String description = jobsConfig.getString(path + ".description", "");
-            Material icon = Material.valueOf(jobsConfig.getString(path + ".icon", "DIAMOND_PICKAXE"));
+            Material icon;
+            try {
+                icon = Material.valueOf(jobsConfig.getString(path + ".icon", "DIAMOND_PICKAXE"));
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Invalid icon material for job '" + jobId + "'. Using DIAMOND_PICKAXE as default.");
+                icon = Material.DIAMOND_PICKAXE;
+            }
             List<String> lore = jobsConfig.getStringList(path + ".lore");
             
             Map<String, JobAction> actions = new HashMap<>();
@@ -213,29 +219,41 @@ public class JobManager {
                     if (jobsConfig.getConfigurationSection(actionPath + ".item-rewards") != null) {
                         for (String rewardKey : jobsConfig.getConfigurationSection(actionPath + ".item-rewards").getKeys(false)) {
                             String rewardPath = actionPath + ".item-rewards." + rewardKey;
-                            Material mat = Material.valueOf(jobsConfig.getString(rewardPath + ".material", "STONE"));
-                            int amount = jobsConfig.getInt(rewardPath + ".amount", 1);
-                            int level = jobsConfig.getInt(rewardPath + ".level", 1);
-                            double chance = jobsConfig.getDouble(rewardPath + ".chance", 1.0);
-                            itemRewards.add(new ItemReward(mat, amount, level, chance));
+                            try {
+                                Material mat = Material.valueOf(jobsConfig.getString(rewardPath + ".material", "STONE"));
+                                int amount = jobsConfig.getInt(rewardPath + ".amount", 1);
+                                int level = jobsConfig.getInt(rewardPath + ".level", 1);
+                                double chance = jobsConfig.getDouble(rewardPath + ".chance", 1.0);
+                                itemRewards.add(new ItemReward(mat, amount, level, chance));
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().warning("Invalid material in item reward '" + rewardKey + "' for job '" + jobId + "' action '" + actionId + "'. Skipping...");
+                            }
                         }
                     }
                     
                     Map<Material, Double> materialExp = new HashMap<>();
                     if (jobsConfig.getConfigurationSection(actionPath + ".materials") != null) {
                         for (String matKey : jobsConfig.getConfigurationSection(actionPath + ".materials").getKeys(false)) {
-                            Material mat = Material.valueOf(matKey);
-                            double multiplier = jobsConfig.getDouble(actionPath + ".materials." + matKey, 1.0);
-                            materialExp.put(mat, multiplier);
+                            try {
+                                Material mat = Material.valueOf(matKey);
+                                double multiplier = jobsConfig.getDouble(actionPath + ".materials." + matKey, 1.0);
+                                materialExp.put(mat, multiplier);
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().warning("Invalid material '" + matKey + "' in job '" + jobId + "' action '" + actionId + "'. Skipping...");
+                            }
                         }
                     }
                     
                     Map<EntityType, Double> entityExp = new HashMap<>();
                     if (jobsConfig.getConfigurationSection(actionPath + ".entities") != null) {
                         for (String entityKey : jobsConfig.getConfigurationSection(actionPath + ".entities").getKeys(false)) {
-                            EntityType entity = EntityType.valueOf(entityKey);
-                            double multiplier = jobsConfig.getDouble(actionPath + ".entities." + entityKey, 1.0);
-                            entityExp.put(entity, multiplier);
+                            try {
+                                EntityType entity = EntityType.valueOf(entityKey);
+                                double multiplier = jobsConfig.getDouble(actionPath + ".entities." + entityKey, 1.0);
+                                entityExp.put(entity, multiplier);
+                            } catch (IllegalArgumentException e) {
+                                plugin.getLogger().warning("Invalid entity type '" + entityKey + "' in job '" + jobId + "' action '" + actionId + "'. Skipping...");
+                            }
                         }
                     }
                     

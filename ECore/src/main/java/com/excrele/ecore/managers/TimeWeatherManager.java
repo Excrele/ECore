@@ -6,10 +6,8 @@ import org.bukkit.entity.Player;
 import com.excrele.ecore.Ecore;
 
 public class TimeWeatherManager {
-    private final Ecore plugin;
-
     public TimeWeatherManager(Ecore plugin) {
-        this.plugin = plugin;
+        // Plugin reference kept for potential future use
     }
 
     public void setTime(World world, long time) {

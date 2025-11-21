@@ -23,6 +23,444 @@ commands:
   shopedit:
     description: Edit shop prices or quantity
     usage: /<command> <buy|sell|quantity> <value>
+  listhomes:
+    description: List all your homes
+    usage: /<command>
+  tp:
+    description: Teleport to a player
+    usage: /<command> <player> or /<command> <player1> <player2>
+  teleport:
+    description: Teleport to a player
+    usage: /<command> <player> or /<command> <player1> <player2>
+  tpa:
+    description: Request to teleport to a player
+    usage: /<command> <player>
+  tpahere:
+    description: Request a player to teleport to you
+    usage: /<command> <player>
+  tpaccept:
+    description: Accept a teleport request
+    usage: /<command>
+  tpdeny:
+    description: Deny a teleport request
+    usage: /<command>
+  back:
+    description: Return to your previous location
+    usage: /<command>
+  warp:
+    description: Teleport to a warp
+    usage: /<command> <name>
+  setwarp:
+    description: Create a warp
+    usage: /<command> <name>
+  delwarp:
+    description: Delete a warp
+    usage: /<command> <name>
+  deletewarp:
+    description: Delete a warp
+    usage: /<command> <name>
+  warps:
+    description: List all warps
+    usage: /<command>
+  spawn:
+    description: Teleport to spawn
+    usage: /<command> [player]
+  setspawn:
+    description: Set the spawn point
+    usage: /<command>
+  kit:
+    description: Get a kit
+    usage: /<command> <name> or /<command> list
+  mail:
+    description: Mail system
+    usage: /<command> <send|read|clear> [args]
+  balance:
+    description: Check your balance
+    usage: /<command> [player]
+  bal:
+    description: Check your balance
+    usage: /<command> [player]
+  money:
+    description: Check your balance
+    usage: /<command> [player]
+  pay:
+    description: Pay a player
+    usage: /<command> <player> <amount>
+  economy:
+    description: Economy management
+    usage: /<command> <give|take|set> <player> <amount>
+  eco:
+    description: Economy management
+    usage: /<command> <give|take|set> <player> <amount>
+  whois:
+    description: Get player information
+    usage: /<command> <player>
+  seen:
+    description: Check when a player was last seen
+    usage: /<command> <player>
+  list:
+    description: List online players
+    usage: /<command>
+  who:
+    description: List online players
+    usage: /<command>
+  ping:
+    description: Check your ping
+    usage: /<command> [player]
+  time:
+    description: Manage time
+    usage: /<command> <set|add> <value>
+  day:
+    description: Set time to day
+    usage: /<command>
+  night:
+    description: Set time to night
+    usage: /<command>
+  weather:
+    description: Manage weather
+    usage: /<command> <clear|rain|storm>
+  sun:
+    description: Clear weather
+    usage: /<command>
+  clear:
+    description: Clear weather
+    usage: /<command>
+  rain:
+    description: Set rain
+    usage: /<command>
+  storm:
+    description: Set storm
+    usage: /<command>
+  thunder:
+    description: Set storm
+    usage: /<command>
+  afk:
+    description: Toggle AFK status
+    usage: /<command> [player]
+  jail:
+    description: Jail a player
+    usage: /<command> <player> <jail> [time] [reason]
+  unjail:
+    description: Unjail a player
+    usage: /<command> <player>
+  setjail:
+    description: Create a jail location
+    usage: /<command> <name>
+  jailinfo:
+    description: Check jail information
+    usage: /<command> <player>
+  msg:
+    description: Send a private message
+    usage: /<command> <player> <message>
+  message:
+    description: Send a private message
+    usage: /<command> <player> <message>
+  tell:
+    description: Send a private message
+    usage: /<command> <player> <message>
+  whisper:
+    description: Send a private message
+    usage: /<command> <player> <message>
+  reply:
+    description: Reply to last message
+    usage: /<command> <message>
+  r:
+    description: Reply to last message
+    usage: /<command> <message>
+  chat:
+    description: Manage chat
+    usage: /<command> <on|off|clear>
+  sc:
+    description: Staff chat
+    usage: /<command> <message>
+  staffchat:
+    description: Staff chat
+    usage: /<command> <message>
+  ac:
+    description: Admin chat
+    usage: /<command> <message>
+  adminchat:
+    description: Admin chat
+    usage: /<command> <message>
+  mute:
+    description: Mute a player
+    usage: /<command> <player> [duration]
+  unmute:
+    description: Unmute a player
+    usage: /<command> <player>
+  freeze:
+    description: Freeze a player
+    usage: /<command> <player>
+  unfreeze:
+    description: Unfreeze a player
+    usage: /<command> <player>
+  top:
+    description: Teleport to highest block
+    usage: /<command>
+  jump:
+    description: Teleport forward
+    usage: /<command>
+  rtp:
+    description: Random teleport
+    usage: /<command>
+  tpbiome:
+    description: Teleport to a biome
+    usage: /<command> <biome>
+  teleportbiome:
+    description: Teleport to a biome
+    usage: /<command> <biome>
+  tpstructure:
+    description: Teleport to a structure
+    usage: /<command> <structure>
+  teleportstructure:
+    description: Teleport to a structure
+    usage: /<command> <structure>
+  stats:
+    description: View your statistics
+    usage: /<command>
+  statistics:
+    description: View your statistics
+    usage: /<command>
+  leaderboard:
+    description: View leaderboards
+    usage: /<command> [stat]
+  lb:
+    description: View leaderboards
+    usage: /<command> [stat]
+  near:
+    description: Show nearby players
+    usage: /<command> [radius]
+  baltop:
+    description: View economy leaderboard
+    usage: /<command> [limit]
+  balancetop:
+    description: View economy leaderboard
+    usage: /<command> [limit]
+  commandspy:
+    description: Toggle command spy
+    usage: /<command>
+  socialspy:
+    description: Toggle social spy
+    usage: /<command>
+  give:
+    description: Give item to player
+    usage: /<command> <player> <item> [amount]
+  enchant:
+    description: Enchant player's item
+    usage: /<command> <player> <enchantment> <level>
+  repair:
+    description: Repair items
+    usage: /<command> [all]
+  chatslow:
+    description: Set chat slow mode (staff only)
+    usage: /<command> <seconds> (0 to disable)
+  homeshare:
+    description: Share a home with a player
+    usage: /<command> <home> <player>
+  sharehome:
+    description: Share a home with a player
+    usage: /<command> <home> <player>
+  homeunshare:
+    description: Unshare a home with a player
+    usage: /<command> <home> <player>
+  unsharehome:
+    description: Unshare a home with a player
+    usage: /<command> <home> <player>
+  homecategory:
+    description: Set home category
+    usage: /<command> <home> <category>
+  sethomecategory:
+    description: Set home category
+    usage: /<command> <home> <category>
+  homeicon:
+    description: Set home icon
+    usage: /<command> <home> <material>
+  sethomeicon:
+    description: Set home icon
+    usage: /<command> <home> <material>
+  homedescription:
+    description: Set home description
+    usage: /<command> <home> <description>
+  sethomedescription:
+    description: Set home description
+    usage: /<command> <home> <description>
+  bank:
+    description: Bank account management
+    usage: /<command> <create|delete|list|balance|deposit|withdraw|transfer|interest> [args]
+  statsreset:
+    description: Reset player statistics (staff)
+    usage: /<command> <player> [stat]
+  resetstats:
+    description: Reset player statistics (staff)
+    usage: /<command> <player> [stat]
+  achievements:
+    description: View your achievements
+    usage: /<command> [list|give|check]
+  achievement:
+    description: View your achievements
+    usage: /<command> [list|give|check]
+  ah:
+    description: Auction house
+    usage: /<command> [create|bid|buyout|cancel|list|my]
+  auctionhouse:
+    description: Auction house
+    usage: /<command> [create|bid|buyout|cancel|list|my]
+  auction:
+    description: Auction house
+    usage: /<command> [create|bid|buyout|cancel|list|my]
+  serverinfo:
+    description: Display server information
+    usage: /<command>
+  wand:
+    description: Get WorldEdit selection wand
+    usage: /<command>
+  pos1:
+    description: Set selection position 1
+    usage: /<command>
+  pos2:
+    description: Set selection position 2
+    usage: /<command>
+  set:
+    description: Fill selection with blocks
+    usage: /<command> <block>
+  replace:
+    description: Replace blocks in selection
+    usage: /<command> <from> <to>
+  walls:
+    description: Create walls in selection
+    usage: /<command> <block>
+  hollow:
+    description: Create hollow box in selection
+    usage: /<command> <block>
+  copy:
+    description: Copy selection to clipboard
+    usage: /<command>
+  paste:
+    description: Paste clipboard at your location
+    usage: /<command>
+  cut:
+    description: Cut selection to clipboard
+    usage: /<command>
+  undo:
+    description: Undo last WorldEdit operation
+    usage: /<command>
+  redo:
+    description: Redo last undone operation
+    usage: /<command>
+  schematic:
+    description: Save/load schematics
+    usage: /<command> <save|load|list|delete> [name]
+  sphere:
+    description: Create a sphere
+    usage: /<command> <radius> <block> [hollow]
+  cylinder:
+    description: Create a cylinder
+    usage: /<command> <radius> <height> <block> [hollow]
+  sel:
+    description: Show selection information
+    usage: /<command>
+  selection:
+    description: Show selection information
+    usage: /<command>
+  region:
+    description: Region management commands
+    usage: /<command> <create|delete|list|info|flag|flags|addowner|removeowner|addmember|removemember|types|reload>
+  chunks:
+    description: Chunk pregeneration commands
+    usage: /<command> <generate|cancel|status> [radius]
+  staffmode:
+    description: Toggle staff mode
+    usage: /<command>
+  sm:
+    description: Toggle staff mode (alias)
+    usage: /<command>
+  mv:
+    description: World management commands
+    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
+  multiverse:
+    description: World management commands (alias)
+    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
+  portal:
+    description: Portal management commands
+    usage: /<command> <create|delete|list|info|setdest|wand> [args]
+  blocklog:
+    description: Block logging and rollback commands
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  bl:
+    description: Block logging alias
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  co:
+    description: Block logging alias (CoreProtect-like)
+    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
+  friend:
+    description: Friend system commands
+    usage: /<command> [add|remove|list|accept|deny|requests]
+  friends:
+    description: Friend system alias
+    usage: /<command> [add|remove|list|accept|deny|requests]
+  party:
+    description: Party system commands
+    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
+  p:
+    description: Party system alias
+    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
+  scoreboard:
+    description: Scoreboard management commands
+    usage: /<command> [toggle|reload|tablist reload]
+  sb:
+    description: Scoreboard alias
+    usage: /<command> [toggle|reload|tablist reload]
+  jobs:
+    description: Jobs system commands
+    usage: /<command> [join|leave|info|top|list] [args]
+  quest:
+    description: Quests system commands
+    usage: /<command> [list|start|active|completed|info] [args]
+  quests:
+    description: Quests system alias
+    usage: /<command> [list|start|active|completed|info] [args]
+  channel:
+    description: Chat channels system commands
+    usage: /<command> [join|leave|list|current|mute|unmute] [args]
+  ch:
+    description: Chat channel alias
+    usage: /<command> [message] or [join|leave|list|current|mute|unmute] [args]
+  vault:
+    description: Player vault system commands
+    usage: /<command> [open|create|rename|trust|untrust|list] [args]
+  pv:
+    description: Player vault alias
+    usage: /<command> [open|create|rename|trust|untrust|list] [args]
+  title:
+    description: Send title to a player
+    usage: /<command> <player> <title> [subtitle] [fadeIn] [stay] [fadeOut]
+  titleall:
+    description: Broadcast title to all players
+    usage: /<command> <title> [subtitle] [fadeIn] [stay] [fadeOut]
+  actionbar:
+    description: Send action bar message to a player
+    usage: /<command> <player> <message>
+  actionbarall:
+    description: Broadcast action bar message to all players
+    usage: /<command> <message>
+  cleartitle:
+    description: Clear title for a player
+    usage: /<command> [player|all]
+  recipe:
+    description: Custom recipes management
+    usage: /<command> [create|remove|list|reload] [args]
+  customenchant:
+    description: Custom enchantments alias
+    usage: /<command> [apply|remove|list|info] [args]
+  nick:
+    description: Nickname management commands
+    usage: /<command> [set|reset|color|format|view] [args]
+  nickname:
+    description: Nickname management alias
+    usage: /<command> [set|reset|color|format|view] [args]
+  backup:
+    description: Backup system commands
+    usage: /<command> [create|list|restore|reload] [args]
 permissions:
   ecore.staff:
     description: Allows access to staff commands and GUI
@@ -465,447 +903,3 @@ permissions:
   ecore.tablist.reload:
     description: Allows reloading tab list config
     default: op
-  listhomes:
-    description: List all your homes
-    usage: /<command>
-  tp:
-    description: Teleport to a player
-    usage: /<command> <player> or /<command> <player1> <player2>
-  teleport:
-    description: Teleport to a player
-    usage: /<command> <player> or /<command> <player1> <player2>
-  tpa:
-    description: Request to teleport to a player
-    usage: /<command> <player>
-  tpahere:
-    description: Request a player to teleport to you
-    usage: /<command> <player>
-  tpaccept:
-    description: Accept a teleport request
-    usage: /<command>
-  tpdeny:
-    description: Deny a teleport request
-    usage: /<command>
-  back:
-    description: Return to your previous location
-    usage: /<command>
-  warp:
-    description: Teleport to a warp
-    usage: /<command> <name>
-  setwarp:
-    description: Create a warp
-    usage: /<command> <name>
-  delwarp:
-    description: Delete a warp
-    usage: /<command> <name>
-  deletewarp:
-    description: Delete a warp
-    usage: /<command> <name>
-  warps:
-    description: List all warps
-    usage: /<command>
-  spawn:
-    description: Teleport to spawn
-    usage: /<command> [player]
-  setspawn:
-    description: Set the spawn point
-    usage: /<command>
-  kit:
-    description: Get a kit
-    usage: /<command> <name> or /<command> list
-  mail:
-    description: Mail system
-    usage: /<command> <send|read|clear> [args]
-  balance:
-    description: Check your balance
-    usage: /<command> [player]
-  bal:
-    description: Check your balance
-    usage: /<command> [player]
-  money:
-    description: Check your balance
-    usage: /<command> [player]
-  pay:
-    description: Pay a player
-    usage: /<command> <player> <amount>
-  economy:
-    description: Economy management
-    usage: /<command> <give|take|set> <player> <amount>
-  eco:
-    description: Economy management
-    usage: /<command> <give|take|set> <player> <amount>
-  whois:
-    description: Get player information
-    usage: /<command> <player>
-  seen:
-    description: Check when a player was last seen
-    usage: /<command> <player>
-  list:
-    description: List online players
-    usage: /<command>
-  who:
-    description: List online players
-    usage: /<command>
-  ping:
-    description: Check your ping
-    usage: /<command> [player]
-  time:
-    description: Manage time
-    usage: /<command> <set|add> <value>
-  day:
-    description: Set time to day
-    usage: /<command>
-  night:
-    description: Set time to night
-    usage: /<command>
-  weather:
-    description: Manage weather
-    usage: /<command> <clear|rain|storm>
-  sun:
-    description: Clear weather
-    usage: /<command>
-  clear:
-    description: Clear weather
-    usage: /<command>
-  rain:
-    description: Set rain
-    usage: /<command>
-  storm:
-    description: Set storm
-    usage: /<command>
-  thunder:
-    description: Set storm
-    usage: /<command>
-  afk:
-    description: Toggle AFK status
-    usage: /<command> [player]
-  jail:
-    description: Jail a player
-    usage: /<command> <player> <jail> [time] [reason]
-  unjail:
-    description: Unjail a player
-    usage: /<command> <player>
-  setjail:
-    description: Create a jail location
-    usage: /<command> <name>
-  jailinfo:
-    description: Check jail information
-    usage: /<command> <player>
-  msg:
-    description: Send a private message
-    usage: /<command> <player> <message>
-  message:
-    description: Send a private message
-    usage: /<command> <player> <message>
-  tell:
-    description: Send a private message
-    usage: /<command> <player> <message>
-  whisper:
-    description: Send a private message
-    usage: /<command> <player> <message>
-  reply:
-    description: Reply to last message
-    usage: /<command> <message>
-  r:
-    description: Reply to last message
-    usage: /<command> <message>
-  chat:
-    description: Manage chat
-    usage: /<command> <on|off|clear>
-  sc:
-    description: Staff chat
-    usage: /<command> <message>
-  staffchat:
-    description: Staff chat
-    usage: /<command> <message>
-  ac:
-    description: Admin chat
-    usage: /<command> <message>
-  adminchat:
-    description: Admin chat
-    usage: /<command> <message>
-  mute:
-    description: Mute a player
-    usage: /<command> <player> [duration]
-  unmute:
-    description: Unmute a player
-    usage: /<command> <player>
-  freeze:
-    description: Freeze a player
-    usage: /<command> <player>
-  unfreeze:
-    description: Unfreeze a player
-    usage: /<command> <player>
-  top:
-    description: Teleport to highest block
-    usage: /<command>
-  jump:
-    description: Teleport forward
-    usage: /<command>
-  rtp:
-    description: Random teleport
-    usage: /<command>
-  tpbiome:
-    description: Teleport to a biome
-    usage: /<command> <biome>
-  teleportbiome:
-    description: Teleport to a biome
-    usage: /<command> <biome>
-  tpstructure:
-    description: Teleport to a structure
-    usage: /<command> <structure>
-  teleportstructure:
-    description: Teleport to a structure
-    usage: /<command> <structure>
-  stats:
-    description: View your statistics
-    usage: /<command>
-  statistics:
-    description: View your statistics
-    usage: /<command>
-  leaderboard:
-    description: View leaderboards
-    usage: /<command> [stat]
-  lb:
-    description: View leaderboards
-    usage: /<command> [stat]
-  near:
-    description: Show nearby players
-    usage: /<command> [radius]
-  baltop:
-    description: View economy leaderboard
-    usage: /<command> [limit]
-  balancetop:
-    description: View economy leaderboard
-    usage: /<command> [limit]
-  commandspy:
-    description: Toggle command spy
-    usage: /<command>
-  socialspy:
-    description: Toggle social spy
-    usage: /<command>
-  give:
-    description: Give item to player
-    usage: /<command> <player> <item> [amount]
-  enchant:
-    description: Enchant player's item
-    usage: /<command> <player> <enchantment> <level>
-  repair:
-    description: Repair items
-    usage: /<command> [all]
-  chatslow:
-    description: Set chat slow mode (staff only)
-    usage: /<command> <seconds> (0 to disable)
-  homeshare:
-    description: Share a home with a player
-    usage: /<command> <home> <player>
-  sharehome:
-    description: Share a home with a player
-    usage: /<command> <home> <player>
-  homeunshare:
-    description: Unshare a home with a player
-    usage: /<command> <home> <player>
-  unsharehome:
-    description: Unshare a home with a player
-    usage: /<command> <home> <player>
-  homecategory:
-    description: Set home category
-    usage: /<command> <home> <category>
-  sethomecategory:
-    description: Set home category
-    usage: /<command> <home> <category>
-  homeicon:
-    description: Set home icon
-    usage: /<command> <home> <material>
-  sethomeicon:
-    description: Set home icon
-    usage: /<command> <home> <material>
-  homedescription:
-    description: Set home description
-    usage: /<command> <home> <description>
-  sethomedescription:
-    description: Set home description
-    usage: /<command> <home> <description>
-  bank:
-    description: Bank account management
-    usage: /<command> <create|delete|list|balance|deposit|withdraw|transfer|interest> [args]
-  statsreset:
-    description: Reset player statistics (staff)
-    usage: /<command> <player> [stat]
-  resetstats:
-    description: Reset player statistics (staff)
-    usage: /<command> <player> [stat]
-  achievements:
-    description: View your achievements
-    usage: /<command> [list|give|check]
-  achievement:
-    description: View your achievements
-    usage: /<command> [list|give|check]
-  ah:
-    description: Auction house
-    usage: /<command> [create|bid|buyout|cancel|list|my]
-  auctionhouse:
-    description: Auction house
-    usage: /<command> [create|bid|buyout|cancel|list|my]
-  auction:
-    description: Auction house
-    usage: /<command> [create|bid|buyout|cancel|list|my]
-  serverinfo:
-    description: Display server information
-    usage: /<command>
-  wand:
-    description: Get WorldEdit selection wand
-    usage: /<command>
-  pos1:
-    description: Set selection position 1
-    usage: /<command>
-  pos2:
-    description: Set selection position 2
-    usage: /<command>
-  set:
-    description: Fill selection with blocks
-    usage: /<command> <block>
-  replace:
-    description: Replace blocks in selection
-    usage: /<command> <from> <to>
-  clear:
-    description: Clear selection (set to air)
-    usage: /<command>
-  walls:
-    description: Create walls in selection
-    usage: /<command> <block>
-  hollow:
-    description: Create hollow box in selection
-    usage: /<command> <block>
-  copy:
-    description: Copy selection to clipboard
-    usage: /<command>
-  paste:
-    description: Paste clipboard at your location
-    usage: /<command>
-  cut:
-    description: Cut selection to clipboard
-    usage: /<command>
-  undo:
-    description: Undo last WorldEdit operation
-    usage: /<command>
-  redo:
-    description: Redo last undone operation
-    usage: /<command>
-  schematic:
-    description: Save/load schematics
-    usage: /<command> <save|load|list|delete> [name]
-  sphere:
-    description: Create a sphere
-    usage: /<command> <radius> <block> [hollow]
-  cylinder:
-    description: Create a cylinder
-    usage: /<command> <radius> <height> <block> [hollow]
-  sel:
-    description: Show selection information
-    usage: /<command>
-  selection:
-    description: Show selection information
-    usage: /<command>
-  region:
-    description: Region management commands
-    usage: /<command> <create|delete|list|info|flag|flags|addowner|removeowner|addmember|removemember|types|reload>
-  chunks:
-    description: Chunk pregeneration commands
-    usage: /<command> <generate|cancel|status> [radius]
-  staffmode:
-    description: Toggle staff mode
-    usage: /<command>
-  sm:
-    description: Toggle staff mode (alias)
-    usage: /<command>
-  mv:
-    description: World management commands
-    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
-  multiverse:
-    description: World management commands (alias)
-    usage: /<command> <create|load|unload|delete|list|tp|spawn|setspawn|info|reload> [args]
-  portal:
-    description: Portal management commands
-    usage: /<command> <create|delete|list|info|setdest|wand> [args]
-  blocklog:
-    description: Block logging and rollback commands
-    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
-  bl:
-    description: Block logging alias
-    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
-  co:
-    description: Block logging alias (CoreProtect-like)
-    usage: /<command> [lookup|rollback|restore|inspect|inventory|purge|reload] [args]
-  friend:
-    description: Friend system commands
-    usage: /<command> [add|remove|list|accept|deny|requests]
-  friends:
-    description: Friend system alias
-    usage: /<command> [add|remove|list|accept|deny|requests]
-  party:
-    description: Party system commands
-    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
-  p:
-    description: Party system alias
-    usage: /<command> [create|invite|accept|leave|kick|list|chat] [args]
-  scoreboard:
-    description: Scoreboard management commands
-    usage: /<command> [toggle|reload|tablist reload]
-  sb:
-    description: Scoreboard alias
-    usage: /<command> [toggle|reload|tablist reload]
-  jobs:
-    description: Jobs system commands
-    usage: /<command> [join|leave|info|top|list] [args]
-  quest:
-    description: Quests system commands
-    usage: /<command> [list|start|active|completed|info] [args]
-  quests:
-    description: Quests system alias
-    usage: /<command> [list|start|active|completed|info] [args]
-  channel:
-    description: Chat channels system commands
-    usage: /<command> [join|leave|list|current|mute|unmute] [args]
-  ch:
-    description: Chat channel alias
-    usage: /<command> [message] or [join|leave|list|current|mute|unmute] [args]
-  vault:
-    description: Player vault system commands
-    usage: /<command> [open|create|rename|trust|untrust|list] [args]
-  pv:
-    description: Player vault alias
-    usage: /<command> [open|create|rename|trust|untrust|list] [args]
-  title:
-    description: Send title to a player
-    usage: /<command> <player> <title> [subtitle] [fadeIn] [stay] [fadeOut]
-  titleall:
-    description: Broadcast title to all players
-    usage: /<command> <title> [subtitle] [fadeIn] [stay] [fadeOut]
-  actionbar:
-    description: Send action bar message to a player
-    usage: /<command> <player> <message>
-  actionbarall:
-    description: Broadcast action bar message to all players
-    usage: /<command> <message>
-  cleartitle:
-    description: Clear title for a player
-    usage: /<command> [player|all]
-  recipe:
-    description: Custom recipes management
-    usage: /<command> [create|remove|list|reload] [args]
-  enchant:
-    description: Custom enchantments management
-    usage: /<command> [apply|remove|list|info] [args]
-  customenchant:
-    description: Custom enchantments alias
-    usage: /<command> [apply|remove|list|info] [args]
-  nick:
-    description: Nickname management commands
-    usage: /<command> [set|reset|color|format|view] [args]
-  nickname:
-    description: Nickname management alias
-    usage: /<command> [set|reset|color|format|view] [args]
-  backup:
-    description: Backup system commands
-    usage: /<command> [create|list|restore|reload] [args]

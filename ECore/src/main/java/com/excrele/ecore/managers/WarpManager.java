@@ -42,6 +42,10 @@ public class WarpManager {
             return false;
         }
 
+        if (location == null || location.getWorld() == null) {
+            return false;
+        }
+
         String path = "warps." + name.toLowerCase();
         warpConfig.set(path + ".world", location.getWorld().getName());
         warpConfig.set(path + ".x", location.getX());
@@ -49,7 +53,9 @@ public class WarpManager {
         warpConfig.set(path + ".z", location.getZ());
         warpConfig.set(path + ".yaw", location.getYaw());
         warpConfig.set(path + ".pitch", location.getPitch());
-        warpConfig.set(path + ".creator", creator.getUniqueId().toString());
+        if (creator != null) {
+            warpConfig.set(path + ".creator", creator.getUniqueId().toString());
+        }
         warpConfig.set(path + ".public", true);
 
         saveWarps();
@@ -90,7 +96,11 @@ public class WarpManager {
         if (!warpConfig.contains("warps")) {
             return new ArrayList<>();
         }
-        Set<String> warpKeys = warpConfig.getConfigurationSection("warps").getKeys(false);
+        org.bukkit.configuration.ConfigurationSection warpsSection = warpConfig.getConfigurationSection("warps");
+        if (warpsSection == null) {
+            return new ArrayList<>();
+        }
+        Set<String> warpKeys = warpsSection.getKeys(false);
         return new ArrayList<>(warpKeys);
     }
 
@@ -99,7 +109,11 @@ public class WarpManager {
         if (!warpConfig.contains("warps")) {
             return warps;
         }
-        for (String warp : warpConfig.getConfigurationSection("warps").getKeys(false)) {
+        org.bukkit.configuration.ConfigurationSection warpsSection = warpConfig.getConfigurationSection("warps");
+        if (warpsSection == null) {
+            return warps;
+        }
+        for (String warp : warpsSection.getKeys(false)) {
             if (warpConfig.getBoolean("warps." + warp + ".public", true)) {
                 warps.add(warp);
             }

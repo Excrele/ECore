@@ -198,8 +198,8 @@ public class StatisticsManager implements Listener {
         // Save death location for /back command
         plugin.getTeleportManager().saveDeathLocation(player);
         
-        if (event.getEntity().getKiller() != null) {
-            Player killer = event.getEntity().getKiller();
+        Player killer = event.getEntity().getKiller();
+        if (killer != null) {
             UUID killerUuid = killer.getUniqueId();
             String killPath = "players." + killerUuid.toString() + ".kills";
             statsConfig.set(killPath, statsConfig.getInt(killPath, 0) + 1);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -83,16 +84,25 @@ public class PlayerInfoManager {
         
         if (player.isOnline()) {
             Player onlinePlayer = player.getPlayer();
-            info.append("§7Status: §aOnline\n");
-            info.append("§7Health: §f").append(String.format("%.1f", onlinePlayer.getHealth())).append(" / ").append(String.format("%.1f", onlinePlayer.getMaxHealth())).append("\n");
-            info.append("§7Food: §f").append(onlinePlayer.getFoodLevel()).append(" / 20\n");
-            info.append("§7Level: §f").append(onlinePlayer.getLevel()).append("\n");
-            info.append("§7GameMode: §f").append(onlinePlayer.getGameMode().name()).append("\n");
-            info.append("§7World: §f").append(onlinePlayer.getWorld().getName()).append("\n");
-            info.append("§7Location: §f").append(String.format("%.0f, %.0f, %.0f", 
-                onlinePlayer.getLocation().getX(),
-                onlinePlayer.getLocation().getY(),
-                onlinePlayer.getLocation().getZ())).append("\n");
+            if (onlinePlayer != null) {
+                info.append("§7Status: §aOnline\n");
+                info.append("§7Health: §f").append(String.format("%.1f", onlinePlayer.getHealth())).append(" / ").append(String.format("%.1f", onlinePlayer.getHealth())).append("\n");
+                info.append("§7Food: §f").append(onlinePlayer.getFoodLevel()).append(" / 20\n");
+                info.append("§7Level: §f").append(onlinePlayer.getLevel()).append("\n");
+                if (onlinePlayer.getGameMode() != null) {
+                    info.append("§7GameMode: §f").append(onlinePlayer.getGameMode().name()).append("\n");
+                }
+                if (onlinePlayer.getWorld() != null) {
+                    info.append("§7World: §f").append(onlinePlayer.getWorld().getName()).append("\n");
+                }
+                Location loc = onlinePlayer.getLocation();
+                if (loc != null) {
+                    info.append("§7Location: §f").append(String.format("%.0f, %.0f, %.0f", 
+                        loc.getX(),
+                        loc.getY(),
+                        loc.getZ())).append("\n");
+                }
+            }
         } else {
             info.append("§7Status: §cOffline\n");
             long lastSeen = getLastSeen(player);

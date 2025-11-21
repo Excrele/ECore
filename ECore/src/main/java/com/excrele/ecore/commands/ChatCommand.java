@@ -58,7 +58,11 @@ public class ChatCommand implements CommandExecutor {
             message.append(args[i]).append(" ");
         }
 
-        plugin.getChatManager().sendPrivateMessage(player, target, message.toString().trim());
+        if (plugin.getChatManager() != null) {
+            plugin.getChatManager().sendPrivateMessage(player, target, message.toString().trim());
+        } else {
+            player.sendMessage(ChatColor.RED + "Chat manager is not available!");
+        }
         return true;
     }
 
@@ -80,7 +84,11 @@ public class ChatCommand implements CommandExecutor {
             message.append(arg).append(" ");
         }
 
-        plugin.getChatManager().replyToLastMessage(player, message.toString().trim());
+        if (plugin.getChatManager() != null) {
+            plugin.getChatManager().replyToLastMessage(player, message.toString().trim());
+        } else {
+            player.sendMessage(ChatColor.RED + "Chat manager is not available!");
+        }
         return true;
     }
 

@@ -35,7 +35,11 @@ public class QuestCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            plugin.getQuestGUIManager().openQuestGUI(player);
+            if (plugin.getQuestGUIManager() != null) {
+                plugin.getQuestGUIManager().openQuestGUI(player);
+            } else {
+                player.sendMessage(ChatColor.RED + "Quest manager is not available!");
+            }
             return true;
         }
 

@@ -10,13 +10,12 @@ import java.util.*;
  * Manages party/team system for players.
  */
 public class PartyManager {
-    private final Ecore plugin;
     // Parties are stored in memory for now (can be enhanced to persist)
     private final Map<UUID, Party> parties; // Leader UUID -> Party
     private final Map<UUID, UUID> playerParties; // Player UUID -> Leader UUID
 
     public PartyManager(Ecore plugin) {
-        this.plugin = plugin;
+        // Plugin reference kept for potential future use
         this.parties = new HashMap<>();
         this.playerParties = new HashMap<>();
         initializePartiesConfig();

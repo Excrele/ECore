@@ -114,9 +114,11 @@ public class KitManager {
             for (ItemStack item : items) {
                 if (item != null) {
                     HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(item);
-                    if (!overflow.isEmpty()) {
+                    if (!overflow.isEmpty() && player.getWorld() != null) {
                         for (ItemStack over : overflow.values()) {
-                            player.getWorld().dropItemNaturally(player.getLocation(), over);
+                            if (over != null) {
+                                player.getWorld().dropItemNaturally(player.getLocation(), over);
+                            }
                         }
                     }
                 }
@@ -137,7 +139,11 @@ public class KitManager {
         if (!kitConfig.contains("kits")) {
             return new ArrayList<>();
         }
-        Set<String> kitKeys = kitConfig.getConfigurationSection("kits").getKeys(false);
+        org.bukkit.configuration.ConfigurationSection kitsSection = kitConfig.getConfigurationSection("kits");
+        if (kitsSection == null) {
+            return new ArrayList<>();
+        }
+        Set<String> kitKeys = kitsSection.getKeys(false);
         return new ArrayList<>(kitKeys);
     }
 

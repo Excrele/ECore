@@ -1,6 +1,9 @@
 package com.excrele.ecore.commands;
 
-import com.excrele.ecore.Ecore;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -9,9 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import com.excrele.ecore.Ecore;
 
 public class EconomyCommand implements CommandExecutor {
     private final Ecore plugin;
@@ -133,7 +134,19 @@ public class EconomyCommand implements CommandExecutor {
             return true;
         }
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+        // Try online player first, then offline
+        Player onlineTarget = Bukkit.getPlayer(args[1]);
+        OfflinePlayer target;
+        if (onlineTarget != null) {
+            target = onlineTarget;
+        } else {
+            // Try to get offline player (deprecated but still works)
+            target = Bukkit.getOfflinePlayer(args[1]);
+            if (target != null && !target.hasPlayedBefore()) {
+                sender.sendMessage(ChatColor.RED + "Player not found!");
+                return true;
+            }
+        }
         if (target == null) {
             sender.sendMessage(ChatColor.RED + "Player not found!");
             return true;

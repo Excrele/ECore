@@ -44,6 +44,10 @@ public class WorldEditCommand implements CommandExecutor {
         
         Player player = (Player) sender;
         WorldEditManager weManager = plugin.getWorldEditManager();
+        if (weManager == null) {
+            player.sendMessage(ChatColor.RED + "WorldEdit manager is not available!");
+            return true;
+        }
         
         // Permission check for most commands
         if (!player.hasPermission("ecore.worldedit.use")) {

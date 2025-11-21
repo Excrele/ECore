@@ -48,7 +48,11 @@ public class WarpCommand implements CommandExecutor {
         }
 
         String warpName = args[0];
-        plugin.getWarpManager().teleportToWarp(player, warpName);
+        if (plugin.getWarpManager() != null) {
+            plugin.getWarpManager().teleportToWarp(player, warpName);
+        } else {
+            player.sendMessage(ChatColor.RED + "Warp manager is not available!");
+        }
         return true;
     }
 
@@ -118,7 +122,11 @@ public class WarpCommand implements CommandExecutor {
         
         // Player version - open GUI
         Player player = (Player) sender;
-        plugin.getWarpGUIManager().openWarpGUI(player);
+        if (plugin.getWarpGUIManager() != null) {
+            plugin.getWarpGUIManager().openWarpGUI(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Warp GUI manager is not available!");
+        }
         return true;
     }
 }

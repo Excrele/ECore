@@ -34,6 +34,9 @@ public class SpawnManager {
     }
 
     public void setSpawn(Location location, String worldName) {
+        if (location == null || location.getWorld() == null) {
+            return;
+        }
         String path = "spawns." + worldName;
         spawnConfig.set(path + ".world", location.getWorld().getName());
         spawnConfig.set(path + ".x", location.getX());

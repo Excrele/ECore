@@ -4,8 +4,6 @@ import com.excrele.ecore.Ecore;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
@@ -43,8 +41,6 @@ public class DiscordMessageQueue {
      */
     public void processQueue(TextChannel channel) {
         if (channel == null) return;
-
-        List<QueuedMessage> failedMessages = new ArrayList<>();
         
         while (!messageQueue.isEmpty()) {
             QueuedMessage queued = messageQueue.poll();

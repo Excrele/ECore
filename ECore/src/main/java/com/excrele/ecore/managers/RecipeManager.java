@@ -72,7 +72,6 @@ public class RecipeManager {
 
         for (String recipeId : recipesConfig.getConfigurationSection("recipes").getKeys(false)) {
             String path = "recipes." + recipeId;
-            String name = recipesConfig.getString(path + ".name", recipeId);
             String resultStr = recipesConfig.getString(path + ".result");
             
             if (resultStr == null) continue;

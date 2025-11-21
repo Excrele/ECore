@@ -78,7 +78,11 @@ public class TeleportCommand implements CommandExecutor {
                     return true;
                 }
                 
-                plugin.getTeleportManager().teleportToCoordinates(player, x, y, z, world);
+                if (plugin.getTeleportManager() != null) {
+                    plugin.getTeleportManager().teleportToCoordinates(player, x, y, z, world);
+                } else {
+                    player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+                }
                 return true;
             } catch (NumberFormatException e) {
                 // Not coordinates, continue with player teleport logic
@@ -91,8 +95,12 @@ public class TeleportCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Player not found!");
                 return true;
             }
-            plugin.getTeleportManager().teleport(player, target);
-            player.sendMessage(ChatColor.GREEN + "Teleported to " + target.getName() + "!");
+            if (plugin.getTeleportManager() != null) {
+                plugin.getTeleportManager().teleport(player, target);
+                player.sendMessage(ChatColor.GREEN + "Teleported to " + target.getName() + "!");
+            } else {
+                player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+            }
             return true;
         } else if (args.length == 2) {
             if (!player.hasPermission("ecore.teleport.others")) {
@@ -105,8 +113,12 @@ public class TeleportCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Player not found!");
                 return true;
             }
-            plugin.getTeleportManager().teleport(target1, target2);
-            player.sendMessage(ChatColor.GREEN + "Teleported " + target1.getName() + " to " + target2.getName() + "!");
+            if (plugin.getTeleportManager() != null) {
+                plugin.getTeleportManager().teleport(target1, target2);
+                player.sendMessage(ChatColor.GREEN + "Teleported " + target1.getName() + " to " + target2.getName() + "!");
+            } else {
+                player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+            }
             return true;
         }
 
@@ -138,7 +150,11 @@ public class TeleportCommand implements CommandExecutor {
             return true;
         }
 
-        plugin.getTeleportManager().createRequest(player, target, here);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().createRequest(player, target, here);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -149,7 +165,11 @@ public class TeleportCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        plugin.getTeleportManager().acceptRequest(player);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().acceptRequest(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -160,7 +180,11 @@ public class TeleportCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        plugin.getTeleportManager().denyRequest(player);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().denyRequest(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -212,7 +236,11 @@ public class TeleportCommand implements CommandExecutor {
             return true;
         }
 
-        plugin.getTeleportManager().teleportToTop(player);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().teleportToTop(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -229,7 +257,11 @@ public class TeleportCommand implements CommandExecutor {
             return true;
         }
 
-        plugin.getTeleportManager().teleportJump(player);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().teleportJump(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -247,7 +279,11 @@ public class TeleportCommand implements CommandExecutor {
         }
 
         player.sendMessage(ChatColor.YELLOW + "Finding a safe random location...");
-        plugin.getTeleportManager().teleportRandom(player);
+        if (plugin.getTeleportManager() != null) {
+            plugin.getTeleportManager().teleportRandom(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+        }
         return true;
     }
 
@@ -277,7 +313,11 @@ public class TeleportCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Invalid biome! Use one of: " + getBiomeList());
                 return true;
             }
-            plugin.getTeleportManager().teleportToBiome(player, biome);
+            if (plugin.getTeleportManager() != null) {
+                plugin.getTeleportManager().teleportToBiome(player, biome);
+            } else {
+                player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+            }
         } catch (Exception e) {
             player.sendMessage(ChatColor.RED + "Invalid biome! Use one of: " + getBiomeList());
         }
@@ -310,7 +350,11 @@ public class TeleportCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Invalid structure! Use one of: " + getStructureList());
                 return true;
             }
-            plugin.getTeleportManager().teleportToStructure(player, structure);
+            if (plugin.getTeleportManager() != null) {
+                plugin.getTeleportManager().teleportToStructure(player, structure);
+            } else {
+                player.sendMessage(ChatColor.RED + "Teleport manager is not available!");
+            }
         } catch (Exception e) {
             player.sendMessage(ChatColor.RED + "Invalid structure! Use one of: " + getStructureList());
         }

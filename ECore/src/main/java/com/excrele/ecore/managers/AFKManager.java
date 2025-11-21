@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -78,10 +79,14 @@ public class AFKManager implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (event.getFrom().getBlockX() != event.getTo().getBlockX() ||
-            event.getFrom().getBlockY() != event.getTo().getBlockY() ||
-            event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-            updateActivity(event.getPlayer());
+        Location to = event.getTo();
+        if (to != null) {
+            Location from = event.getFrom();
+            if (from.getBlockX() != to.getBlockX() ||
+                from.getBlockY() != to.getBlockY() ||
+                from.getBlockZ() != to.getBlockZ()) {
+                updateActivity(event.getPlayer());
+            }
         }
     }
 

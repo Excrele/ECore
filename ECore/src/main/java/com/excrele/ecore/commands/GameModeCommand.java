@@ -26,7 +26,11 @@ public class GameModeCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
             return true;
         }
-        plugin.getGameModeManager().openGameModeGUI(player);
+        if (plugin.getGameModeManager() != null) {
+            plugin.getGameModeManager().openGameModeGUI(player);
+        } else {
+            player.sendMessage(ChatColor.RED + "GameMode manager is not available!");
+        }
         return true;
     }
 }

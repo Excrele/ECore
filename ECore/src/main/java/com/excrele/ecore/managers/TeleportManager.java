@@ -58,12 +58,16 @@ public class TeleportManager {
         // Don't add if it's the same location (within 5 blocks)
         if (!history.isEmpty()) {
             Location last = history.peekLast();
-            if (last != null && last.getWorld().equals(currentLoc.getWorld()) &&
+            if (last != null && last.getWorld() != null && currentLoc.getWorld() != null &&
+                last.getWorld().equals(currentLoc.getWorld()) &&
                 last.distance(currentLoc) < 5.0) {
                 return; // Too close to last location, skip
             }
         }
         
+        if (currentLoc.getWorld() == null) {
+            return; // Invalid location, skip
+        }
         history.addLast(currentLoc.clone());
         
         // Limit history size
@@ -413,15 +417,18 @@ public class TeleportManager {
                     int checkZ = startLoc.getBlockZ() + z;
                     
                     Biome foundBiome = world.getBiome(checkX, world.getHighestBlockYAt(checkX, checkZ), checkZ);
-                    if (foundBiome == biome) {
+                    if (foundBiome != null && foundBiome == biome) {
                         // Found the biome, find safe location
                         int y = world.getHighestBlockYAt(checkX, checkZ);
                         Location targetLoc = new Location(world, checkX + 0.5, y + 1, checkZ + 0.5);
                         
                         // Teleport on main thread
+                        final Biome finalBiome = biome;
                         Bukkit.getScheduler().runTask(plugin, () -> {
-                            teleport(player, targetLoc);
-                            player.sendMessage("§aTeleported to " + biome.name() + " biome!");
+                            if (player != null && player.isOnline()) {
+                                teleport(player, targetLoc);
+                                player.sendMessage("§aTeleported to " + (finalBiome != null ? finalBiome.getKey().getKey() : "unknown") + " biome!");
+                            }
                         });
                         return;
                     }
@@ -467,7 +474,7 @@ public class TeleportManager {
                 );
                 
                 if (result != null) {
-                    Location structureLoc;
+                    Location structureLoc = null;
                     // Handle different return types based on API version
                     if (result instanceof Location) {
                         structureLoc = (Location) result;
@@ -475,27 +482,44 @@ public class TeleportManager {
                         // Try to get location from result object using reflection
                         try {
                             java.lang.reflect.Method getLocation = result.getClass().getMethod("getLocation");
-                            structureLoc = (Location) getLocation.invoke(result);
+                            Object locResult = getLocation.invoke(result);
+                            if (locResult instanceof Location) {
+                                structureLoc = (Location) locResult;
+                            }
                         } catch (Exception e) {
                             Bukkit.getScheduler().runTask(plugin, () -> {
-                                player.sendMessage("§cCould not find " + finalStructureName + " structure nearby!");
+                                if (player != null && player.isOnline()) {
+                                    player.sendMessage("§cCould not find " + finalStructureName + " structure nearby!");
+                                }
                             });
                             return;
                         }
                     }
                     
-                    // Find safe location near structure
-                    int y = world.getHighestBlockYAt(structureLoc.getBlockX(), structureLoc.getBlockZ());
-                    Location targetLoc = new Location(world, structureLoc.getBlockX() + 0.5, y + 1, structureLoc.getBlockZ() + 0.5);
-                    
-                    // Teleport on main thread
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        teleport(player, targetLoc);
-                        player.sendMessage("§aTeleported to " + finalStructureName + " structure!");
-                    });
+                    if (structureLoc != null && structureLoc.getWorld() != null) {
+                        // Find safe location near structure
+                        int y = world.getHighestBlockYAt(structureLoc.getBlockX(), structureLoc.getBlockZ());
+                        Location targetLoc = new Location(world, structureLoc.getBlockX() + 0.5, y + 1, structureLoc.getBlockZ() + 0.5);
+                        
+                        // Teleport on main thread
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            if (player != null && player.isOnline()) {
+                                teleport(player, targetLoc);
+                                player.sendMessage("§aTeleported to " + finalStructureName + " structure!");
+                            }
+                        });
+                    } else {
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            if (player != null && player.isOnline()) {
+                                player.sendMessage("§cCould not find " + finalStructureName + " structure nearby!");
+                            }
+                        });
+                    }
                 } else {
                     Bukkit.getScheduler().runTask(plugin, () -> {
-                        player.sendMessage("§cCould not find " + finalStructureName + " structure nearby!");
+                        if (player != null && player.isOnline()) {
+                            player.sendMessage("§cCould not find " + finalStructureName + " structure nearby!");
+                        }
                     });
                 }
             } catch (Exception e) {
