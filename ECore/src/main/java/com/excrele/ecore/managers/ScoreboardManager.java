@@ -173,19 +173,67 @@ public class ScoreboardManager {
     private String processPlaceholders(Player player, String text) {
         text = processColorCodes(text);
         
-        // Replace ECore placeholders
-        text = text.replace("%player%", player.getName());
-        text = text.replace("%balance%", String.format("%.2f", plugin.getEconomyManager().getBalance(player.getUniqueId())));
-        text = text.replace("%homes%", String.valueOf(plugin.getHomeManager().getPlayerHomes(player).size()));
-        text = text.replace("%kills%", String.valueOf(plugin.getStatisticsManager().getStatistic(player, "kills")));
-        text = text.replace("%deaths%", String.valueOf(plugin.getStatisticsManager().getStatistic(player, "deaths")));
+        // Get values once
+        double balance = plugin.getEconomyManager().getBalance(player.getUniqueId());
+        int homes = plugin.getHomeManager().getPlayerHomes(player).size();
+        int maxHomes = plugin.getConfigManager().getMaxHomes();
+        int kills = plugin.getStatisticsManager().getStatistic(player, "kills");
+        int deaths = plugin.getStatisticsManager().getStatistic(player, "deaths");
+        double kdr = deaths > 0 ? (double) kills / deaths : (kills > 0 ? kills : 0.0);
+        int online = Bukkit.getOnlinePlayers().size();
+        int maxPlayers = Bukkit.getMaxPlayers();
         
-        // PlaceholderAPI support
+        // Replace basic ECore placeholders (backwards compatibility)
+        text = text.replace("%player%", player.getName());
+        text = text.replace("%balance%", String.format("%.2f", balance));
+        text = text.replace("%homes%", String.valueOf(homes));
+        text = text.replace("%kills%", String.valueOf(kills));
+        text = text.replace("%deaths%", String.valueOf(deaths));
+        text = text.replace("%online%", String.valueOf(online));
+        text = text.replace("%max%", String.valueOf(maxPlayers));
+        
+        // Replace PlaceholderAPI format placeholders (fallback if PlaceholderAPI not available)
+        text = text.replace("%ecore_balance%", String.format("%.2f", balance));
+        text = text.replace("%ecore_homes%", String.valueOf(homes));
+        text = text.replace("%ecore_max_homes%", String.valueOf(maxHomes));
+        text = text.replace("%ecore_kills%", String.valueOf(kills));
+        text = text.replace("%ecore_deaths%", String.valueOf(deaths));
+        text = text.replace("%ecore_kdr%", String.format("%.2f", kdr));
+        text = text.replace("%ecore_playtime%", formatPlaytime(plugin.getStatisticsManager().getStatistic(player, "playtime-seconds")));
+        text = text.replace("%ecore_achievements%", plugin.getAchievementManager() != null ? 
+            String.valueOf(plugin.getAchievementManager().getPlayerAchievements(player).size()) : "0");
+        text = text.replace("%ecore_distance%", formatDistance(plugin.getStatisticsManager().getStatisticDouble(player, "distance-traveled")));
+        text = text.replace("%ecore_items_crafted%", String.valueOf(plugin.getStatisticsManager().getStatistic(player, "items-crafted")));
+        text = text.replace("%ecore_mail_count%", String.valueOf(plugin.getMailManager().getMailCount(player)));
+        
+        // PlaceholderAPI support (will override any %ecore_* placeholders if PlaceholderAPI is installed)
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             text = PlaceholderAPI.setPlaceholders(player, text);
         }
         
         return text;
+    }
+    
+    /**
+     * Formats playtime in seconds to a readable format.
+     */
+    private String formatPlaytime(long seconds) {
+        if (seconds == 0) {
+            return "0h 0m";
+        }
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        return hours + "h " + minutes + "m";
+    }
+    
+    /**
+     * Formats distance to a readable format.
+     */
+    private String formatDistance(double distance) {
+        if (distance >= 1000) {
+            return String.format("%.2f", distance / 1000) + "km";
+        }
+        return String.format("%.2f", distance) + "m";
     }
 
     /**

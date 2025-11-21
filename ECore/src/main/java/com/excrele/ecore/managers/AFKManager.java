@@ -8,7 +8,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -31,8 +39,13 @@ public class AFKManager implements Listener {
     }
 
     private void startAFKChecks() {
+        long checkInterval = plugin.getConfig().getLong("afk.check-interval", 100L); // Default 5 seconds
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            long afkTime = plugin.getConfig().getLong("afk.auto-afk-time", 300) * 20; // Default 5 minutes
+            long afkTimeSeconds = plugin.getConfig().getLong("afk.auto-afk-time", 300L); // Default 5 minutes
+            if (afkTimeSeconds <= 0) {
+                return; // AFK detection disabled
+            }
+            long afkTime = afkTimeSeconds * 1000; // Convert seconds to milliseconds
             long currentTime = System.currentTimeMillis();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -43,7 +56,7 @@ public class AFKManager implements Listener {
                     setAFK(player, true, false);
                 }
             }
-        }, 0L, 100L); // Check every 5 seconds
+        }, 0L, checkInterval);
     }
 
     public void updateActivity(Player player) {
@@ -88,6 +101,46 @@ public class AFKManager implements Listener {
                 updateActivity(event.getPlayer());
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        updateActivity(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        updateActivity(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        updateActivity(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        updateActivity(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player) {
+            updateActivity((Player) event.getWhoClicked());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            updateActivity((Player) event.getDamager());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        // Initialize activity time when player joins
+        updateActivity(event.getPlayer());
     }
 
     @EventHandler

@@ -126,6 +126,21 @@ home:
   # If true, sleeping in a bed will automatically create/update a "bed" home
   auto-set-home-on-bed: true
 
+# AFK System Configuration
+# Controls automatic AFK detection and management
+afk:
+  # Time in seconds before a player is automatically marked as AFK
+  # Default: 300 seconds (5 minutes)
+  # Set to 0 to disable automatic AFK detection
+  # Example: auto-afk-time: 600 means players will be marked AFK after 10 minutes of inactivity
+  auto-afk-time: 300
+  
+  # How often to check for AFK players (in ticks)
+  # 20 ticks = 1 second
+  # Default: 100 ticks (5 seconds)
+  # Lower values = more frequent checks (more server load)
+  check-interval: 100
+
 # Report System Configuration
 # Controls player reporting functionality
 report:
