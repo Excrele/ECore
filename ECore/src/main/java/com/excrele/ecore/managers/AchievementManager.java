@@ -33,15 +33,22 @@ public class AchievementManager {
 
     private void initializeAchievementConfig() {
         achievementFile = new File(plugin.getDataFolder(), "achievements.yml");
-        if (!achievementFile.exists()) {
+        boolean isNewFile = !achievementFile.exists();
+        
+        if (isNewFile) {
             try {
+                achievementFile.getParentFile().mkdirs();
                 achievementFile.createNewFile();
-                createDefaultAchievements();
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to create achievements.yml", e);
             }
         }
+        
         achievementConfig = YamlConfiguration.loadConfiguration(achievementFile);
+        
+        if (isNewFile) {
+            createDefaultAchievements();
+        }
     }
 
     private void initializePlayerAchievementConfig() {

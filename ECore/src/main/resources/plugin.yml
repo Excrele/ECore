@@ -313,7 +313,7 @@ permissions:
     description: Allows using portal creation wand
     default: op
   ecore.portal.use:
-    description: Allows using portals (default: true for all players)
+    description: "Allows using portals (default: true for all players)"
     default: true
   ecore.blocklog.use:
     description: Allows using block logging commands

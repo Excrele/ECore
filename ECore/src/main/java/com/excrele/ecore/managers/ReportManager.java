@@ -21,9 +21,19 @@ public class ReportManager {
     private void initializeReportConfig() {
         reportFile = new File(plugin.getDataFolder(), "reports.yml");
         if (!reportFile.exists()) {
-            plugin.saveResource("reports.yml", false);
+            try {
+                reportFile.getParentFile().mkdirs();
+                reportFile.createNewFile();
+                reportConfig = YamlConfiguration.loadConfiguration(reportFile);
+                reportConfig.set("reports", new java.util.LinkedHashMap<String, Object>());
+                reportConfig.save(reportFile);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to create reports.yml: " + e.getMessage());
+                reportConfig = new YamlConfiguration();
+            }
+        } else {
+            reportConfig = YamlConfiguration.loadConfiguration(reportFile);
         }
-        reportConfig = YamlConfiguration.loadConfiguration(reportFile);
     }
 
     public void submitReport(String reporter, String target, String reason) {
