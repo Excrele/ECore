@@ -109,6 +109,7 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
 
         if (targetUuid == null) {
             // Try to get UUID from offline player
+            @SuppressWarnings("deprecation")
             org.bukkit.OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetName);
             if (offlinePlayer.hasPlayedBefore()) {
                 targetUuid = offlinePlayer.getUniqueId();
@@ -139,6 +140,7 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
         UUID targetUuid = target != null ? target.getUniqueId() : null;
 
         if (targetUuid == null) {
+            @SuppressWarnings("deprecation")
             org.bukkit.OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetName);
             if (offlinePlayer.hasPlayedBefore()) {
                 targetUuid = offlinePlayer.getUniqueId();
@@ -220,6 +222,7 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
         UUID targetUuid = target != null ? target.getUniqueId() : null;
 
         if (targetUuid == null) {
+            @SuppressWarnings("deprecation")
             org.bukkit.OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetName);
             if (offlinePlayer.hasPlayedBefore()) {
                 targetUuid = offlinePlayer.getUniqueId();

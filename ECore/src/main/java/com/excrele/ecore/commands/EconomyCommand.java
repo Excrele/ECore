@@ -141,7 +141,9 @@ public class EconomyCommand implements CommandExecutor {
             target = onlineTarget;
         } else {
             // Try to get offline player (deprecated but still works)
-            target = Bukkit.getOfflinePlayer(args[1]);
+            @SuppressWarnings("deprecation")
+            org.bukkit.OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(args[1]);
+            target = offlineTarget;
             if (target != null && !target.hasPlayedBefore()) {
                 sender.sendMessage(ChatColor.RED + "Player not found!");
                 return true;

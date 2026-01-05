@@ -7,13 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -217,13 +217,14 @@ public class ShopManager {
     private void updateShopSign(Sign sign, ItemStack item, int quantity, double buyPrice, double sellPrice, boolean isPlayerShop) {
         List<String> format = plugin.getConfig().getStringList(isPlayerShop ? "shops.player-sign-format" : "shops.admin-sign-format");
         String itemName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+        SignSide side = sign.getSide(org.bukkit.block.sign.Side.FRONT);
         for (int i = 0; i < format.size() && i < 4; i++) {
             String line = format.get(i)
                     .replace("%buy_price%", String.format("%.2f", buyPrice))
                     .replace("%sell_price%", String.format("%.2f", sellPrice))
                     .replace("%item%", itemName)
                     .replace("%quantity%", String.valueOf(quantity));
-            sign.setLine(i, ChatColor.translateAlternateColorCodes('&', line));
+            side.setLine(i, ChatColor.translateAlternateColorCodes('&', line));
         }
         sign.update();
     }
@@ -692,11 +693,13 @@ public class ShopManager {
         // Handle payment and stock removal
         if (isPlayerShop) {
             // Player shop - take from chest and pay owner
-            Block chestBlock = data.getChestLocation().getBlock();
-            Chest chest = (Chest) chestBlock.getState();
-            org.bukkit.inventory.Inventory chestInv = chest.getInventory();
-            
-            // Remove items from chest
+            if (data.getChestLocation() != null) {
+                Block chestBlock = data.getChestLocation().getBlock();
+                if (chestBlock.getState() instanceof Chest) {
+                    Chest chest = (Chest) chestBlock.getState();
+                    org.bukkit.inventory.Inventory chestInv = chest.getInventory();
+                    
+                    // Remove items from chest
                     int remaining = data.getQuantity();
                     for (int i = 0; i < chestInv.getSize() && remaining > 0; i++) {
                         ItemStack chestItem = chestInv.getItem(i);

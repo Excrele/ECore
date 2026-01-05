@@ -1,0 +1,74 @@
+# ============================================
+# ECore Skills Configuration
+# ============================================
+# This file defines all available skills and their configurations.
+# Each skill can have multiple abilities unlocked at certain levels.
+# ============================================
+
+skills:
+  # Mining Skill - Mine blocks to level up
+  mining:
+    name: "Mining"
+    description: "Mine blocks to level up your mining skill!"
+    icon: DIAMOND_PICKAXE
+    max-level: 100
+    base-exp: 10.0
+    exp-multiplier: 1.5
+    abilities:
+      10:
+        name: "Fortune I"
+        description: "Chance to get extra ores"
+      25:
+        name: "Fortune II"
+        description: "Better chance to get extra ores"
+      50:
+        name: "Fortune III"
+        description: "Best chance to get extra ores"
+    bonuses:
+      mining-speed: 0.01  # 1% per level
+      ore-drops: 0.005    # 0.5% per level
+  
+  # Combat Skill - Fight mobs to level up
+  combat:
+    name: "Combat"
+    description: "Fight mobs to level up your combat skill!"
+    icon: IRON_SWORD
+    max-level: 100
+    base-exp: 15.0
+    exp-multiplier: 1.5
+    abilities:
+      10:
+        name: "Critical Strike"
+        description: "Chance for critical hits"
+      25:
+        name: "Bleed"
+        description: "Chance to cause bleeding"
+      50:
+        name: "Execute"
+        description: "Chance to instantly kill low-health mobs"
+    bonuses:
+      damage: 0.02       # 2% per level
+      crit-chance: 0.01  # 1% per level
+  
+  # Farming Skill - Farm crops to level up
+  farming:
+    name: "Farming"
+    description: "Farm crops to level up your farming skill!"
+    icon: GOLDEN_HOE
+    max-level: 100
+    base-exp: 8.0
+    exp-multiplier: 1.5
+    abilities:
+      10:
+        name: "Green Thumb"
+        description: "Faster crop growth"
+      25:
+        name: "Bountiful Harvest"
+        description: "More crops per harvest"
+      50:
+        name: "Master Farmer"
+        description: "Best crop yields"
+    bonuses:
+      crop-yield: 0.01   # 1% per level
+      growth-speed: 0.01 # 1% per level
+

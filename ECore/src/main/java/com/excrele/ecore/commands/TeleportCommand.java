@@ -368,7 +368,9 @@ public class TeleportCommand implements CommandExecutor {
             if (count >= 10) break;
             if (count > 0) sb.append(", ");
             try {
-                sb.append(biome.getKey().getKey());
+                @SuppressWarnings("deprecation")
+                org.bukkit.NamespacedKey key = biome.getKey();
+                sb.append(key != null ? key.getKey() : biome.toString());
             } catch (Exception e) {
                 sb.append(biome.toString());
             }
@@ -385,8 +387,10 @@ public class TeleportCommand implements CommandExecutor {
             if (count >= 10) break;
             if (count > 0) sb.append(", ");
             try {
-                sb.append(structure.getKey().getKey());
-            } catch (Exception e) {
+                @SuppressWarnings("deprecation")
+                org.bukkit.NamespacedKey key = structure.getKey();
+                sb.append(key != null ? key.getKey() : structure.toString());
+            } catch (Exception ex) {
                 sb.append(structure.toString());
             }
             count++;

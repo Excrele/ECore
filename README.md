@@ -5,6 +5,7 @@ A comprehensive, all-in-one Spigot plugin for Minecraft 1.21+ that provides ever
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Documentation](#-documentation)
 - [Key Features](#-key-features)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
@@ -16,6 +17,68 @@ A comprehensive, all-in-one Spigot plugin for Minecraft 1.21+ that provides ever
 - [Features Guide](#-features-guide)
 - [Troubleshooting](#-troubleshooting)
 - [Support](#-support)
+
+---
+
+## 📚 Documentation
+
+For detailed documentation on each system, see the [Documentation Index](docs/index.md) or browse individual system documentation:
+
+### Core Systems
+- [Home System](docs/home-system.md) - Multiple homes with sharing and customization
+- [Economy System](docs/economy-system.md) - Self-contained economy with banks
+- [Bank System](docs/bank-system.md) - Multiple bank accounts with interest
+- [Shop System](docs/shop-system.md) - Admin and player shops
+
+### Staff & Administration
+- [Staff Management](docs/staff-management.md) - Complete moderation tools
+- [Staff Mode](docs/staff-mode.md) - Safe monitoring mode
+- [Block Logging System](docs/block-logging-system.md) - Track and rollback changes
+- [Report System](docs/report-system.md) - Player reporting
+
+### Teleportation & Worlds
+- [Teleportation System](docs/teleportation-system.md) - Advanced teleportation
+- [Warp & Spawn System](docs/warp-spawn-system.md) - Public warps and spawn
+- [Multi-World System](docs/multi-world-system.md) - World management
+- [Portal System](docs/portal-system.md) - Custom portals
+
+### Protection & Building
+- [Region Protection](docs/region-protection.md) - WorldGuard-like regions
+- [WorldEdit](docs/worldedit.md) - Complete WorldEdit functionality
+
+### Social Features
+- [Friends & Party System](docs/friends-party-system.md) - Friend lists and parties
+- [Chat Channels System](docs/chat-channels-system.md) - Multiple chat channels
+- [Mail System](docs/mail-system.md) - Send and receive mail
+
+### Progression Systems
+- [Jobs System](docs/jobs-system.md) - Job system with rewards
+- [Quest System](docs/quest-system.md) - 100+ quests with chains
+- [Statistics & Achievements](docs/statistics-achievements.md) - Track progress
+
+### Customization
+- [Custom Enchantments](docs/custom-enchantments.md) - 90+ unique enchantments
+- [Custom Recipes](docs/custom-recipes.md) - Custom crafting recipes
+- [Custom Scoreboard & Tab List](docs/custom-scoreboard-tablist.md) - Custom displays
+- [Nickname System](docs/nickname-system.md) - Enhanced nicknames
+
+### Player Features
+- [Player Vaults System](docs/player-vaults-system.md) - Extra storage
+- [Kit System](docs/kit-system.md) - Create and manage kits
+- [AFK System](docs/afk-system.md) - AFK detection
+- [Jail System](docs/jail-system.md) - Jail players
+
+### Server Management
+- [Performance Optimization](docs/performance-optimization.md) - Lag reduction
+- [Backup System](docs/backup-system.md) - Automatic backups
+- [Mob Customization](docs/mob-customization.md) - Customize mobs
+- [Command Cooldowns & Costs](docs/command-cooldowns-costs.md) - Control commands
+
+### Integration
+- [Discord Integration](docs/discord-integration.md) - Chat bridging and management
+- [PlaceholderAPI](docs/placeholderapi.md) - Placeholder support
+
+**📖 [View Full Documentation Index](docs/index.md)**
 
 ---
 
@@ -470,7 +533,7 @@ shops:
 - `/backup list` - List all backups
 - `/backup restore <name>` - Restore a backup
 
-For a complete list of all commands, see the [Full Documentation](Ecore/DOCUMENTATION.md#commands-reference).
+For detailed command documentation, see the [Documentation Index](docs/index.md) or individual system documentation files.
 
 ---
 
@@ -546,7 +609,7 @@ For a complete list of all commands, see the [Full Documentation](Ecore/DOCUMENT
 | ... | ... | ... |
 | `ecore.vault.10` | Allows having 10 vaults | `false` |
 
-For a complete list of all permissions, see the [Full Documentation](Ecore/DOCUMENTATION.md#permissions-reference).
+For detailed permission documentation, see the [Documentation Index](docs/index.md) or individual system documentation files.
 
 ---
 
@@ -667,7 +730,7 @@ Custom enchantments configuration:
 - Effect configurations
 - Level scaling
 
-For detailed configuration options, see the [Full Documentation](Ecore/DOCUMENTATION.md#configuration).
+For detailed configuration options, see the [Documentation Index](docs/index.md) or individual system documentation files.
 
 ---
 
@@ -724,7 +787,7 @@ ECore includes advanced Discord integration for chat bridging, staff logs, and s
 - `/staff <action> <player> [reason]` - Execute staff actions (ban, kick, mute, etc.)
 - `/execute <command>` - Execute console commands (admin only)
 
-For detailed Discord setup instructions, see the [Full Documentation](Ecore/DOCUMENTATION.md#discord-integration).
+For detailed Discord setup instructions, see the [Discord Integration Documentation](docs/discord-integration.md).
 
 ---
 
@@ -916,7 +979,7 @@ Visual customization:
 - Custom tab list (header and footer)
 - Multiline support
 
-For detailed feature guides, see the [Full Documentation](Ecore/DOCUMENTATION.md#features-guide).
+For detailed feature guides, see the [Documentation Index](docs/index.md) or individual system documentation files.
 
 ---
 
@@ -976,7 +1039,7 @@ If you encounter issues not covered here:
    - Error messages from console
    - Steps to reproduce the issue
 
-For more troubleshooting information, see the [Full Documentation](Ecore/DOCUMENTATION.md#troubleshooting).
+For more troubleshooting information, see individual system documentation files in the [Documentation Index](docs/index.md).
 
 ---
 
@@ -1028,8 +1091,9 @@ This plugin is provided as-is for use on Minecraft servers.
 
 ## 🔗 Links
 
-- **Full Documentation**: See [Ecore/DOCUMENTATION.md](Ecore/DOCUMENTATION.md) for complete documentation
-- **Implementation Details**: See implementation markdown files in `Ecore/ECore/` directory
+- **Documentation Index**: See [docs/index.md](docs/index.md) for complete system documentation
+- **API Documentation**: See [ECore/README_API.md](ECore/README_API.md) for developer API reference
+- **Implementation Status**: See [ECore/STATUS.md](ECore/STATUS.md) for implementation details
 
 ---
 
@@ -1046,4 +1110,4 @@ For issues, feature requests, or questions, please open an issue on the GitHub r
 
 ---
 
-*Last Updated: 2024*
+*Last Updated: 2026

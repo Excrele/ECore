@@ -9,6 +9,7 @@ import com.excrele.ecore.listeners.SignListener;
 import com.excrele.ecore.listeners.SitListener;
 import com.excrele.ecore.managers.*;
 import com.excrele.ecore.managers.AccountLinkManager;
+import com.excrele.ecore.managers.ShopManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
@@ -105,6 +106,27 @@ public class Ecore extends JavaPlugin {
     private com.excrele.ecore.managers.RegionGUIManager regionGUIManager;
     private com.excrele.ecore.managers.MobCustomizationManager mobCustomizationManager;
     private com.excrele.ecore.managers.TutorialGUIManager tutorialGUIManager;
+    private com.excrele.ecore.managers.BanManager banManager;
+    private com.excrele.ecore.managers.BanGUIManager banGUIManager;
+    private com.excrele.ecore.managers.GUIShopManager guiShopManager;
+    private com.excrele.ecore.managers.HologramManager hologramManager;
+    private com.excrele.ecore.managers.NPCManager npcManager;
+    private com.excrele.ecore.managers.GuildManager guildManager;
+    private com.excrele.ecore.managers.GuildGUIManager guildGUIManager;
+    private com.excrele.ecore.managers.AdvancedBankManager advancedBankManager;
+    private com.excrele.ecore.managers.SkillManager skillManager;
+    private com.excrele.ecore.managers.SkillGUIManager skillGUIManager;
+    private com.excrele.ecore.managers.ClaimManager claimManager;
+    private com.excrele.ecore.managers.ClaimGUIManager claimGUIManager;
+    private com.excrele.ecore.managers.MarriageManager marriageManager;
+    private com.excrele.ecore.managers.MarriageGUIManager marriageGUIManager;
+    private com.excrele.ecore.managers.DimensionManager dimensionManager;
+    private com.excrele.ecore.managers.DimensionGUIManager dimensionGUIManager;
+    private com.excrele.ecore.managers.CurrencyExchangeManager currencyExchangeManager;
+    private com.excrele.ecore.managers.EventManager eventManager;
+    private com.excrele.ecore.managers.EventGUIManager eventGUIManager;
+    private com.excrele.ecore.managers.MarketplaceManager marketplaceManager;
+    private com.excrele.ecore.managers.MarketplaceGUIManager marketplaceGUIManager;
     private com.excrele.ecore.integrations.VaultIntegration vaultIntegration;
     private com.excrele.ecore.integrations.WorldGuardIntegration worldGuardIntegration;
     private com.excrele.ecore.integrations.LuckPermsIntegration luckPermsIntegration;
@@ -188,6 +210,27 @@ public class Ecore extends JavaPlugin {
         regionGUIManager = new com.excrele.ecore.managers.RegionGUIManager(this);
         mobCustomizationManager = new com.excrele.ecore.managers.MobCustomizationManager(this);
         tutorialGUIManager = new com.excrele.ecore.managers.TutorialGUIManager(this);
+        banManager = new com.excrele.ecore.managers.BanManager(this);
+        banGUIManager = new com.excrele.ecore.managers.BanGUIManager(this);
+        guiShopManager = new com.excrele.ecore.managers.GUIShopManager(this);
+        hologramManager = new com.excrele.ecore.managers.HologramManager(this);
+        npcManager = new com.excrele.ecore.managers.NPCManager(this);
+        guildManager = new com.excrele.ecore.managers.GuildManager(this);
+        guildGUIManager = new com.excrele.ecore.managers.GuildGUIManager(this);
+        advancedBankManager = new com.excrele.ecore.managers.AdvancedBankManager(this);
+        skillManager = new com.excrele.ecore.managers.SkillManager(this);
+        skillGUIManager = new com.excrele.ecore.managers.SkillGUIManager(this);
+        claimManager = new com.excrele.ecore.managers.ClaimManager(this);
+        claimGUIManager = new com.excrele.ecore.managers.ClaimGUIManager(this);
+        marriageManager = new com.excrele.ecore.managers.MarriageManager(this);
+        marriageGUIManager = new com.excrele.ecore.managers.MarriageGUIManager(this);
+        dimensionManager = new com.excrele.ecore.managers.DimensionManager(this);
+        dimensionGUIManager = new com.excrele.ecore.managers.DimensionGUIManager(this);
+        currencyExchangeManager = new com.excrele.ecore.managers.CurrencyExchangeManager(this);
+        eventManager = new com.excrele.ecore.managers.EventManager(this);
+        eventGUIManager = new com.excrele.ecore.managers.EventGUIManager(this);
+        marketplaceManager = new com.excrele.ecore.managers.MarketplaceManager(this);
+        marketplaceGUIManager = new com.excrele.ecore.managers.MarketplaceGUIManager(this);
         
         // Initialize integrations
         vaultIntegration = new com.excrele.ecore.integrations.VaultIntegration(this);
@@ -348,8 +391,28 @@ public class Ecore extends JavaPlugin {
         registerCommand("enchant", new com.excrele.ecore.commands.EnchantmentCommand(this));
         registerCommand("customenchant", new com.excrele.ecore.commands.EnchantmentCommand(this));
         registerCommand("backup", new com.excrele.ecore.commands.BackupCommand(this));
+        registerCommand("ban", new com.excrele.ecore.commands.BanCommand(this));
+        registerCommand("hologram", new com.excrele.ecore.commands.HologramCommand(this));
+        registerCommand("holograms", new com.excrele.ecore.commands.HologramCommand(this));
+        registerCommand("npc", new com.excrele.ecore.commands.NPCCommand(this));
+        registerCommand("npcs", new com.excrele.ecore.commands.NPCCommand(this));
         registerCommand("nick", new com.excrele.ecore.commands.NicknameCommand(this));
         registerCommand("nickname", new com.excrele.ecore.commands.NicknameCommand(this));
+        registerCommand("guild", new com.excrele.ecore.commands.GuildCommand(this));
+        registerCommand("skill", new com.excrele.ecore.commands.SkillCommand(this));
+        registerCommand("skills", new com.excrele.ecore.commands.SkillCommand(this));
+        registerCommand("claim", new com.excrele.ecore.commands.ClaimCommand(this));
+        registerCommand("claims", new com.excrele.ecore.commands.ClaimCommand(this));
+        registerCommand("marry", new com.excrele.ecore.commands.MarriageCommand(this));
+        registerCommand("marriage", new com.excrele.ecore.commands.MarriageCommand(this));
+        registerCommand("dimension", new com.excrele.ecore.commands.DimensionCommand(this));
+        registerCommand("dimensions", new com.excrele.ecore.commands.DimensionCommand(this));
+        registerCommand("currency", new com.excrele.ecore.commands.CurrencyExchangeCommand(this));
+        registerCommand("exchange", new com.excrele.ecore.commands.CurrencyExchangeCommand(this));
+        registerCommand("event", new com.excrele.ecore.commands.EventCommand(this));
+        registerCommand("events", new com.excrele.ecore.commands.EventCommand(this));
+        registerCommand("marketplace", new com.excrele.ecore.commands.MarketplaceCommand(this));
+        registerCommand("market", new com.excrele.ecore.commands.MarketplaceCommand(this));
 
         // Register listeners
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
@@ -405,7 +468,9 @@ public class Ecore extends JavaPlugin {
         }, 0L, 432000L); // 6 hours = 432000 ticks
 
         // Send server start notification
-        discordManager.sendServerStartNotification();
+        if (discordManager != null) {
+            discordManager.sendServerStartNotification();
+        }
 
         getLogger().info(ChatColor.GREEN + "Ecore plugin has been enabled!");
     }
@@ -443,8 +508,22 @@ public class Ecore extends JavaPlugin {
         if (backupManager != null) {
             backupManager.stopScheduledBackups();
         }
+        if (claimManager != null) {
+            claimManager.shutdown();
+        }
+        if (advancedBankManager != null) {
+            advancedBankManager.shutdown();
+        }
+        if (marriageManager != null) {
+            marriageManager.shutdown();
+        }
+        if (eventManager != null) {
+            eventManager.shutdown();
+        }
         // Shutdown Discord bot
-        discordManager.shutdownBot();
+        if (discordManager != null) {
+            discordManager.shutdownBot();
+        }
 
         getLogger().info(ChatColor.RED + "Ecore plugin has been disabled!");
     }
@@ -456,8 +535,9 @@ public class Ecore extends JavaPlugin {
      * @param executor The CommandExecutor to handle the command
      */
     private void registerCommand(String name, CommandExecutor executor) {
-        if (getCommand(name) != null) {
-            getCommand(name).setExecutor(executor);
+        org.bukkit.command.PluginCommand command = getCommand(name);
+        if (command != null) {
+            command.setExecutor(executor);
         } else {
             getLogger().warning("Command '" + name + "' not found in plugin.yml!");
         }
@@ -709,6 +789,90 @@ public class Ecore extends JavaPlugin {
 
     public com.excrele.ecore.managers.TutorialGUIManager getTutorialGUIManager() {
         return tutorialGUIManager;
+    }
+
+    public com.excrele.ecore.managers.BanManager getBanManager() {
+        return banManager;
+    }
+
+    public com.excrele.ecore.managers.BanGUIManager getBanGUIManager() {
+        return banGUIManager;
+    }
+
+    public com.excrele.ecore.managers.GUIShopManager getGUIShopManager() {
+        return guiShopManager;
+    }
+
+    public com.excrele.ecore.managers.HologramManager getHologramManager() {
+        return hologramManager;
+    }
+
+    public com.excrele.ecore.managers.NPCManager getNPCManager() {
+        return npcManager;
+    }
+
+    public com.excrele.ecore.managers.GuildManager getGuildManager() {
+        return guildManager;
+    }
+
+    public com.excrele.ecore.managers.GuildGUIManager getGuildGUIManager() {
+        return guildGUIManager;
+    }
+
+    public com.excrele.ecore.managers.AdvancedBankManager getAdvancedBankManager() {
+        return advancedBankManager;
+    }
+
+    public com.excrele.ecore.managers.SkillManager getSkillManager() {
+        return skillManager;
+    }
+
+    public com.excrele.ecore.managers.SkillGUIManager getSkillGUIManager() {
+        return skillGUIManager;
+    }
+
+    public com.excrele.ecore.managers.ClaimManager getClaimManager() {
+        return claimManager;
+    }
+
+    public com.excrele.ecore.managers.ClaimGUIManager getClaimGUIManager() {
+        return claimGUIManager;
+    }
+
+    public com.excrele.ecore.managers.MarriageManager getMarriageManager() {
+        return marriageManager;
+    }
+
+    public com.excrele.ecore.managers.MarriageGUIManager getMarriageGUIManager() {
+        return marriageGUIManager;
+    }
+
+    public com.excrele.ecore.managers.DimensionManager getDimensionManager() {
+        return dimensionManager;
+    }
+
+    public com.excrele.ecore.managers.DimensionGUIManager getDimensionGUIManager() {
+        return dimensionGUIManager;
+    }
+
+    public com.excrele.ecore.managers.CurrencyExchangeManager getCurrencyExchangeManager() {
+        return currencyExchangeManager;
+    }
+
+    public com.excrele.ecore.managers.EventManager getEventManager() {
+        return eventManager;
+    }
+
+    public com.excrele.ecore.managers.EventGUIManager getEventGUIManager() {
+        return eventGUIManager;
+    }
+
+    public com.excrele.ecore.managers.MarketplaceManager getMarketplaceManager() {
+        return marketplaceManager;
+    }
+
+    public com.excrele.ecore.managers.MarketplaceGUIManager getMarketplaceGUIManager() {
+        return marketplaceGUIManager;
     }
 
     public StatisticsGUIManager getStatisticsGUIManager() {

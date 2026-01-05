@@ -401,7 +401,16 @@ public class TeleportManager {
         World world = player.getWorld();
         Location startLoc = player.getLocation();
         
-        player.sendMessage("§eSearching for biome " + biome.name() + "... This may take a moment.");
+        String biomeName;
+        try {
+            @SuppressWarnings("deprecation")
+            org.bukkit.NamespacedKey key = biome.getKey();
+            biomeName = key != null ? key.getKey() : biome.toString();
+        } catch (Exception e) {
+            biomeName = biome.toString();
+        }
+        final String finalBiomeName = biomeName;
+        player.sendMessage("§eSearching for biome " + biomeName + "... This may take a moment.");
         
         // Run async to avoid blocking server
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -427,7 +436,17 @@ public class TeleportManager {
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             if (player != null && player.isOnline()) {
                                 teleport(player, targetLoc);
-                                player.sendMessage("§aTeleported to " + (finalBiome != null ? finalBiome.getKey().getKey() : "unknown") + " biome!");
+                                String biomeKey = "unknown";
+                                if (finalBiome != null) {
+                                    try {
+                                        @SuppressWarnings("deprecation")
+                                        org.bukkit.NamespacedKey key = finalBiome.getKey();
+                                        biomeKey = key != null ? key.getKey() : finalBiome.toString();
+                                    } catch (Exception e) {
+                                        biomeKey = finalBiome.toString();
+                                    }
+                                }
+                                player.sendMessage("§aTeleported to " + biomeKey + " biome!");
                             }
                         });
                         return;
@@ -437,7 +456,7 @@ public class TeleportManager {
             
             // Not found
             Bukkit.getScheduler().runTask(plugin, () -> {
-                player.sendMessage("§cCould not find " + biome.name() + " biome nearby! Try a different location.");
+                player.sendMessage("§cCould not find " + finalBiomeName + " biome nearby! Try a different location.");
             });
         });
     }
@@ -450,10 +469,9 @@ public class TeleportManager {
         String structureName;
         try {
             // Try to get structure name from key if available
-            structureName = structure.getKey().getKey();
-            if (structureName == null) {
-                structureName = structure.toString();
-            }
+            @SuppressWarnings("deprecation")
+            org.bukkit.NamespacedKey key = structure.getKey();
+            structureName = key != null ? key.getKey() : structure.toString();
         } catch (Exception e) {
             // Use toString as fallback
             structureName = structure.toString();

@@ -287,6 +287,66 @@ commands:
   sethomedescription:
     description: Set home description
     usage: /<command> <home> <description>
+  ban:
+    description: Advanced ban management system
+    usage: /<command> [gui|history|templates|unban|template] [args]
+  hologram:
+    description: Hologram management commands
+    usage: /<command> <create|delete|list> [args]
+  holograms:
+    description: Hologram management commands (alias)
+    usage: /<command> <create|delete|list> [args]
+  npc:
+    description: NPC management commands
+    usage: /<command> <create|delete|list> [args]
+  npcs:
+    description: NPC management commands (alias)
+    usage: /<command> <create|delete|list> [args]
+  guild:
+    description: Guild/Clan management commands
+    usage: /<command> [create|apply|accept|chat|deposit|withdraw|alliance|war] [args]
+  skill:
+    description: Skill system commands
+    usage: /<command> [top|leaderboard] [skill-id]
+  skills:
+    description: Skill system commands (alias)
+    usage: /<command> [top|leaderboard] [skill-id]
+  claim:
+    description: Claim system commands
+    usage: /<command> [claim|unclaim|visualize|sell] [args]
+  claims:
+    description: Claim system commands (alias)
+    usage: /<command> [claim|unclaim|visualize|sell] [args]
+  marry:
+    description: Marriage system commands
+    usage: /<command> [propose|accept|deny|divorce|tp|chat|stats] [args]
+  marriage:
+    description: Marriage system commands (alias)
+    usage: /<command> [propose|accept|deny|divorce|tp|chat|stats] [args]
+  dimension:
+    description: Dimension system commands
+    usage: /<command> [create|tp|teleport]
+  dimensions:
+    description: Dimension system commands (alias)
+    usage: /<command> [create|tp|teleport]
+  currency:
+    description: Currency exchange commands
+    usage: /<command> exchange <from> <to> <amount>
+  exchange:
+    description: Currency exchange commands (alias)
+    usage: /<command> <from> <to> <amount>
+  event:
+    description: Event system commands
+    usage: /<command> [create|start|end|join|list] [args]
+  events:
+    description: Event system commands (alias)
+    usage: /<command> [create|start|end|join|list] [args]
+  marketplace:
+    description: Marketplace commands
+    usage: /<command> [create|list] [args]
+  market:
+    description: Marketplace commands (alias)
+    usage: /<command> [create|list] [args]
   bank:
     description: Bank account management
     usage: /<command> <create|delete|list|balance|deposit|withdraw|transfer|interest> [args]

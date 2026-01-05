@@ -66,3 +66,54 @@ per-group:
         - "&7&m-------------------"
         - "&eBalance: &a%ecore_balance%"
 
+# Advanced Scoreboard Features
+# Conditional lines - show/hide lines based on conditions
+# Format: "condition:value:line" where condition can be: balance, homes, kills, etc.
+# Example: "balance:>100:&aYou're rich!"
+conditional-lines:
+  enabled: false
+  lines:
+    - "balance:>1000:&a&lRich Player!"
+    - "kills:>100:&c&lPvP Master!"
+
+# Scoreboard themes
+# Pre-configured themes for easy switching
+themes:
+  enabled: false
+  default-theme: default
+  themes:
+    default:
+      title: "&6&lYour Server"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+    economy:
+      title: "&a&lEconomy"
+      lines:
+        - "&7&m-------------------"
+        - "&eBalance: &a%ecore_balance%"
+        - "&eBank: &a%ecore_bank_balance%"
+    pvp:
+      title: "&c&lPvP Stats"
+      lines:
+        - "&7&m-------------------"
+        - "&eKills: &a%ecore_kills%"
+        - "&eDeaths: &c%ecore_deaths%"
+        - "&eKDR: &a%ecore_kdr%"
+
+# Scoreboard animations
+# Animate text colors and effects
+animations:
+  enabled: false
+  # Animation types: rainbow, pulse, wave
+  type: rainbow
+  speed: 1  # Animation speed (1-10)
+
+# Scoreboard sounds
+# Play sounds on scoreboard updates
+sounds:
+  enabled: false
+  sound: null  # Sound name (e.g., NOTE_PLING)
+  volume: 0.5
+  pitch: 1.0
+

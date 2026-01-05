@@ -1,23 +1,30 @@
 package com.excrele.ecore.database;
 
-import com.excrele.ecore.Ecore;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.enchantments.Enchantment;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.excrele.ecore.Ecore;
 
 /**
  * Database manager for block logging system.
@@ -393,7 +400,12 @@ public class BlockLogDatabase {
             
             // Write durability if applicable
             if (item.getType().getMaxDurability() > 0) {
-                dos.writeShort(item.getDurability());
+                ItemMeta meta = item.getItemMeta();
+                if (meta instanceof Damageable) {
+                    dos.writeShort((short) ((Damageable) meta).getDamage());
+                } else {
+                    dos.writeShort(0);
+                }
             } else {
                 dos.writeShort(-1);
             }
@@ -428,7 +440,9 @@ public class BlockLogDatabase {
                     Map<Enchantment, Integer> enchants = meta.getEnchants();
                     dos.writeInt(enchants.size());
                     for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-                        dos.writeUTF(entry.getKey().getKey().toString());
+                        @SuppressWarnings("deprecation")
+                        NamespacedKey key = entry.getKey().getKey();
+                        dos.writeUTF(key != null ? key.toString() : entry.getKey().toString());
                         dos.writeInt(entry.getValue());
                     }
                 } else {
@@ -467,7 +481,11 @@ public class BlockLogDatabase {
             ItemStack item = new ItemStack(material, amount);
             
             if (durability >= 0 && material.getMaxDurability() > 0) {
-                item.setDurability(durability);
+                ItemMeta meta = item.getItemMeta();
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(durability);
+                    item.setItemMeta(meta);
+                }
             }
             
             // Read item meta if present
@@ -497,7 +515,7 @@ public class BlockLogDatabase {
                         int level = dis.readInt();
                         try {
                             NamespacedKey key = NamespacedKey.fromString(enchantKey);
-                            Enchantment enchant = Enchantment.getByKey(key);
+                            Enchantment enchant = org.bukkit.Registry.ENCHANTMENT.get(key);
                             if (enchant != null) {
                                 meta.addEnchant(enchant, level, true);
                             }

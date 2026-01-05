@@ -251,7 +251,10 @@ public class StaffModeListener implements Listener {
         }
 
         // Don't process if event was already cancelled by staff tool handler
-        if (event.isCancelled()) {
+        // Note: isCancelled() is inherited from Cancellable interface, not deprecated on PlayerInteractEvent
+        @SuppressWarnings("deprecation")
+        boolean cancelled = event.isCancelled();
+        if (cancelled) {
             return;
         }
 

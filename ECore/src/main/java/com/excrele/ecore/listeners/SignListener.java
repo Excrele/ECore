@@ -8,12 +8,14 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class SignListener implements Listener {
     private final Ecore plugin;
@@ -54,10 +56,10 @@ public class SignListener implements Listener {
 
         Player player = event.getPlayer();
         Sign sign = (Sign) block.getState();
-        String[] lines = sign.getLines();
+        SignSide side = sign.getSide(org.bukkit.block.sign.Side.FRONT);
         Location signLoc = sign.getLocation();
 
-        if (lines[0].equals(ChatColor.GREEN + "[Admin Shop]")) {
+        if (side.getLine(0).equals(ChatColor.GREEN + "[Admin Shop]")) {
             // Check if shop is already set up
             if (plugin.getShopManager().isShop(signLoc, false)) {
                 // Shop exists - handle purchase/sale
@@ -80,7 +82,7 @@ public class SignListener implements Listener {
                 }
                 event.setCancelled(true);
             }
-        } else if (lines[0].equals(ChatColor.BLUE + "[PShop]")) {
+        } else if (side.getLine(0).equals(ChatColor.BLUE + "[PShop]")) {
             Block attached = getAttachedChest(block);
             if (attached != null && attached.getState() instanceof Chest) {
                 // Check if shop is already set up

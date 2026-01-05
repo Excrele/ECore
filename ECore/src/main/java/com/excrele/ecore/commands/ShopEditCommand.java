@@ -4,6 +4,7 @@ import com.excrele.ecore.Ecore;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,8 +37,9 @@ public class ShopEditCommand implements CommandExecutor {
         }
 
         Sign sign = (Sign) target.getState();
-        boolean isPlayerShop = sign.getLine(0).equals(ChatColor.BLUE + "[PShop]");
-        boolean isAdminShop = sign.getLine(0).equals(ChatColor.GREEN + "[Admin Shop]");
+        SignSide side = sign.getSide(org.bukkit.block.sign.Side.FRONT);
+        boolean isPlayerShop = side.getLine(0).equals(ChatColor.BLUE + "[PShop]");
+        boolean isAdminShop = side.getLine(0).equals(ChatColor.GREEN + "[Admin Shop]");
         if (!isPlayerShop && !isAdminShop) {
             player.sendMessage(ChatColor.RED + "This is not a valid shop sign!");
             return true;

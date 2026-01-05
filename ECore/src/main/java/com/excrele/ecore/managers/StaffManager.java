@@ -68,6 +68,7 @@ public class StaffManager implements Listener {
     }
 
     // Ban player
+    @SuppressWarnings("deprecation")
     public void banPlayer(Player staff, String target, String reason) {
         Player targetPlayer = Bukkit.getPlayer(target);
         if (targetPlayer != null) {
@@ -242,7 +243,21 @@ public class StaffManager implements Listener {
     }
 
     public void enchantItem(Player target, String enchantName, int level) {
-        org.bukkit.enchantments.Enchantment enchant = org.bukkit.enchantments.Enchantment.getByName(enchantName.toUpperCase());
+        org.bukkit.enchantments.Enchantment enchant = null;
+        try {
+            org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.minecraft(enchantName.toLowerCase());
+            enchant = org.bukkit.Registry.ENCHANTMENT.get(key);
+        } catch (Exception ex) {
+            // Try legacy name lookup
+            for (org.bukkit.enchantments.Enchantment ench : org.bukkit.Registry.ENCHANTMENT) {
+                @SuppressWarnings("deprecation")
+                String keyName = ench.getKey().getKey();
+                if (keyName.equalsIgnoreCase(enchantName)) {
+                    enchant = ench;
+                    break;
+                }
+            }
+        }
         if (enchant == null) {
             return;
         }
@@ -257,18 +272,30 @@ public class StaffManager implements Listener {
         if (all) {
             for (org.bukkit.inventory.ItemStack item : target.getInventory().getContents()) {
                 if (item != null && item.getType().getMaxDurability() > 0) {
-                    item.setDurability((short) 0);
+                    org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+                    if (meta instanceof org.bukkit.inventory.meta.Damageable) {
+                        ((org.bukkit.inventory.meta.Damageable) meta).setDamage(0);
+                        item.setItemMeta(meta);
+                    }
                 }
             }
             for (org.bukkit.inventory.ItemStack item : target.getInventory().getArmorContents()) {
                 if (item != null && item.getType().getMaxDurability() > 0) {
-                    item.setDurability((short) 0);
+                    org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+                    if (meta instanceof org.bukkit.inventory.meta.Damageable) {
+                        ((org.bukkit.inventory.meta.Damageable) meta).setDamage(0);
+                        item.setItemMeta(meta);
+                    }
                 }
             }
         } else {
             org.bukkit.inventory.ItemStack item = target.getInventory().getItemInMainHand();
             if (item != null && item.getType().getMaxDurability() > 0) {
-                item.setDurability((short) 0);
+                org.bukkit.inventory.meta.ItemMeta meta = item.getItemMeta();
+                if (meta instanceof org.bukkit.inventory.meta.Damageable) {
+                    ((org.bukkit.inventory.meta.Damageable) meta).setDamage(0);
+                    item.setItemMeta(meta);
+                }
             }
         }
     }

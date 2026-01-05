@@ -166,6 +166,7 @@ public class DiscordCommandHandler extends ListenerAdapter {
         }
 
         Player player = Bukkit.getPlayer(playerName);
+        @SuppressWarnings("deprecation")
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
 
         if (player == null && !offlinePlayer.hasPlayedBefore()) {
