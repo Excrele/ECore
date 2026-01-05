@@ -222,6 +222,9 @@ public class ChatManager implements Listener {
                     }
                 }
             }
+        } else if (action.startsWith("shopgui:")) {
+            // Shop creation chat input
+            plugin.getShopGUIManager().handleChatInput(player, message, action);
         }
     }
 

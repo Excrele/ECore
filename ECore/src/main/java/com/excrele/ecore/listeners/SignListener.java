@@ -2,6 +2,7 @@ package com.excrele.ecore.listeners;
 
 import com.excrele.ecore.Ecore;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -46,7 +47,7 @@ public class SignListener implements Listener {
     // Handle sign interaction
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
 
         Block block = event.getClickedBlock();
         if (block == null || !(block.getState() instanceof Sign)) return;
@@ -54,16 +55,47 @@ public class SignListener implements Listener {
         Player player = event.getPlayer();
         Sign sign = (Sign) block.getState();
         String[] lines = sign.getLines();
+        Location signLoc = sign.getLocation();
 
         if (lines[0].equals(ChatColor.GREEN + "[Admin Shop]")) {
-            if (player.hasPermission("ecore.adminshop")) {
-                plugin.getShopManager().handleAdminShopItem(player, player.getInventory().getItemInMainHand());
+            // Check if shop is already set up
+            if (plugin.getShopManager().isShop(signLoc, false)) {
+                // Shop exists - handle purchase/sale
+                event.setCancelled(true);
+                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    // Right-click to buy
+                    plugin.getShopManager().buyFromShop(player, signLoc, false);
+                } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                    // Left-click to sell (if holding item)
+                    plugin.getShopManager().sellToShop(player, signLoc, false);
+                }
+            } else if (player.hasPermission("ecore.adminshop") && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                // Shop not set up - start creation (only on right-click)
+                // First, set the sign location, then check if player has item in hand
+                plugin.getShopManager().startAdminShopCreation(player, sign);
+                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                if (heldItem != null && heldItem.getType() != Material.AIR) {
+                    // Player has item in hand, use it
+                    plugin.getShopManager().handleAdminShopItem(player, heldItem);
+                }
                 event.setCancelled(true);
             }
         } else if (lines[0].equals(ChatColor.BLUE + "[PShop]")) {
-            if (player.hasPermission("ecore.pshop")) {
-                Block attached = getAttachedChest(block);
-                if (attached != null && attached.getState() instanceof Chest) {
+            Block attached = getAttachedChest(block);
+            if (attached != null && attached.getState() instanceof Chest) {
+                // Check if shop is already set up
+                if (plugin.getShopManager().isShop(signLoc, true)) {
+                    // Shop exists - handle purchase/sale
+                    event.setCancelled(true);
+                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                        // Right-click to buy
+                        plugin.getShopManager().buyFromShop(player, signLoc, true);
+                    } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                        // Left-click to sell (if holding item)
+                        plugin.getShopManager().sellToShop(player, signLoc, true);
+                    }
+                } else if (player.hasPermission("ecore.pshop") && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    // Shop not set up - start creation (only on right-click)
                     plugin.getShopManager().startPlayerShopCreation(player, sign, (Chest) attached.getState());
                     event.setCancelled(true);
                 }

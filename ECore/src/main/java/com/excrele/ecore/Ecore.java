@@ -103,6 +103,7 @@ public class Ecore extends JavaPlugin {
     private com.excrele.ecore.managers.BackupManager backupManager;
     private com.excrele.ecore.managers.RegionGUIManager regionGUIManager;
     private com.excrele.ecore.managers.MobCustomizationManager mobCustomizationManager;
+    private com.excrele.ecore.managers.TutorialGUIManager tutorialGUIManager;
     private com.excrele.ecore.integrations.VaultIntegration vaultIntegration;
     private com.excrele.ecore.integrations.WorldGuardIntegration worldGuardIntegration;
     private com.excrele.ecore.integrations.LuckPermsIntegration luckPermsIntegration;
@@ -185,6 +186,7 @@ public class Ecore extends JavaPlugin {
         backupManager = new com.excrele.ecore.managers.BackupManager(this);
         regionGUIManager = new com.excrele.ecore.managers.RegionGUIManager(this);
         mobCustomizationManager = new com.excrele.ecore.managers.MobCustomizationManager(this);
+        tutorialGUIManager = new com.excrele.ecore.managers.TutorialGUIManager(this);
         
         // Initialize integrations
         vaultIntegration = new com.excrele.ecore.integrations.VaultIntegration(this);
@@ -193,6 +195,7 @@ public class Ecore extends JavaPlugin {
 
         // Register commands
         registerCommand("ecore", new EcoreCommand(this));
+        registerCommand("tutorial", new com.excrele.ecore.commands.TutorialCommand(this));
         registerCommand("shopedit", new ShopEditCommand(this));
         registerCommand("report", new ReportCommand(this));
         registerCommand("sethome", new HomeCommand(this));
@@ -700,6 +703,10 @@ public class Ecore extends JavaPlugin {
 
     public com.excrele.ecore.managers.MobCustomizationManager getMobCustomizationManager() {
         return mobCustomizationManager;
+    }
+
+    public com.excrele.ecore.managers.TutorialGUIManager getTutorialGUIManager() {
+        return tutorialGUIManager;
     }
 
     public StatisticsGUIManager getStatisticsGUIManager() {

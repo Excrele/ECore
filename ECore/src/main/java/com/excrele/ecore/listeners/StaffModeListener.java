@@ -167,26 +167,32 @@ public class StaffModeListener implements Listener {
             // Teleport tool - handled by StaffManager
             event.setCancelled(true);
             player.sendMessage(ChatColor.YELLOW + "Right-click a player to teleport to them, or use /tp");
+            return;
         } else if (material == Material.BOOK) {
             // View reports
             event.setCancelled(true);
             plugin.getStaffManager().openReportsGUI(player);
+            return;
         } else if (material == Material.CHEST) {
             // Inspect inventory
             event.setCancelled(true);
             player.sendMessage(ChatColor.YELLOW + "Right-click a player to inspect their inventory, or use the staff GUI");
+            return;
         } else if (material == Material.REDSTONE_BLOCK) {
             // Ban player
             event.setCancelled(true);
             player.sendMessage(ChatColor.YELLOW + "Use /ban or the staff GUI to ban players");
+            return;
         } else if (material == Material.IRON_BOOTS) {
             // Kick player
             event.setCancelled(true);
             player.sendMessage(ChatColor.YELLOW + "Use /kick or the staff GUI to kick players");
+            return;
         } else if (material == Material.BARRIER && displayName.contains("Exit Staff Mode")) {
             // Exit staff mode
             event.setCancelled(true);
             plugin.getStaffModeManager().exitStaffMode(player);
+            return;
         }
     }
 
@@ -244,6 +250,11 @@ public class StaffModeListener implements Listener {
             return;
         }
 
+        // Don't process if event was already cancelled by staff tool handler
+        if (event.isCancelled()) {
+            return;
+        }
+
         Player player = event.getPlayer();
         if (!plugin.getStaffModeManager().isInStaffMode(player)) {
             return;
@@ -263,4 +274,5 @@ public class StaffModeListener implements Listener {
         }
     }
 }
+
 

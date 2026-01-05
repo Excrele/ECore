@@ -10,8 +10,10 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -536,6 +538,350 @@ public class ShopManager {
      */
     private String getShopPath(Location loc) {
         return loc.getWorld().getName() + "." + loc.getBlockX() + "." + loc.getBlockY() + "." + loc.getBlockZ();
+    }
+
+    /**
+     * Check if a location is a valid shop
+     */
+    public boolean isShop(Location signLoc, boolean isPlayerShop) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        return config.contains(path);
+    }
+
+    /**
+     * Get shop data from location
+     */
+    public ShopData getShopData(Location signLoc, boolean isPlayerShop) {
+        FileConfiguration config = isPlayerShop ? playerConfig : adminConfig;
+        String path = getShopPath(signLoc);
+        if (!config.contains(path)) {
+            return null;
+        }
+        
+        Material itemType = Material.valueOf(config.getString(path + ".item"));
+        int quantity = config.getInt(path + ".quantity", 1);
+        double buyPrice = config.getDouble(path + ".buyPrice", 0.0);
+        double sellPrice = config.getDouble(path + ".sellPrice", 0.0);
+        String customName = config.getString(path + ".customName");
+        Location chestLoc = null;
+        UUID owner = null;
+        
+        if (isPlayerShop) {
+            String chestStr = config.getString(path + ".chestLocation");
+            if (chestStr != null) {
+                String[] parts = chestStr.split(",");
+                if (parts.length == 4) {
+                    chestLoc = new Location(
+                        plugin.getServer().getWorld(parts[0]),
+                        Integer.parseInt(parts[1]),
+                        Integer.parseInt(parts[2]),
+                        Integer.parseInt(parts[3])
+                    );
+                }
+            }
+            String ownerStr = config.getString(path + ".owner");
+            if (ownerStr != null) {
+                try {
+                    owner = UUID.fromString(ownerStr);
+                } catch (IllegalArgumentException e) {
+                    // Invalid UUID
+                }
+            }
+        }
+        
+        return new ShopData(itemType, quantity, buyPrice, sellPrice, customName, chestLoc, owner);
+    }
+
+    /**
+     * Handle buying from a shop
+     */
+    public boolean buyFromShop(Player player, Location signLoc, boolean isPlayerShop) {
+        ShopData data = getShopData(signLoc, isPlayerShop);
+        if (data == null) {
+            player.sendMessage(ChatColor.RED + "This shop is not configured!");
+            return false;
+        }
+
+        if (data.getBuyPrice() <= 0) {
+            player.sendMessage(ChatColor.RED + "This shop does not sell items!");
+            return false;
+        }
+
+        double totalCost = data.getBuyPrice() * data.getQuantity();
+        if (plugin.getEconomyManager().getBalance(player.getUniqueId()) < totalCost) {
+            player.sendMessage(ChatColor.RED + "You don't have enough money! Required: " + 
+                ChatColor.YELLOW + String.format("%.2f", totalCost));
+            return false;
+        }
+
+        // Check stock first (for player shops) - before adding items to inventory
+        if (isPlayerShop) {
+            if (data.getChestLocation() != null) {
+                Block chestBlock = data.getChestLocation().getBlock();
+                if (chestBlock.getState() instanceof Chest) {
+                    Chest chest = (Chest) chestBlock.getState();
+                    org.bukkit.inventory.Inventory chestInv = chest.getInventory();
+                    
+                    // Check if chest has enough items
+                    int available = 0;
+                    for (ItemStack chestItem : chestInv.getContents()) {
+                        if (chestItem != null && chestItem.getType() == data.getItemType()) {
+                            available += chestItem.getAmount();
+                        }
+                    }
+                    
+                    if (available < data.getQuantity()) {
+                        player.sendMessage(ChatColor.RED + "This shop is out of stock!");
+                        return false;
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Shop chest is missing!");
+                    return false;
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "Shop chest location is invalid!");
+                return false;
+            }
+        }
+
+        // Check inventory space by trying to add a test item
+        ItemStack testItem = new ItemStack(data.getItemType(), data.getQuantity());
+        HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(testItem);
+        if (!overflow.isEmpty()) {
+            // Remove what we just added
+            int totalToRemove = 0;
+            for (ItemStack overflowItem : overflow.values()) {
+                totalToRemove += overflowItem.getAmount();
+            }
+            int removed = 0;
+            for (int i = 0; i < player.getInventory().getSize() && removed < totalToRemove; i++) {
+                ItemStack invItem = player.getInventory().getItem(i);
+                if (invItem != null && invItem.getType() == data.getItemType()) {
+                    int remove = Math.min(totalToRemove - removed, invItem.getAmount());
+                    invItem.setAmount(invItem.getAmount() - remove);
+                    removed += remove;
+                    if (invItem.getAmount() <= 0) {
+                        player.getInventory().setItem(i, null);
+                    }
+                }
+            }
+            player.sendMessage(ChatColor.RED + "Your inventory is full!");
+            return false;
+        }
+
+        // Create the actual item with custom name if needed
+        ItemStack item = new ItemStack(data.getItemType(), data.getQuantity());
+        if (data.getCustomName() != null) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', data.getCustomName()));
+                item.setItemMeta(meta);
+            }
+        }
+        
+        // Replace the test item with the actual item (preserving custom name)
+        for (int i = 0; i < player.getInventory().getSize(); i++) {
+            ItemStack invItem = player.getInventory().getItem(i);
+            if (invItem != null && invItem.getType() == data.getItemType() && invItem.getAmount() == data.getQuantity()) {
+                player.getInventory().setItem(i, item);
+                break;
+            }
+        }
+
+        // Handle payment and stock removal
+        if (isPlayerShop) {
+            // Player shop - take from chest and pay owner
+            Block chestBlock = data.getChestLocation().getBlock();
+            Chest chest = (Chest) chestBlock.getState();
+            org.bukkit.inventory.Inventory chestInv = chest.getInventory();
+            
+            // Remove items from chest
+                    int remaining = data.getQuantity();
+                    for (int i = 0; i < chestInv.getSize() && remaining > 0; i++) {
+                        ItemStack chestItem = chestInv.getItem(i);
+                        if (chestItem != null && chestItem.getType() == data.getItemType()) {
+                            int take = Math.min(remaining, chestItem.getAmount());
+                            chestItem.setAmount(chestItem.getAmount() - take);
+                            remaining -= take;
+                            if (chestItem.getAmount() <= 0) {
+                                chestInv.setItem(i, null);
+                            }
+                        }
+                    }
+                    
+                    // Pay shop owner
+                    if (data.getOwner() != null) {
+                        plugin.getEconomyManager().addBalance(data.getOwner(), totalCost);
+                        Player ownerPlayer = plugin.getServer().getPlayer(data.getOwner());
+                        if (ownerPlayer != null && ownerPlayer.isOnline()) {
+                            ownerPlayer.sendMessage(ChatColor.GREEN + player.getName() + " bought " + 
+                                data.getQuantity() + "x " + (data.getCustomName() != null ? data.getCustomName() : data.getItemType().name()) + 
+                                " from your shop for " + String.format("%.2f", totalCost));
+                        }
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Shop chest is missing!");
+                    return false;
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "Shop chest location is invalid!");
+                return false;
+            }
+        } else {
+            // Admin shop - unlimited stock, just charge player
+        }
+
+        // Charge player
+        plugin.getEconomyManager().removeBalance(player.getUniqueId(), totalCost);
+        
+        // Track statistics
+        trackShopView(signLoc, isPlayerShop);
+        trackShopSale(signLoc, isPlayerShop, totalCost);
+        
+        String itemName = data.getCustomName() != null ? data.getCustomName() : data.getItemType().name();
+        player.sendMessage(ChatColor.GREEN + "You bought " + data.getQuantity() + "x " + itemName + 
+            " for " + String.format("%.2f", totalCost));
+        
+        return true;
+    }
+
+    /**
+     * Handle selling to a shop
+     */
+    public boolean sellToShop(Player player, Location signLoc, boolean isPlayerShop) {
+        ShopData data = getShopData(signLoc, isPlayerShop);
+        if (data == null) {
+            player.sendMessage(ChatColor.RED + "This shop is not configured!");
+            return false;
+        }
+
+        if (data.getSellPrice() <= 0) {
+            player.sendMessage(ChatColor.RED + "This shop does not buy items!");
+            return false;
+        }
+
+        // Check if player has the item
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        if (heldItem == null || heldItem.getType() != data.getItemType() || heldItem.getAmount() < data.getQuantity()) {
+            player.sendMessage(ChatColor.RED + "You need to hold " + data.getQuantity() + "x " + 
+                (data.getCustomName() != null ? data.getCustomName() : data.getItemType().name()) + "!");
+            return false;
+        }
+
+        double totalPayment = data.getSellPrice() * data.getQuantity();
+
+        if (isPlayerShop) {
+            // Player shop - check if owner has enough money
+            if (data.getOwner() != null) {
+                if (plugin.getEconomyManager().getBalance(data.getOwner()) < totalPayment) {
+                    player.sendMessage(ChatColor.RED + "The shop owner doesn't have enough money!");
+                    return false;
+                }
+                
+                // Check if chest has space
+                if (data.getChestLocation() != null) {
+                    Block chestBlock = data.getChestLocation().getBlock();
+                    if (chestBlock.getState() instanceof Chest) {
+                        Chest chest = (Chest) chestBlock.getState();
+                        org.bukkit.inventory.Inventory chestInv = chest.getInventory();
+                        
+                        ItemStack toStore = new ItemStack(data.getItemType(), data.getQuantity());
+                        if (data.getCustomName() != null) {
+                            ItemMeta meta = toStore.getItemMeta();
+                            if (meta != null) {
+                                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', data.getCustomName()));
+                                toStore.setItemMeta(meta);
+                            }
+                        }
+                        
+                        HashMap<Integer, ItemStack> overflow = chestInv.addItem(toStore);
+                        if (!overflow.isEmpty()) {
+                            player.sendMessage(ChatColor.RED + "The shop chest is full!");
+                            return false;
+                        }
+                        
+                        // Pay player and charge owner
+                        plugin.getEconomyManager().addBalance(player.getUniqueId(), totalPayment);
+                        plugin.getEconomyManager().removeBalance(data.getOwner(), totalPayment);
+                        
+                        // Remove items from player
+                        heldItem.setAmount(heldItem.getAmount() - data.getQuantity());
+                        if (heldItem.getAmount() <= 0) {
+                            player.getInventory().setItemInMainHand(null);
+                        }
+                        
+                        // Notify owner
+                        Player ownerPlayer = plugin.getServer().getPlayer(data.getOwner());
+                        if (ownerPlayer != null && ownerPlayer.isOnline()) {
+                            ownerPlayer.sendMessage(ChatColor.GREEN + player.getName() + " sold " + 
+                                data.getQuantity() + "x " + (data.getCustomName() != null ? data.getCustomName() : data.getItemType().name()) + 
+                                " to your shop for " + String.format("%.2f", totalPayment));
+                        }
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Shop chest is missing!");
+                        return false;
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Shop chest location is invalid!");
+                    return false;
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "Shop owner is invalid!");
+                return false;
+            }
+        } else {
+            // Admin shop - unlimited money, just pay player
+            plugin.getEconomyManager().addBalance(player.getUniqueId(), totalPayment);
+            
+            // Remove items from player
+            heldItem.setAmount(heldItem.getAmount() - data.getQuantity());
+            if (heldItem.getAmount() <= 0) {
+                player.getInventory().setItemInMainHand(null);
+            }
+        }
+
+        // Track statistics
+        trackShopView(signLoc, isPlayerShop);
+        trackShopSale(signLoc, isPlayerShop, totalPayment);
+        
+        String itemName = data.getCustomName() != null ? data.getCustomName() : data.getItemType().name();
+        player.sendMessage(ChatColor.GREEN + "You sold " + data.getQuantity() + "x " + itemName + 
+            " for " + String.format("%.2f", totalPayment));
+        
+        return true;
+    }
+
+    /**
+     * Shop data class
+     */
+    public static class ShopData {
+        private final Material itemType;
+        private final int quantity;
+        private final double buyPrice;
+        private final double sellPrice;
+        private final String customName;
+        private final Location chestLocation;
+        private final UUID owner;
+
+        public ShopData(Material itemType, int quantity, double buyPrice, double sellPrice, 
+                       String customName, Location chestLocation, UUID owner) {
+            this.itemType = itemType;
+            this.quantity = quantity;
+            this.buyPrice = buyPrice;
+            this.sellPrice = sellPrice;
+            this.customName = customName;
+            this.chestLocation = chestLocation;
+            this.owner = owner;
+        }
+
+        public Material getItemType() { return itemType; }
+        public int getQuantity() { return quantity; }
+        public double getBuyPrice() { return buyPrice; }
+        public double getSellPrice() { return sellPrice; }
+        public String getCustomName() { return customName; }
+        public Location getChestLocation() { return chestLocation; }
+        public UUID getOwner() { return owner; }
     }
 
     /**

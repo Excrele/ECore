@@ -50,6 +50,9 @@ public class EcoreCommand implements CommandExecutor {
                     player.sendMessage("You don't have permission!");
                 }
                 break;
+            case "tutorial":
+                plugin.getTutorialGUIManager().openMainGUI(player);
+                break;
             default:
                 player.sendMessage("Unknown subcommand!");
         }
