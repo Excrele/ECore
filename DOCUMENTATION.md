@@ -1106,7 +1106,16 @@ Players can create multiple bank accounts:
 
 ### Shop System
 
-ECore includes both Admin Shops and Player Shops:
+ECore includes three types of shops: GUI Shops, Admin Shops, and Player Shops:
+
+**GUI Shops:**
+- Server-controlled GUI-based shop system
+- Interactive interface for browsing items by category
+- **Dynamic Pricing System**: Automatic price adjustment based on supply and demand
+- Prices adjust in real-time as items are bought and sold
+- Price indicators show percentage changes from base prices
+- Configurable inflation/deflation rates
+- Price bounds to prevent extreme values
 
 **Admin Shops:**
 - Server-controlled shops with unlimited stock

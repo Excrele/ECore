@@ -243,6 +243,17 @@ shops:
   # A fully featured GUI shop system with balanced pricing
   # Can be toggled on/off to allow other shop systems to take priority
   gui-shop-enabled: true
+  
+  # Dynamic Pricing System (Inflation Adjustment)
+  # Automatically adjusts prices based on supply and demand
+  dynamic-pricing:
+    enabled: true  # Enable/disable dynamic pricing system
+    adjustment-rate: 0.05  # Price adjustment rate per transaction (5% default)
+    min-price-multiplier: 0.1  # Minimum price as percentage of base price (10%)
+    max-price-multiplier: 10.0  # Maximum price as percentage of base price (1000%)
+    buy-inflation-rate: 0.02  # Price increase rate when items are bought (2% per buy)
+    sell-deflation-rate: 0.02  # Price decrease rate when items are sold (2% per sell)
+    transaction-threshold: 10  # Number of transactions before significant price changes
 
 # Server Information Configuration
 # Controls server monitoring and information display

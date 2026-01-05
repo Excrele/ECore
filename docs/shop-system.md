@@ -1,19 +1,22 @@
 # Shop System
 
-ECore includes both Admin Shops and Player Shops for buying and selling items.
+ECore includes three types of shops: GUI Shops, Admin Shops, and Player Shops for buying and selling items.
 
 ## Overview
 
-The shop system provides two types of shops:
+The shop system provides three types of shops:
+- **GUI Shops**: Server-controlled GUI-based shops with dynamic pricing and inflation adjustment
 - **Admin Shops**: Server-controlled shops with unlimited stock
 - **Player Shops**: Player-owned shops using chest storage
 
-Both shop types support buying and selling items with configurable prices.
+All shop types support buying and selling items with configurable prices.
 
 ## Features
 
+- **GUI Shops**: Fully featured GUI shop system with dynamic pricing
 - **Admin Shops**: Unlimited stock, server-controlled
 - **Player Shops**: Player-owned with chest storage
+- **Dynamic Pricing**: Automatic price adjustment based on supply and demand
 - **Shop Categories**: Organize shops by category
 - **Shop Favorites**: Bookmark favorite shops
 - **Shop Statistics**: Track views, sales, and revenue
@@ -33,18 +36,105 @@ The shop system is configured in `config.yml`:
 
 ```yaml
 shops:
+  gui-shop-enabled: true         # Enable GUI Shop system
   max-shops-per-player: 10       # Maximum player shops per player
   expiration-days: 30            # Days before inactive shops expire
   enable-categories: true        # Enable shop categories
   enable-favorites: true         # Enable shop favorites
   enable-statistics: true        # Enable shop statistics
+  
+  # Dynamic Pricing System (Inflation Adjustment)
+  dynamic-pricing:
+    enabled: true                # Enable/disable dynamic pricing system
+    adjustment-rate: 0.05         # Price adjustment rate per transaction (5%)
+    min-price-multiplier: 0.1    # Minimum price as percentage of base price (10%)
+    max-price-multiplier: 10.0   # Maximum price as percentage of base price (1000%)
+    buy-inflation-rate: 0.02     # Price increase rate when items are bought (2% per buy)
+    sell-deflation-rate: 0.02    # Price decrease rate when items are sold (2% per sell)
+    transaction-threshold: 10    # Number of transactions before significant price changes
 ```
 
 Shop data is stored in:
+- `gui-shops.yml` - GUI shop data with dynamic pricing information (auto-generated)
 - `adminshops.yml` - Admin shop data (auto-generated)
 - `playershops.yml` - Player shop data (auto-generated)
 
+## GUI Shop System
+
+The GUI Shop system provides a modern, user-friendly interface for buying and selling items with automatic price adjustment based on supply and demand.
+
+### Features
+
+- **Interactive GUI**: Browse items by category in an easy-to-use interface
+- **Dynamic Pricing**: Prices automatically adjust based on buy/sell transactions
+- **Price Indicators**: See price changes relative to base prices
+- **Category Organization**: Items organized by categories for easy browsing
+- **Real-time Updates**: Prices update in real-time as transactions occur
+
+### Accessing GUI Shops
+
+GUI Shops can be accessed through:
+- NPCs configured to open the shop GUI
+- Server commands (if implemented)
+- Integration with other systems
+
+### Using GUI Shops
+
+1. Open the shop GUI
+2. Browse items by category or view all items
+3. **Left-click** an item to **buy** it
+4. **Right-click** an item to **sell** it from your inventory
+
+### Dynamic Pricing System
+
+The GUI Shop system features an advanced dynamic pricing system that automatically adjusts prices based on market activity:
+
+**How It Works:**
+- **Buy Transactions**: When items are bought, demand increases, causing prices to rise (inflation)
+- **Sell Transactions**: When items are sold, supply increases, causing prices to fall (deflation)
+- **Net Demand**: The system calculates net demand (buys - sells) to determine price adjustments
+- **Price Bounds**: Prices are constrained between minimum and maximum multipliers to prevent extreme values
+
+**Price Calculation:**
+- Prices use square root scaling to provide diminishing returns, preventing extreme price swings
+- Buy prices respond more strongly to demand changes
+- Sell prices follow buy prices but with reduced volatility
+- Significant transaction imbalances trigger additional price adjustments
+
+**Configuration Options:**
+- `enabled`: Toggle dynamic pricing on/off
+- `adjustment-rate`: Base adjustment rate for significant transaction imbalances
+- `min-price-multiplier`: Minimum price as a percentage of base price (default: 10%)
+- `max-price-multiplier`: Maximum price as a percentage of base price (default: 1000%)
+- `buy-inflation-rate`: Price increase rate per buy transaction (default: 2%)
+- `sell-deflation-rate`: Price decrease rate per sell transaction (default: 2%)
+- `transaction-threshold`: Number of transactions before significant price changes apply
+
+**Price Display:**
+- Items show current buy and sell prices
+- Price change indicators show percentage change from base price
+- Green indicators show price decreases (deflation)
+- Red indicators show price increases (inflation)
+
+**Price Management:**
+- Base prices are stored separately from current prices
+- Transaction counts are tracked per item
+- Prices can be reset to base prices by administrators
+- The system automatically initializes base prices for existing items
+
+### Tips for Dynamic Pricing
+
+- **High Demand Items**: Items that are frequently bought will see price increases
+- **High Supply Items**: Items that are frequently sold will see price decreases
+- **Market Balance**: Prices naturally adjust to find equilibrium between supply and demand
+- **Price Stability**: The system uses mathematical scaling to prevent extreme price swings
+- **Monitoring**: Watch price indicators to understand market trends
+
 ## Creating Shops
+
+### GUI Shops
+
+GUI Shops are configured by server administrators in `gui-shops.yml`. Items are automatically organized by category and support dynamic pricing.
 
 ### Admin Shops
 
@@ -138,11 +228,14 @@ Player shops that are inactive for the configured number of days are automatical
 
 ## Tips
 
-- Set reasonable prices to encourage trading
+- Set reasonable base prices to encourage trading
 - Use categories to organize shops by item type
 - Keep player shops stocked for better sales
 - Use the shop GUI to find the best deals
 - Monitor shop statistics to optimize your shop
+- Watch price indicators in GUI shops to understand market trends
+- Take advantage of price fluctuations in dynamic pricing system
+- Consider timing your purchases when prices are lower
 
 ## Related Systems
 
