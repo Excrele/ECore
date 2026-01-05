@@ -77,5 +77,5 @@ Welcome to the ECore documentation! This index provides easy navigation to all s
 ---
 
 **Last Updated:** 2026  
-**Documentation Version:** 1.0
+**Documentation Version:** 1.2
 

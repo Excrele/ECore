@@ -41,7 +41,7 @@ import java.util.UUID;
  * </ul>
  * 
  * @author Excrele
- * @version 1.0.1
+ * @version 1.2
  */
 public class Ecore extends JavaPlugin {
     private ConfigManager configManager;

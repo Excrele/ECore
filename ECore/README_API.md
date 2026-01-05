@@ -4,7 +4,7 @@
 
 This document provides comprehensive documentation for developers who want to integrate with ECore or extend its functionality. ECore exposes a rich API through manager classes that can be accessed by other plugins.
 
-**Version:** 1.0.1  
+**Version:** 1.2  
 **Minecraft Version:** 1.21+  
 **API Stability:** Stable (methods may be added but existing methods will not be removed)
 
@@ -817,12 +817,13 @@ For questions, issues, or feature requests:
 
 ## Version History
 
-- **1.0.1** - Current version with full API access
+- **1.2** - Current version with full API access
+- **1.0.1** - Previous version
 - **1.0.0** - Initial release
 
 ---
 
 **Last Updated:** Current  
-**API Version:** 1.0.1  
+**API Version:** 1.2  
 **Status:** Stable
 

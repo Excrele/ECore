@@ -280,10 +280,10 @@ For detailed documentation on each system, see the [Documentation Index](docs/in
 ### Installation Steps
 
 1. **Download the Plugin**
-   - Download `Ecore-1.0.1.jar` from the releases page
+   - Download `Ecore-1.2.jar` from the releases page
 
 2. **Install the Plugin**
-   - Place `Ecore-1.0.1.jar` in your server's `plugins` folder
+   - Place `Ecore-1.2.jar` in your server's `plugins` folder
 
 3. **Start the Server**
    - Start or restart your server
@@ -1061,7 +1061,7 @@ For more troubleshooting information, see individual system documentation files 
 
 ## 🆕 Recent Updates
 
-### Version 1.0.1
+### Version 1.2
 - ✅ Complete shop system with buying/selling functionality
 - ✅ Shop creation via signs with GUI support
 - ✅ Shop statistics, categories, and favorites
@@ -1097,7 +1097,7 @@ This plugin is provided as-is for use on Minecraft servers.
 
 ---
 
-**Version:** 1.0.1  
+**Version:** 1.2  
 **Minecraft:** 1.21+  
 **Java:** 17+  
 **API Version:** 1.21

@@ -90,10 +90,10 @@
 ### Installation Steps
 
 1. **Download the Plugin**
-   - Download `Ecore-1.0.jar` from the releases page
+   - Download `Ecore-1.2.jar` from the releases page
 
 2. **Install the Plugin**
-   - Place `Ecore-1.0.jar` in your server's `plugins` folder
+   - Place `Ecore-1.2.jar` in your server's `plugins` folder
 
 3. **Start the Server**
    - Start or restart your server
@@ -1536,7 +1536,7 @@ If you encounter issues not covered here:
 
 ## Version Information
 
-**Version:** 1.0  
+**Version:** 1.2  
 **Minecraft:** 1.21+  
 **Java:** 17+  
 **API Version:** 1.21
@@ -1544,5 +1544,5 @@ If you encounter issues not covered here:
 ---
 
 **Last Updated:** 2024  
-**Documentation Version:** 1.0
+**Documentation Version:** 1.2
 
