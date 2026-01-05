@@ -62,7 +62,27 @@ public class InventoryLogManager {
             ItemStack[] items = deserializeInventory(snapshot.inventoryData);
             
             if (items != null) {
-                inventory.setContents(items);
+                // Set main inventory (slots 0-35)
+                ItemStack[] mainInventory = new ItemStack[36];
+                System.arraycopy(items, 0, mainInventory, 0, 36);
+                inventory.setContents(mainInventory);
+                
+                // Set armor (slots 36-39)
+                if (items.length > 36) {
+                    ItemStack[] armor = new ItemStack[4];
+                    System.arraycopy(items, 36, armor, 0, 4);
+                    inventory.setArmorContents(armor);
+                }
+                
+                // Set offhand (slot 40)
+                if (items.length > 40 && items[40] != null) {
+                    try {
+                        inventory.setItemInOffHand(items[40]);
+                    } catch (Exception e) {
+                        // Offhand not available in this version
+                    }
+                }
+                
                 target.updateInventory();
                 target.sendMessage("§aYour inventory has been rolled back by a staff member.");
             }
@@ -109,25 +129,68 @@ public class InventoryLogManager {
     }
 
     /**
-     * Serializes a player inventory to a string for storage.
+     * Serializes a player inventory to a Base64 string for storage.
+     * Uses the database's serialization method to preserve full item data.
      */
     private String serializeInventory(PlayerInventory inventory) {
         try {
-            StringBuilder sb = new StringBuilder();
-            ItemStack[] contents = inventory.getContents();
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            java.io.DataOutputStream dos = new java.io.DataOutputStream(baos);
             
-            for (int i = 0; i < contents.length; i++) {
-                if (contents[i] != null && contents[i].getType() != org.bukkit.Material.AIR) {
-                    sb.append(i).append(":");
-                    sb.append(contents[i].getType().name()).append(":");
-                    sb.append(contents[i].getAmount()).append(":");
-                    // Could add more item data here (enchantments, etc.)
-                    sb.append(";");
+            ItemStack[] contents = inventory.getContents();
+            dos.writeInt(contents.length);
+            
+            for (ItemStack item : contents) {
+                if (item != null && item.getType() != org.bukkit.Material.AIR) {
+                    dos.writeBoolean(true);
+                    String serialized = plugin.getBlockLogManager().getDatabase().serializeItemStack(item);
+                    if (serialized != null) {
+                        dos.writeUTF(serialized);
+                    } else {
+                        dos.writeUTF("");
+                    }
+                } else {
+                    dos.writeBoolean(false);
                 }
             }
             
-            // Encode to Base64 for storage
-            return Base64.getEncoder().encodeToString(sb.toString().getBytes());
+            // Serialize armor
+            ItemStack[] armor = inventory.getArmorContents();
+            dos.writeInt(armor.length);
+            for (ItemStack item : armor) {
+                if (item != null && item.getType() != org.bukkit.Material.AIR) {
+                    dos.writeBoolean(true);
+                    String serialized = plugin.getBlockLogManager().getDatabase().serializeItemStack(item);
+                    if (serialized != null) {
+                        dos.writeUTF(serialized);
+                    } else {
+                        dos.writeUTF("");
+                    }
+                } else {
+                    dos.writeBoolean(false);
+                }
+            }
+            
+            // Serialize offhand (if available)
+            try {
+                ItemStack offhand = inventory.getItemInOffHand();
+                if (offhand != null && offhand.getType() != org.bukkit.Material.AIR) {
+                    dos.writeBoolean(true);
+                    String serialized = plugin.getBlockLogManager().getDatabase().serializeItemStack(offhand);
+                    if (serialized != null) {
+                        dos.writeUTF(serialized);
+                    } else {
+                        dos.writeUTF("");
+                    }
+                } else {
+                    dos.writeBoolean(false);
+                }
+            } catch (Exception e) {
+                dos.writeBoolean(false);
+            }
+            
+            dos.close();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to serialize inventory: " + e.getMessage());
             return "";
@@ -135,36 +198,92 @@ public class InventoryLogManager {
     }
 
     /**
-     * Deserializes a string to a player inventory.
+     * Deserializes a Base64 string to a player inventory.
+     * Returns an array with inventory contents, armor, and offhand.
      */
     private ItemStack[] deserializeInventory(String data) {
         try {
             if (data == null || data.isEmpty()) return null;
             
             // Decode from Base64
-            String decoded = new String(Base64.getDecoder().decode(data));
-            ItemStack[] contents = new ItemStack[41]; // 36 inventory + 4 armor + 1 offhand
+            byte[] bytes = Base64.getDecoder().decode(data);
+            java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(bytes);
+            java.io.DataInputStream dis = new java.io.DataInputStream(bais);
             
-            String[] items = decoded.split(";");
-            for (String item : items) {
-                if (item.isEmpty()) continue;
-                
-                String[] parts = item.split(":");
-                if (parts.length >= 3) {
-                    int slot = Integer.parseInt(parts[0]);
-                    org.bukkit.Material material = org.bukkit.Material.valueOf(parts[1]);
-                    int amount = Integer.parseInt(parts[2]);
-                    
-                    if (slot >= 0 && slot < contents.length) {
-                        contents[slot] = new ItemStack(material, amount);
+            // Read inventory size
+            int size = dis.readInt();
+            ItemStack[] contents = new ItemStack[size];
+            
+            // Read inventory contents
+            for (int i = 0; i < size; i++) {
+                if (dis.readBoolean()) {
+                    String serialized = dis.readUTF();
+                    if (!serialized.isEmpty()) {
+                        contents[i] = plugin.getBlockLogManager().getDatabase().deserializeItemStack(serialized);
                     }
                 }
             }
             
-            return contents;
+            // Read armor
+            int armorSize = dis.readInt();
+            ItemStack[] armor = new ItemStack[armorSize];
+            for (int i = 0; i < armorSize; i++) {
+                if (dis.readBoolean()) {
+                    String serialized = dis.readUTF();
+                    if (!serialized.isEmpty()) {
+                        armor[i] = plugin.getBlockLogManager().getDatabase().deserializeItemStack(serialized);
+                    }
+                }
+            }
+            
+            // Read offhand
+            ItemStack offhand = null;
+            if (dis.readBoolean()) {
+                String serialized = dis.readUTF();
+                if (!serialized.isEmpty()) {
+                    offhand = plugin.getBlockLogManager().getDatabase().deserializeItemStack(serialized);
+                }
+            }
+            
+            dis.close();
+            
+            // Combine into single array (for compatibility with old code)
+            // New format: [0-35: inventory, 36-39: armor, 40: offhand]
+            ItemStack[] combined = new ItemStack[41];
+            System.arraycopy(contents, 0, combined, 0, Math.min(contents.length, 36));
+            System.arraycopy(armor, 0, combined, 36, Math.min(armor.length, 4));
+            if (offhand != null) {
+                combined[40] = offhand;
+            }
+            
+            return combined;
         } catch (Exception e) {
-            plugin.getLogger().warning("Failed to deserialize inventory: " + e.getMessage());
-            return null;
+            // Try old format deserialization as fallback
+            try {
+                String decoded = new String(Base64.getDecoder().decode(data));
+                ItemStack[] contents = new ItemStack[41];
+                
+                String[] items = decoded.split(";");
+                for (String item : items) {
+                    if (item.isEmpty()) continue;
+                    
+                    String[] parts = item.split(":");
+                    if (parts.length >= 3) {
+                        int slot = Integer.parseInt(parts[0]);
+                        org.bukkit.Material material = org.bukkit.Material.valueOf(parts[1]);
+                        int amount = Integer.parseInt(parts[2]);
+                        
+                        if (slot >= 0 && slot < contents.length) {
+                            contents[slot] = new ItemStack(material, amount);
+                        }
+                    }
+                }
+                
+                return contents;
+            } catch (Exception ex) {
+                plugin.getLogger().warning("Failed to deserialize inventory: " + ex.getMessage());
+                return null;
+            }
         }
     }
 }

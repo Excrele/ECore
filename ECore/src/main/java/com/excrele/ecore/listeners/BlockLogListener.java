@@ -14,8 +14,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.ChatColor;
 
 /**
  * Listens for block and inventory events to log them.
@@ -125,6 +128,72 @@ public class BlockLogListener implements Listener {
         Player player = (Player) event.getEntity();
         ItemStack item = event.getItem().getItemStack();
         plugin.getInventoryLogManager().logInventoryAction(player, "PICKUP", -1, item, "PLAYER");
+    }
+
+    /**
+     * Handles inspector wand interactions (right-clicking blocks).
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null) return;
+        if (event.getItem() == null) return;
+        
+        ItemStack item = event.getItem();
+        if (item.getType() != org.bukkit.Material.WOODEN_AXE) return;
+        
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.hasDisplayName()) return;
+        
+        if (!meta.getDisplayName().equals(ChatColor.GOLD + "Block Inspector")) return;
+        
+        event.setCancelled(true);
+        
+        Player player = event.getPlayer();
+        if (!player.hasPermission("ecore.blocklog.inspect")) {
+            player.sendMessage(ChatColor.RED + "You don't have permission to use the inspector tool!");
+            return;
+        }
+        
+        org.bukkit.block.Block block = event.getClickedBlock();
+        org.bukkit.Location location = block.getLocation();
+        
+        // Get block logs for this location
+        long timeRange = 7L * 24L * 60L * 60L * 1000L; // 7 days
+        java.util.List<com.excrele.ecore.database.BlockLogDatabase.BlockLogEntry> logs = 
+                plugin.getBlockLogManager().getBlockLogs(location, timeRange);
+        
+        if (logs.isEmpty()) {
+            player.sendMessage(ChatColor.YELLOW + "No block logs found for this location.");
+            return;
+        }
+        
+        // Show block history
+        player.sendMessage(ChatColor.GOLD + "=== Block History ===");
+        player.sendMessage(ChatColor.GRAY + "Location: " + ChatColor.WHITE + 
+                location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
+        player.sendMessage(ChatColor.GRAY + "World: " + ChatColor.WHITE + location.getWorld().getName());
+        player.sendMessage(ChatColor.GRAY + "Found " + logs.size() + " log entries:");
+        
+        int count = 0;
+        for (com.excrele.ecore.database.BlockLogDatabase.BlockLogEntry log : logs) {
+            if (count >= 10) { // Limit to 10 most recent
+                player.sendMessage(ChatColor.GRAY + "... and " + (logs.size() - 10) + " more entries");
+                break;
+            }
+            
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String actionColor = log.action.equals("BREAK") ? ChatColor.RED.toString() : ChatColor.GREEN.toString();
+            player.sendMessage(ChatColor.GRAY + "- " + actionColor + log.action + ChatColor.GRAY + " by " + 
+                    ChatColor.WHITE + log.playerName + ChatColor.GRAY + " at " + 
+                    ChatColor.WHITE + sdf.format(new java.util.Date(log.time)));
+            if (log.material != null) {
+                player.sendMessage(ChatColor.GRAY + "  Material: " + ChatColor.WHITE + log.material);
+            }
+            count++;
+        }
+        
+        // Store selection for restore command
+        plugin.getBlockLogManager().setInspectorSelection(player, location);
     }
 }
 

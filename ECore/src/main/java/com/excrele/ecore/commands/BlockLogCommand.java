@@ -76,6 +76,12 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
             case "reload":
                 handleReload(player);
                 break;
+            case "pos1":
+                handlePos1(player);
+                break;
+            case "pos2":
+                handlePos2(player);
+                break;
             default:
                 player.sendMessage(ChatColor.RED + "Unknown subcommand. Use /blocklog for GUI or:");
                 sendHelp(player);
@@ -151,16 +157,29 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
             return;
         }
 
-        Location pos1 = plugin.getBlockLogManager().getInspectorSelection(player);
-        if (pos1 == null) {
-            player.sendMessage(ChatColor.RED + "You need to select an area first! Use /blocklog inspect");
+        Location pos1 = plugin.getBlockLogManager().getPos1(player);
+        Location pos2 = plugin.getBlockLogManager().getPos2(player);
+        
+        // If pos1/pos2 not set, try using inspector selection as single point
+        if (pos1 == null && pos2 == null) {
+            Location inspectorLoc = plugin.getBlockLogManager().getInspectorSelection(player);
+            if (inspectorLoc != null) {
+                pos1 = inspectorLoc;
+                pos2 = inspectorLoc;
+            } else {
+                player.sendMessage(ChatColor.RED + "You need to select an area first!");
+                player.sendMessage(ChatColor.YELLOW + "Use /blocklog pos1 and /blocklog pos2 to set selection");
+                player.sendMessage(ChatColor.YELLOW + "Or use /blocklog inspect and right-click a block");
+                return;
+            }
+        } else if (pos1 == null || pos2 == null) {
+            player.sendMessage(ChatColor.RED + "You need to set both positions!");
+            player.sendMessage(ChatColor.YELLOW + "Use /blocklog pos1 and /blocklog pos2 to set selection");
             return;
         }
 
-        // For now, restore uses the selected area
-        // Could be enhanced to use pos1/pos2 selection
         long timeRange = parseTimeRange(args.length > 1 ? args[1] : "1h");
-        plugin.getBlockLogManager().rollbackArea(pos1, pos1, timeRange, player);
+        plugin.getBlockLogManager().rollbackArea(pos1, pos2, timeRange, player);
     }
 
     private void handleInspect(Player player, String[] args) {
@@ -234,12 +253,34 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(ChatColor.GREEN + "Block logging configuration reloaded!");
     }
 
+    private void handlePos1(Player player) {
+        if (!player.hasPermission("ecore.blocklog.restore")) {
+            player.sendMessage(ChatColor.RED + "You don't have permission to set positions!");
+            return;
+        }
+        
+        Location location = player.getLocation();
+        plugin.getBlockLogManager().setPos1(player, location);
+    }
+
+    private void handlePos2(Player player) {
+        if (!player.hasPermission("ecore.blocklog.restore")) {
+            player.sendMessage(ChatColor.RED + "You don't have permission to set positions!");
+            return;
+        }
+        
+        Location location = player.getLocation();
+        plugin.getBlockLogManager().setPos2(player, location);
+    }
+
     private void sendHelp(Player player) {
         player.sendMessage(ChatColor.GOLD + "=== Block Log Commands ===");
         player.sendMessage(ChatColor.YELLOW + "/blocklog lookup <player> [time] - View player logs");
         player.sendMessage(ChatColor.YELLOW + "/blocklog rollback <player> [time] - Rollback player actions");
         player.sendMessage(ChatColor.YELLOW + "/blocklog restore [time] - Restore selected area");
         player.sendMessage(ChatColor.YELLOW + "/blocklog inspect - Get inspector wand");
+        player.sendMessage(ChatColor.YELLOW + "/blocklog pos1 - Set position 1 for area selection");
+        player.sendMessage(ChatColor.YELLOW + "/blocklog pos2 - Set position 2 for area selection");
         player.sendMessage(ChatColor.YELLOW + "/blocklog inventory <player> [time] - Rollback inventory");
         player.sendMessage(ChatColor.YELLOW + "/blocklog purge [days] - Purge old logs");
     }
@@ -275,7 +316,7 @@ public class BlockLogCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("lookup", "rollback", "restore", "inspect", "inventory", "purge", "reload")
+            return Arrays.asList("lookup", "rollback", "restore", "inspect", "inventory", "purge", "reload", "pos1", "pos2")
                     .stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());

@@ -3,11 +3,19 @@ package com.excrele.ecore.database;
 import com.excrele.ecore.Ecore;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.enchantments.Enchantment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -369,27 +377,153 @@ public class BlockLogDatabase {
     }
 
     /**
-     * Serializes an ItemStack to a string for storage.
+     * Serializes an ItemStack to a Base64 string for storage.
+     * Preserves material, amount, durability, enchantments, display name, lore, and other metadata.
      */
-    private String serializeItemStack(ItemStack item) {
-        // Simple serialization - can be enhanced with Base64 or JSON
-        if (item == null) return null;
-        return item.getType().name() + ":" + item.getAmount() + ":" + (item.hasItemMeta() ? "meta" : "none");
+    public String serializeItemStack(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) return null;
+        
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(baos);
+            
+            // Write basic item data
+            dos.writeUTF(item.getType().name());
+            dos.writeInt(item.getAmount());
+            
+            // Write durability if applicable
+            if (item.getType().getMaxDurability() > 0) {
+                dos.writeShort(item.getDurability());
+            } else {
+                dos.writeShort(-1);
+            }
+            
+            // Write item meta if present
+            if (item.hasItemMeta()) {
+                ItemMeta meta = item.getItemMeta();
+                dos.writeBoolean(true);
+                
+                // Write display name
+                if (meta.hasDisplayName()) {
+                    dos.writeBoolean(true);
+                    dos.writeUTF(meta.getDisplayName());
+                } else {
+                    dos.writeBoolean(false);
+                }
+                
+                // Write lore
+                if (meta.hasLore()) {
+                    dos.writeBoolean(true);
+                    dos.writeInt(meta.getLore().size());
+                    for (String line : meta.getLore()) {
+                        dos.writeUTF(line);
+                    }
+                } else {
+                    dos.writeBoolean(false);
+                }
+                
+                // Write enchantments
+                if (meta.hasEnchants()) {
+                    dos.writeBoolean(true);
+                    Map<Enchantment, Integer> enchants = meta.getEnchants();
+                    dos.writeInt(enchants.size());
+                    for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+                        dos.writeUTF(entry.getKey().getKey().toString());
+                        dos.writeInt(entry.getValue());
+                    }
+                } else {
+                    dos.writeBoolean(false);
+                }
+            } else {
+                dos.writeBoolean(false);
+            }
+            
+            dos.close();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "Failed to serialize ItemStack", e);
+            // Fallback to simple serialization
+            return item.getType().name() + ":" + item.getAmount();
+        }
     }
 
     /**
-     * Deserializes a string to an ItemStack.
+     * Deserializes a Base64 string to an ItemStack.
      */
     public ItemStack deserializeItemStack(String data) {
         if (data == null || data.isEmpty()) return null;
-        String[] parts = data.split(":");
-        if (parts.length < 2) return null;
         
         try {
-            Material material = Material.valueOf(parts[0]);
-            int amount = Integer.parseInt(parts[1]);
-            return new ItemStack(material, amount);
+            // Try Base64 deserialization first
+            byte[] bytes = Base64.getDecoder().decode(data);
+            java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(bytes);
+            java.io.DataInputStream dis = new java.io.DataInputStream(bais);
+            
+            String materialName = dis.readUTF();
+            int amount = dis.readInt();
+            short durability = dis.readShort();
+            
+            Material material = Material.valueOf(materialName);
+            ItemStack item = new ItemStack(material, amount);
+            
+            if (durability >= 0 && material.getMaxDurability() > 0) {
+                item.setDurability(durability);
+            }
+            
+            // Read item meta if present
+            if (dis.readBoolean()) {
+                ItemMeta meta = item.getItemMeta();
+                
+                // Read display name
+                if (dis.readBoolean()) {
+                    meta.setDisplayName(dis.readUTF());
+                }
+                
+                // Read lore
+                if (dis.readBoolean()) {
+                    int loreSize = dis.readInt();
+                    List<String> lore = new ArrayList<>();
+                    for (int i = 0; i < loreSize; i++) {
+                        lore.add(dis.readUTF());
+                    }
+                    meta.setLore(lore);
+                }
+                
+                // Read enchantments
+                if (dis.readBoolean()) {
+                    int enchantCount = dis.readInt();
+                    for (int i = 0; i < enchantCount; i++) {
+                        String enchantKey = dis.readUTF();
+                        int level = dis.readInt();
+                        try {
+                            NamespacedKey key = NamespacedKey.fromString(enchantKey);
+                            Enchantment enchant = Enchantment.getByKey(key);
+                            if (enchant != null) {
+                                meta.addEnchant(enchant, level, true);
+                            }
+                        } catch (Exception e) {
+                            // Ignore invalid enchantment
+                        }
+                    }
+                }
+                
+                item.setItemMeta(meta);
+            }
+            
+            dis.close();
+            return item;
         } catch (Exception e) {
+            // Fallback to simple deserialization
+            try {
+                String[] parts = data.split(":");
+                if (parts.length >= 2) {
+                    Material material = Material.valueOf(parts[0]);
+                    int amount = Integer.parseInt(parts[1]);
+                    return new ItemStack(material, amount);
+                }
+            } catch (Exception ex) {
+                plugin.getLogger().log(Level.WARNING, "Failed to deserialize ItemStack: " + data, ex);
+            }
             return null;
         }
     }

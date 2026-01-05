@@ -46,7 +46,7 @@ public class ScoreboardManager {
         if (!player.hasPermission("ecore.scoreboard.use")) return;
 
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective objective = scoreboard.registerNewObjective("ecore", Criteria.DUMMY, getTitle());
+        Objective objective = scoreboard.registerNewObjective("ecore", Criteria.DUMMY, getTitle(player));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateScoreboard(player, scoreboard, objective);
@@ -59,6 +59,10 @@ public class ScoreboardManager {
      */
     public void updateScoreboard(Player player, Scoreboard scoreboard, Objective objective) {
         if (objective == null) return;
+
+        // Update title in case player changed world or group
+        String newTitle = getTitle(player);
+        objective.setDisplayName(newTitle);
 
         List<String> lines = getScoreboardLines(player);
         
@@ -109,6 +113,13 @@ public class ScoreboardManager {
     }
 
     /**
+     * Checks if a player has a scoreboard active.
+     */
+    public boolean hasScoreboard(Player player) {
+        return playerScoreboards.containsKey(player.getUniqueId());
+    }
+
+    /**
      * Toggles scoreboard for a player.
      */
     public void toggleScoreboard(Player player) {
@@ -143,9 +154,28 @@ public class ScoreboardManager {
     }
 
     /**
-     * Gets the scoreboard title.
+     * Gets the scoreboard title for a player.
      */
-    private String getTitle() {
+    private String getTitle(Player player) {
+        // Check per-group first (higher priority)
+        if (scoreboardConfig.getBoolean("per-group.enabled", false)) {
+            String group = plugin.getLuckPermsIntegration().getPrimaryGroup(player);
+            String groupTitle = scoreboardConfig.getString("per-group.groups." + group + ".title");
+            if (groupTitle != null && !groupTitle.isEmpty()) {
+                return processColorCodes(groupTitle);
+            }
+        }
+        
+        // Check per-world
+        if (scoreboardConfig.getBoolean("per-world.enabled", false)) {
+            String worldName = player.getWorld().getName();
+            String worldTitle = scoreboardConfig.getString("per-world.worlds." + worldName + ".title");
+            if (worldTitle != null && !worldTitle.isEmpty()) {
+                return processColorCodes(worldTitle);
+            }
+        }
+        
+        // Default global title
         String title = scoreboardConfig.getString("title", "§6§lYour Server");
         return processColorCodes(title);
     }
@@ -154,7 +184,28 @@ public class ScoreboardManager {
      * Gets the scoreboard lines for a player.
      */
     private List<String> getScoreboardLines(Player player) {
-        List<String> lines = scoreboardConfig.getStringList("lines");
+        List<String> lines;
+        
+        // Check per-group first (higher priority)
+        if (scoreboardConfig.getBoolean("per-group.enabled", false)) {
+            String group = plugin.getLuckPermsIntegration().getPrimaryGroup(player);
+            lines = scoreboardConfig.getStringList("per-group.groups." + group + ".lines");
+            if (!lines.isEmpty()) {
+                return lines;
+            }
+        }
+        
+        // Check per-world
+        if (scoreboardConfig.getBoolean("per-world.enabled", false)) {
+            String worldName = player.getWorld().getName();
+            lines = scoreboardConfig.getStringList("per-world.worlds." + worldName + ".lines");
+            if (!lines.isEmpty()) {
+                return lines;
+            }
+        }
+        
+        // Default global lines
+        lines = scoreboardConfig.getStringList("lines");
         
         // If no lines configured, use default
         if (lines.isEmpty()) {

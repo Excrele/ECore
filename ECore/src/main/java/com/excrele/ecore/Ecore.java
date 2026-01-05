@@ -3,6 +3,7 @@ package com.excrele.ecore;
 import com.excrele.ecore.commands.*;
 import com.excrele.ecore.listeners.ChatListener;
 import com.excrele.ecore.listeners.PlayerJoinListener;
+import com.excrele.ecore.listeners.PlayerChangedWorldListener;
 import com.excrele.ecore.listeners.PlayerBedEnterListener;
 import com.excrele.ecore.listeners.SignListener;
 import com.excrele.ecore.listeners.SitListener;
@@ -355,6 +356,7 @@ public class Ecore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new SitListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerBedEnterListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.PlayerMoveListener(this), this);
         getServer().getPluginManager().registerEvents(new com.excrele.ecore.listeners.CommandSpyListener(this), this);

@@ -19,12 +19,16 @@ public class BlockLogManager {
     private final Ecore plugin;
     private final BlockLogDatabase database;
     private final Map<UUID, Location> inspectorSelections; // Player UUID -> Selected location
+    private final Map<UUID, Location> pos1Selections; // Player UUID -> Position 1
+    private final Map<UUID, Location> pos2Selections; // Player UUID -> Position 2
     private final Map<UUID, Long> lastSnapshotTime; // Player UUID -> Last snapshot time
 
     public BlockLogManager(Ecore plugin) {
         this.plugin = plugin;
         this.database = new BlockLogDatabase(plugin);
         this.inspectorSelections = new ConcurrentHashMap<>();
+        this.pos1Selections = new ConcurrentHashMap<>();
+        this.pos2Selections = new ConcurrentHashMap<>();
         this.lastSnapshotTime = new ConcurrentHashMap<>();
         
         // Schedule periodic inventory snapshots
@@ -213,6 +217,46 @@ public class BlockLogManager {
      */
     public void clearInspectorSelection(Player player) {
         inspectorSelections.remove(player.getUniqueId());
+    }
+
+    /**
+     * Sets position 1 for area selection.
+     */
+    public void setPos1(Player player, Location location) {
+        pos1Selections.put(player.getUniqueId(), location);
+        player.sendMessage("§aPosition 1 set to: " + location.getBlockX() + ", " + 
+                location.getBlockY() + ", " + location.getBlockZ());
+    }
+
+    /**
+     * Sets position 2 for area selection.
+     */
+    public void setPos2(Player player, Location location) {
+        pos2Selections.put(player.getUniqueId(), location);
+        player.sendMessage("§aPosition 2 set to: " + location.getBlockX() + ", " + 
+                location.getBlockY() + ", " + location.getBlockZ());
+    }
+
+    /**
+     * Gets position 1 for a player.
+     */
+    public Location getPos1(Player player) {
+        return pos1Selections.get(player.getUniqueId());
+    }
+
+    /**
+     * Gets position 2 for a player.
+     */
+    public Location getPos2(Player player) {
+        return pos2Selections.get(player.getUniqueId());
+    }
+
+    /**
+     * Clears area selection for a player.
+     */
+    public void clearAreaSelection(Player player) {
+        pos1Selections.remove(player.getUniqueId());
+        pos2Selections.remove(player.getUniqueId());
     }
 
     /**
